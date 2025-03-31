@@ -1,5 +1,6 @@
 package pack;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Event {
@@ -78,6 +79,11 @@ public class Event {
         this.participants = participants;
     }
 
-
+    public void addParticipant(Adherent adherent) {
+    if (participants == null) {
+        participants = new ArrayList<>();
+    }
+    participants.add(adherent);
+    }
     
 }

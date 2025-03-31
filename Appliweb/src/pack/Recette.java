@@ -1,5 +1,6 @@
 package pack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Recette {
@@ -67,5 +68,17 @@ public class Recette {
         this.auteur = auteur;
     }
 
-    
+    public void addIngredient(Ingredient ingredient) {
+    if (ingredients == null) {
+        ingredients = new ArrayList<>();
+    }
+    ingredients.add(ingredient);
+    }
+
+    public void addEtape(String etape) {
+        if (etapes == null) {
+            etapes = new ArrayList<>();
+        }
+        etapes.add(etape);
+    }
 }

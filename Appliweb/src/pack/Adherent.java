@@ -1,5 +1,6 @@
 package pack;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Adherent {
@@ -59,5 +60,51 @@ public class Adherent {
         this.password = password;
     }
 
+    public List<Ingredient> getShoppingList() {
+        return shoppingList;
+    }
+
+    public void setShoppingList(List<Ingredient> shoppingList) {
+        this.shoppingList = shoppingList;
+    }
+
+    public List<Ingredient> getMyIngredients() {
+        return myIngredients;
+    }
+
+    public void setMyIngredients(List<Ingredient> myIngredients) {
+        this.myIngredients = myIngredients;
+    }
+
+    public void addIngredientToShoppingList(Ingredient ingredient) {
+    if (shoppingList == null) {
+        shoppingList = new ArrayList<>();
+    }
+    shoppingList.add(ingredient);
+    }
+
+    public void addIngredientToMyIngredients(Ingredient ingredient) {
+        if (myIngredients == null) {
+            myIngredients = new ArrayList<>();
+        }
+        myIngredients.add(ingredient);
+    }
+
+    public void removeIngredientFromShoppingList(Ingredient ingredient) {
+        if (shoppingList != null) {
+            shoppingList.remove(ingredient);
+        }
+    }
+
+    public void removeIngredientFromMyIngredients(Ingredient ingredient) {
+        if (myIngredients != null) {
+            myIngredients.remove(ingredient);
+        }
+    }
+    public void clearShoppingList() {
+        if (shoppingList != null) {
+            shoppingList.clear();
+        }
+    }
 
 }
