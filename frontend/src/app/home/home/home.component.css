@@ -1,0 +1,105 @@
+/* Section accueil (hero) */
+.hero-section {
+  background-image: url('/assets/img/hero.png'); /* relative path for Angular */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: white;
+  padding: 5rem 2rem;
+  font-family: 'Inter', sans-serif;
+}
+
+.hero-content {
+  background-color: rgba(0, 0, 0, 0.5); /* optional overlay for readability */
+  padding: 2rem;
+  border-radius: 12px;
+  max-width: 700px;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.hero-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background-color: #d97745;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.hero-button:hover {
+  background-color: #c66530;
+}
+
+/* Contenu principal */
+.home-content {
+  padding: 2rem;
+  background-color: #fffaf5;
+  text-align: center;
+}
+
+.recettes-section h2,
+.evenements-section h2 {
+  font-family: 'Inter', serif;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.recettes-list {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.recettes-list img {
+  width: 160px;
+  height: 160px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.evenement-card {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+}
+
+.date-box {
+  background: #f3f0ea;
+  padding: 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #a0522d;
+}
+/* Rendre les images et événements cliquables joliment */
+a.recette-card,
+a.evenement-card {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+a.recette-card:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}

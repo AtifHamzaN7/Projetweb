@@ -1,0 +1,88 @@
+/* Barre principale */
+.navbar {
+  background-color: white;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+/* Conteneur interne */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+/* Logo "Club de cuisine" */
+.site-name {
+  font-size: 1.8rem;
+  text-decoration: none;
+  font-family: 'Pacifico', cursive;
+  font-weight: 700;
+}
+
+.highlight {
+  color: #ff5722;
+}
+
+/* Liste des liens */
+.nav-links {
+  list-style: none;
+  display: flex;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+/* Zone Connexion / Inscription */
+.auth-links {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+/* Bouton de base */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #ff5722;
+  color: white;
+}
+
+/* Connexion : bordure orange */
+.login {
+  border: 1px solid #ff5722;
+  background-color: transparent;
+  color: #ff5722;
+}
+
+.login:hover {
+  background-color: #ff5722;
+  color: white;
+}
+
+/* Inscription : bouton orange plein */
+.register {
+  background-color: #ff5722;
+  color: white;
+  border: none;
+}
+
+.register:hover {
+  background-color: #e64a19;
+}

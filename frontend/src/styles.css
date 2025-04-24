@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+/* Pour forcer toute la page à utiliser 100% de la hauteur */
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* app-root prend tout l’espace vertical */
+  app-root {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Permet au contenu de pousser le footer en bas */
+  .content {
+    flex: 1;
+  }
+  
