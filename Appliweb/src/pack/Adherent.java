@@ -107,4 +107,10 @@ public class Adherent {
         }
     }
 
+    public boolean isAdmin(){
+        if (this.getidAdh() == 0){
+            return true;
+        }
+        return false;
+    }
 }

@@ -14,6 +14,14 @@ public class Ingredient {
         this.ValNut = ValNut;
     }
 
+     // Constructeur simplifié (nom uniquement)
+     public Ingredient(String nom) {
+        this.idIng = 0; // Valeur par défaut
+        this.nom = nom;
+        this.Calories = 0; // Valeur par défaut
+        this.ValNut = null; // Valeur par défaut
+    }
+
     public int getidIng() {
         return idIng;
     }

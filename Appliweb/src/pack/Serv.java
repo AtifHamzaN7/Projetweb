@@ -1,7 +1,9 @@
 package pack;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -13,10 +15,13 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet("/Serv")
 public class Serv extends HttpServlet {
 
-    private List<Adherent> adherents = new ArrayList<>();
-    private List<Recette> recettes = new ArrayList<>();
-    private List<Event> evenements = new ArrayList<>();
-    private List<Discussion> discussions = new ArrayList<>();
+    private Facade facade;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        facade = new Facade(); // Initialisation de la façade
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -27,6 +32,11 @@ public class Serv extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
+        if (action == null || action.isEmpty()) {
+            response.getWriter().println("Erreur : le paramètre 'action' est manquant !");
+            return;
+        }
+
         switch (action) {
             case "inscription":
                 handleInscription(request, response);
@@ -34,20 +44,11 @@ public class Serv extends HttpServlet {
             case "connexion":
                 handleConnexion(request, response);
                 break;
-            case "dashboard":
-                handleDashboard(request, response);
-                break;
             case "ajouterRecette":
                 handleAjouterRecette(request, response);
                 break;
             case "ajouterEvenement":
                 handleAjouterEvenement(request, response);
-                break;
-            case "forum":
-                handleForum(request, response);
-                break;
-            case "admin":
-                handleAdmin(request, response);
                 break;
             default:
                 response.getWriter().println("Action non reconnue !");
@@ -57,78 +58,89 @@ public class Serv extends HttpServlet {
     // Gestion de l'inscription
     private void handleInscription(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nom = request.getParameter("nom");
+        String prenom = request.getParameter("prenom");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        Adherent adherent = new Adherent(adherents.size() + 1, nom, "", email, password);
-        adherents.add(adherent);
+        if (nom == null || prenom == null || email == null || password == null) {
+            response.getWriter().println("Erreur : tous les champs sont obligatoires !");
+            return;
+        }
 
-        response.sendRedirect("connexion.jsp");
+        // Ajouter l'adhérent dans la base de données via la façade
+        facade.ajouterAdherent(nom, prenom, email, password);
+
+        // Réponse simple pour indiquer que l'inscription a réussi
+        response.getWriter().println("Inscription réussie pour : " + nom + " " + prenom);
     }
 
     // Gestion de la connexion
-    private void handleConnexion(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void handleConnexion(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        Adherent adherent = adherents.stream()
-                .filter(a -> a.getEmail().equals(email) && a.getPassword().equals(password))
-                .findFirst()
-                .orElse(null);
+        if (email == null || password == null) {
+            response.getWriter().println("Erreur : email et mot de passe sont obligatoires !");
+            return;
+        }
+
+        // Vérifier l'adhérent dans la base de données via la façade
+        Adherent adherent = facade.getAdherentByEmailAndPassword(email, password);
 
         if (adherent != null) {
-            request.setAttribute("username", adherent.getNom());
-            request.getRequestDispatcher("dashboard.jsp").forward(request, response);
+            // Si l'adhérent existe, afficher un message de succès
+            response.getWriter().println("Connexion réussie pour : " + adherent.getNom() + " " + adherent.getPrenom());
         } else {
-            response.getWriter().println("Email ou mot de passe incorrect !");
+            // Si l'adhérent n'existe pas, afficher un message d'erreur
+            response.getWriter().println("Erreur : email ou mot de passe incorrect !");
         }
     }
 
-    // Gestion du tableau de bord
-    private void handleDashboard(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("recettes", recettes);
-        request.setAttribute("evenements", evenements);
-        request.getRequestDispatcher("dashboard.jsp").forward(request, response);
-    }
-
-    // Gestion de l'ajout de recette
     private void handleAjouterRecette(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nom = request.getParameter("nom");
-        String ingredients = request.getParameter("ingredients");
-
-        Recette recette = new Recette(recettes.size() + 1, nom, new ArrayList<>(), new ArrayList<>(), "", "Auteur");
-        recettes.add(recette);
-
-        response.sendRedirect("recettes.jsp");
-    }
-
-    // Gestion de l'ajout d'événement
-    private void handleAjouterEvenement(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String titre = request.getParameter("titre");
-        String date = request.getParameter("date");
-
-        Event event = new Event(evenements.size() + 1, titre, null, "", "", "Auteur", new ArrayList<>());
-        evenements.add(event);
-
-        response.sendRedirect("evenements.jsp");
-    }
-
-    // Gestion du forum
-    private void handleForum(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("discussions", discussions);
-        request.getRequestDispatcher("forum.jsp").forward(request, response);
-    }
-
-    // Gestion de l'administration
-    private void handleAdmin(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Adherent user = (Adherent) request.getSession().getAttribute("user");
-        if (user != null && user.getidAdh() == 0) { // Vérifie si l'utilisateur est l'administrateur
-            request.setAttribute("adherents", adherents);
-            request.setAttribute("recettes", recettes);
-            request.setAttribute("evenements", evenements);
-            request.getRequestDispatcher("admin.jsp").forward(request, response);
-        } else {
-            response.getWriter().println("Accès refusé !");
+        String ingredients = request.getParameter("ingredients"); // Liste d'ingrédients sous forme de chaîne
+        String etapes = request.getParameter("etapes"); // Liste d'étapes sous forme de chaîne
+        String photo = request.getParameter("photo");
+        String auteur = request.getParameter("auteur");
+    
+        if (nom == null || ingredients == null || etapes == null || photo == null || auteur == null) {
+            response.getWriter().println("Erreur : tous les champs sont obligatoires !");
+            return;
         }
+    
+        // Ajouter la recette dans la base de données via la façade
+        List<Ingredient> ingredientList = List.of(ingredients.split(",")).stream()
+            .map(Ingredient::new) // Créer des objets Ingredient avec uniquement le nom
+            .toList();
+        facade.ajouterRecette(nom, ingredientList, List.of(etapes.split(",")), photo, auteur);
+    
+        // Réponse simple pour indiquer que l'ajout a réussi
+        response.getWriter().println("Recette ajoutée avec succès : " + nom);
+    }
+
+    // Gestion de l'ajout d'un événement
+private void handleAjouterEvenement(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    String titre = request.getParameter("titre");
+    String dateStr = request.getParameter("date"); // Date sous forme de chaîne
+    String lieu = request.getParameter("lieu");
+    String description = request.getParameter("description");
+    String auteur = request.getParameter("auteur");
+
+    if (titre == null || dateStr == null || lieu == null || description == null || auteur == null) {
+        response.getWriter().println("Erreur : tous les champs sont obligatoires !");
+        return;
+    }
+
+    try {
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(dateStr); // Convertir la chaîne en Date
+        // Ajouter l'événement dans la base de données via la façade
+        facade.ajouterEvenement(titre, date, lieu, description, auteur);
+
+        // Réponse simple pour indiquer que l'ajout a réussi
+        response.getWriter().println("Événement ajouté avec succès : " + titre);
+    } catch (ParseException e) {
+        response.getWriter().println("Erreur : format de date invalide !");
     }
 }
+}
+
