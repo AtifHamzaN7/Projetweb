@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2015, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,136 +39,58 @@ import org.hsqldb.Table;
 import org.hsqldb.TableBase;
 import org.hsqldb.index.Index;
 import org.hsqldb.index.NodeAVL;
-import org.hsqldb.index.NodeAVLDisk;
 import org.hsqldb.navigator.RowIterator;
 
 /*
  * Implementation of PersistentStore for information schema and temp tables.
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.3
  * @since 2.0.1
  */
 public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
 
     Session session;
 
-    public RowStoreAVLHybridExtended(Session session,
-                                     PersistentStoreCollection manager,
-                                     TableBase table, boolean diskBased) {
+    public RowStoreAVLHybridExtended(Session session, TableBase table,
+                                     boolean diskBased) {
 
-        super(session, manager, table, diskBased);
+        super(session, table, diskBased);
 
         this.session = session;
     }
 
-    public void set(CachedObject object) {}
-
     public CachedObject getNewCachedObject(Session session, Object object,
                                            boolean tx) {
-
-        if (indexList != table.getIndexList()) {
-            resetAccessorKeys(session, table.getIndexList());
-        }
-
         return super.getNewCachedObject(session, object, tx);
     }
 
-    public void add(Session session, CachedObject object, boolean tx) {
+    public synchronized void add(Session session, CachedObject object,
+                                 boolean tx) {
 
-        if (isCached) {
-            int size = object.getRealSize(cache.rowOut);
+        super.add(session, object, tx);
 
-            size += indexList.length * NodeAVLDisk.SIZE_IN_BYTE;
-            size = cache.rowOut.getStorageSize(size);
-
-            object.setStorageSize(size);
-
-            long pos = tableSpace.getFilePosition(size, false);
-
-            object.setPos(pos);
-
-            if (tx) {
-                RowAction.addInsertAction(session, (Table) table,
-                                          (Row) object);
-            }
-
-            cache.add(object);
-        } else {
-            if (tx) {
-                RowAction.addInsertAction(session, (Table) table,
-                                          (Row) object);
-            }
-        }
-
-        Object[] data = ((Row) object).getData();
-
-        for (int i = 0; i < nullsList.length; i++) {
-            if (data[i] == null) {
-                nullsList[i] = true;
-            }
+        if (tx) {
+            RowAction.addInsertAction(session, (Table) table, (Row) object);
         }
     }
 
     public void indexRow(Session session, Row row) {
 
-        if (indexList != table.getIndexList()) {
-            resetAccessorKeys(session, table.getIndexList());
-            ((RowAVL) row).setNewNodes(this);
+        NodeAVL node  = ((RowAVL) row).getNode(0);
+        int     count = 0;
+
+        while (node != null) {
+            count++;
+
+            node = node.nNext;
+        }
+
+        if ((isCached ^ !row.isMemory()) || count != indexList.length) {
+            row = (Row) getNewCachedObject(session, row.getData(), true);
         }
 
         super.indexRow(session, row);
-    }
-
-    public void commitRow(Session session, Row row, int changeAction,
-                          int txModel) {
-
-        switch (changeAction) {
-
-            case RowAction.ACTION_DELETE :
-                remove(row);
-                break;
-
-            case RowAction.ACTION_INSERT :
-                break;
-
-            case RowAction.ACTION_INSERT_DELETE :
-
-                // INSERT + DELEETE
-                remove(row);
-                break;
-
-            case RowAction.ACTION_DELETE_FINAL :
-                delete(session, row);
-                remove(row);
-                break;
-        }
-    }
-
-    public void rollbackRow(Session session, Row row, int changeAction,
-                            int txModel) {
-
-        switch (changeAction) {
-
-            case RowAction.ACTION_DELETE :
-                row = (Row) get(row, true);
-
-                ((RowAVL) row).setNewNodes(this);
-                row.keepInMemory(false);
-                indexRow(session, row);
-                break;
-
-            case RowAction.ACTION_INSERT :
-                delete(session, row);
-                remove(row);
-                break;
-
-            case RowAction.ACTION_INSERT_DELETE :
-
-                // INSERT + DELEETE
-                remove(row);
-                break;
-        }
     }
 
     /**
@@ -185,7 +107,7 @@ public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
             node = node.nNext;
         }
 
-        if ((isCached && row.isMemory()) || count != indexList.length) {
+        if ((isCached ^ !row.isMemory()) || count != indexList.length) {
             row = ((Table) table).getDeleteRowFromLog(session, row.getData());
         }
 
@@ -195,16 +117,7 @@ public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
     }
 
     public CachedObject getAccessor(Index key) {
-
-        int position = key.getPosition();
-
-        if (position >= accessorList.length || indexList[position] != key) {
-            resetAccessorKeys(session, table.getIndexList());
-
-            return getAccessor(key);
-        }
-
-        return accessorList[position];
+        return super.getAccessor(key);
     }
 
     public synchronized void resetAccessorKeys(Session session, Index[] keys) {
@@ -217,7 +130,7 @@ public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
         }
 
         if (isCached) {
-            resetAccessorKeysForCached();
+            resetAccessorKeysForCached(keys);
 
             return;
         }
@@ -225,14 +138,20 @@ public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
         super.resetAccessorKeys(session, keys);
     }
 
-    private void resetAccessorKeysForCached() {
+    private void resetAccessorKeysForCached(Index[] keys) {
+
+        TableBase newTable = table.duplicate();
+
+        newTable.persistenceId = table.persistenceId;
+
+        newTable.setIndexes(keys);
 
         RowStoreAVLHybrid tempStore = new RowStoreAVLHybridExtended(session,
-            manager, table, true);
+            newTable, true);
 
         tempStore.changeToDiskTable(session);
 
-        RowIterator iterator = table.rowIterator(this);
+        RowIterator iterator = rowIterator();
 
         while (iterator.hasNext()) {
             Row row = iterator.getNextRow();
@@ -242,7 +161,7 @@ public class RowStoreAVLHybridExtended extends RowStoreAVLHybrid {
             tempStore.indexRow(session, newRow);
         }
 
-        indexList    = tempStore.indexList;
+        indexList    = keys;
         accessorList = tempStore.accessorList;
     }
 }

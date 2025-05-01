@@ -44,12 +44,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5271 $</p>
+<p class="releaseinfo">$Revision: 5570 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N12D5B"></a>
-<p>Copyright 2010-2012 Fred Toussi. Permission is granted to
+<a name="N12E83"></a>
+<p>Copyright 2010-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -158,15 +158,15 @@
 <span class="section"><a href="sqlroutines-chapt.html#src_jrt_legacy">Legacy Support</a></span>
 </dt>
 <dt>
-<span class="section"><a href="sqlroutines-chapt.html#src_jrt_access_control">Securing Access to Classes</a></span>
+<span class="section"><a href="sqlroutines-chapt.html#src_jrt_access_control">Securing Access to Classes and Routines</a></span>
 </dt>
 <dt>
-<span class="section"><a href="sqlroutines-chapt.html#N133A3">Warning</a></span>
+<span class="section"><a href="sqlroutines-chapt.html#N134D5">Warning</a></span>
 </dt>
 </dl>
 </dd>
 <dt>
-<span class="section"><a href="sqlroutines-chapt.html#src_aggregate_functions">User Defined Aggregate Functions</a></span>
+<span class="section"><a href="sqlroutines-chapt.html#src_aggregate_functions">User-Defined Aggregate Functions</a></span>
 </dt>
 <dd>
 <dl>
@@ -184,14 +184,14 @@
 </dl>
 </div>
 <p>SQL-invoked routines are functions and procedures called from SQL.
-  HyperSQL 2.0 supports routines conforming to two parts of the SQL Standard.
+  HyperSQL 2.3 supports routines conforming to two parts of the SQL Standard.
   Routines written in the SQL language are supported in conformance to SQL/PSM
   (Persistent Stored Modules) specification. Routines written in Java are
   supported in broad conformance to SQL/JRT specification. In addition,
   HyperSQL's previous non-standard support for calling Java routines without
   prior method definition is retained and enhanced in the latest version by
   extending the SQL/JRT specification.</p>
-<p>HyperSQL also supports user defined aggregate functions written in the
+<p>HyperSQL also supports user-defined aggregate functions written in the
   SQL language or Java. This feature is an extension to the SQL
   Standard.</p>
 <p>SQL-invoked routines are schema objects. Naming and referencing
@@ -248,6 +248,9 @@
 <p>Definition of routine signature and characteristics, name resolution
   and invocation are all implemented uniformly for routines written in SQL or
   Java.</p>
+<p>Access to routines can be granted to users with GRANT EXECUTE or GRANT
+  ALL. For example <code class="literal">GRANT EXECUTE ON myroutine TO
+  PUBLIC</code>.</p>
 <div class="section" title="Routine Definition">
 <div class="titlepage">
 <div>
@@ -267,11 +270,11 @@
 <p>Routine definition has several mandatory or optional clauses. The
     complete BNF supported by HyperSQL and the remaining clauses are
     documented in this section.</p>
-<a name="N12D9C" class="indexterm"></a>
+<a name="N12EC9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE FUNCTION</strong></span>
 </p>
-<a name="N12DA5" class="indexterm"></a>
+<a name="N12ED2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE PROCEDURE</strong></span>
 </p>
@@ -318,7 +321,7 @@
     type&gt;</code>
 </p>
 <p>Return Value and Table Functions</p>
-<a name="N12DD2" class="indexterm"></a>
+<a name="N12EFF" class="indexterm"></a>
 <p>
 <span class="bold"><strong>RETURNS</strong></span>
 </p>
@@ -378,7 +381,7 @@
 <code class="literal">&lt;returns data type&gt; ::= &lt;data
     type&gt;</code>
 </p>
-<a name="N12E17" class="indexterm"></a>
+<a name="N12F44" class="indexterm"></a>
 <p>
 <span class="bold"><strong>routine body</strong></span>
 </p>
@@ -410,7 +413,7 @@
 <code class="literal">&lt;rights clause&gt; ::= SQL SECURITY INVOKER | SQL
     SECURITY DEFINER</code>
 </p>
-<a name="N12E37" class="indexterm"></a>
+<a name="N12F64" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SQL routine body</strong></span>
 </p>
@@ -423,7 +426,7 @@
 <code class="literal">&lt;SQL routine body&gt; ::= &lt;SQL procedure
     statement&gt;</code>
 </p>
-<a name="N12E48" class="indexterm"></a>
+<a name="N12F75" class="indexterm"></a>
 <p>
 <span class="bold"><strong>EXTERNAL NAME</strong></span>
 </p>
@@ -431,12 +434,12 @@
 <span class="emphasis"><em>external body reference</em></span>
 </p>
 <p>External name specifies the qualified name of the Java method
-    associated with this routine. Early releases of HyperSQL 2.0 only supports
-    Java methods within the classpath. The <code class="literal">&lt;external Java
-    reference string&gt;</code> is a quoted string which starts with
-    CLASSPATH: and is followed by the Java package, class and method names
-    separated with dots. HyperSQL does not currently support the optional
-    <code class="literal">&lt;Java parameter declaration list&gt;</code>.</p>
+    associated with this routine. HyperSQL 2.3 only supports Java methods
+    within the classpath. The <code class="literal">&lt;external Java reference
+    string&gt;</code> is a quoted string which starts with CLASSPATH: and
+    is followed by the Java package, class and method names separated with
+    dots. HyperSQL does not currently support the optional <code class="literal">&lt;Java
+    parameter declaration list&gt;</code>.</p>
 <p>
 <code class="literal">&lt;external body reference&gt; ::= EXTERNAL NAME
     &lt;external Java reference string&gt;</code>
@@ -469,7 +472,7 @@
       characteristic&gt; | &lt;savepoint level
       indication&gt;</code>
 </p>
-<a name="N12E71" class="indexterm"></a>
+<a name="N12F9E" class="indexterm"></a>
 <p>
 <span class="bold"><strong>LANGUAGE</strong></span>
 </p>
@@ -494,7 +497,7 @@
 <p>
 <code class="literal">&lt;parameter style&gt; ::= JAVA</code>
 </p>
-<a name="N12E8D" class="indexterm"></a>
+<a name="N12FBA" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SPECIFIC NAME</strong></span>
 </p>
@@ -521,7 +524,7 @@
    RETURN (SELECT MAX(event_time) FROM atable WHERE event_type = e_type) - 1 HOUR
 
 </pre>
-<a name="N12EA6" class="indexterm"></a>
+<a name="N12FD3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DETERMINISTIC</strong></span>
 </p>
@@ -540,7 +543,7 @@
 <code class="literal">&lt;deterministic characteristic&gt; ::= DETERMINISTIC
       | NOT DETERMINISTIC</code>
 </p>
-<a name="N12EBD" class="indexterm"></a>
+<a name="N12FEA" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SQL DATA access</strong></span>
 </p>
@@ -561,7 +564,7 @@
 <p>A <code class="literal">CREATE PROCEDURE</code> definition can use
       <code class="literal">MODIFIES SQL DATA</code>. This is not allowed in
       <code class="literal">CREATE FUNCTION</code>. Note that a PROCEDURE or a FUNCTION
-      may have internal tables or return a table which are populated by the
+      may have internal tables or return a table which is populated by the
       routine's statements. These tables are not considered SQL DATA,
       therefore there is no need to specify <code class="literal">MODIFIES SQL
       DATA</code> for such routines.</p>
@@ -569,7 +572,7 @@
 <code class="literal">&lt;SQL-data access indication&gt; ::= NO SQL |
       CONTAINS SQL | READS SQL DATA | MODIFIES SQL DATA</code>
 </p>
-<a name="N12EEB" class="indexterm"></a>
+<a name="N13018" class="indexterm"></a>
 <p>
 <span class="bold"><strong>NULL INPUT</strong></span>
 </p>
@@ -588,7 +591,7 @@
 <code class="literal">&lt;null-call clause&gt; ::= RETURNS NULL ON NULL
       INPUT | CALLED ON NULL INPUT</code>
 </p>
-<a name="N12F04" class="indexterm"></a>
+<a name="N13031" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SAVEPOINT LEVEL</strong></span>
 </p>
@@ -601,12 +604,12 @@
       LEVEL</code> is specified, savepoints that have been declared prior
       to calling the procedure become invisible within the body of the
       procedure. HyperSQL&rsquo;s implementation accepts only <code class="literal">NEW SAVEPOINT
-      LEVEL</code>, which must be specified.</p>
+      LEVEL</code>.</p>
 <p>
 <code class="literal">&lt;savepoint level indication&gt; ::= NEW SAVEPOINT
       LEVEL | OLD SAVEPOINT LEVEL</code>
 </p>
-<a name="N12F1E" class="indexterm"></a>
+<a name="N1304B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DYNAMIC RESULT SETS</strong></span>
 </p>
@@ -904,7 +907,7 @@
 
 </pre>
 <p>The BNF for variable declaration is given below:</p>
-<a name="N12FF8" class="indexterm"></a>
+<a name="N13125" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DECLARE variable</strong></span>
 </p>
@@ -943,11 +946,11 @@
 </div>
 </div>
 <p>A <code class="literal">&lt;declare cursor&gt;</code> statement is used to
-      declare a SELECT statement. The current usage of this statement in early
-      versions of HyperSQL 2.0 is exclusively to return a result set from a
-      procedure. The result set is returned to the JDBC CallableStatement
-      object that calls the procedure. The getResultSet() method of
-      CallableStatement is then used to retrieve the JDBC ResultSet.</p>
+      declare a SELECT statement. The current usage of this statement in
+      HyperSQL 2.3 is exclusively to return a result set from a procedure. The
+      result set is returned to the JDBC CallableStatement object that calls
+      the procedure. The getResultSet() method of CallableStatement is then
+      used to retrieve the JDBC ResultSet.</p>
 <p>In the <code class="literal">&lt;routine definition&gt;</code>, the
       <code class="literal">DYNAMIC RESULT SETS</code> clause must be used to specify a
       value above zero. The <code class="literal">DECLARE CURSOR</code> statement is
@@ -1040,7 +1043,7 @@
 <pre class="programlisting"> DECLARE UNDO HANDLER FOR SQLSTATE 'W_01003', 'W_01004';</pre>
 <p>The BNF for <code class="literal">&lt;handler declaration&gt;</code> is
       given below:</p>
-<a name="N13079" class="indexterm"></a>
+<a name="N131A6" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DECLARE HANDLER</strong></span>
 </p>
@@ -1164,7 +1167,7 @@
 <p>A special form of SELECT can also be used for assigning values
       from a query to one or more arguments or variables. This works similar
       to a SET statement that has a SELECT statement as the source.</p>
-<a name="N130F2" class="indexterm"></a>
+<a name="N1321F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SELECT : SINGLE ROW</strong></span>
 </p>
@@ -1250,7 +1253,7 @@
       of one or more SQL statements. The <code class="literal">&lt;search
       condition&gt;</code> can be any valid SQL expression of BOOLEAN
       type.</p>
-<a name="N13133" class="indexterm"></a>
+<a name="N13260" class="indexterm"></a>
 <p>
 <span class="bold"><strong>LOOP</strong></span>
 </p>
@@ -1262,7 +1265,7 @@
       &lt;colon&gt; ] LOOP &lt;SQL statement list&gt; END LOOP [ &lt;ending
       label&gt; ]</code>
 </p>
-<a name="N13142" class="indexterm"></a>
+<a name="N1326F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>WHILE</strong></span>
 </p>
@@ -1274,7 +1277,7 @@
       &lt;colon&gt; ] WHILE &lt;search condition&gt; DO &lt;SQL statement
       list&gt; END WHILE [ &lt;ending label&gt; ]</code>
 </p>
-<a name="N13151" class="indexterm"></a>
+<a name="N1327E" class="indexterm"></a>
 <p>
 <span class="bold"><strong>REPEAT</strong></span>
 </p>
@@ -1313,7 +1316,7 @@
       iterated statement, but it is always used with a cursor declaration to
       iterate over the rows of the result set of the cursor and perform
       operations using the values of each row.</p>
-<a name="N13170" class="indexterm"></a>
+<a name="N1329D" class="indexterm"></a>
 <p>
 <span class="bold"><strong>FOR</strong></span>
 </p>
@@ -1376,7 +1379,7 @@
 </div>
 <p>There are two types of CASE ... WHEN statement and the IF ... THEN
       statement.</p>
-<a name="N13195" class="indexterm"></a>
+<a name="N132C2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CASE WHEN</strong></span>
 </p>
@@ -1440,7 +1443,7 @@
    END CASE
 
 </pre>
-<a name="N131BF" class="indexterm"></a>
+<a name="N132EC" class="indexterm"></a>
 <p>
 <span class="bold"><strong>IF</strong></span>
 </p>
@@ -1494,7 +1497,7 @@
       access the ResultSet returned from a function that returns a result set.
       If the function returns a scalar value, the returned result has a single
       column and a single row which contains the scalar returned value.</p>
-<a name="N131EA" class="indexterm"></a>
+<a name="N13317" class="indexterm"></a>
 <p>
 <span class="bold"><strong>RETURN</strong></span>
 </p>
@@ -1569,7 +1572,7 @@
 <p>Signal and Resignal Statements allow the routine to throw an
       exception. If used with the IF or CASE conditions, the exception is
       thrown conditionally.</p>
-<a name="N1321A" class="indexterm"></a>
+<a name="N13347" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SIGNAL</strong></span>
 </p>
@@ -1590,7 +1593,7 @@
       value&gt; [ SET MESSAGE_TEXT = &lt;character string literal&gt; ]
       </code>
 </p>
-<a name="N1322B" class="indexterm"></a>
+<a name="N13358" class="indexterm"></a>
 <p>
 <span class="bold"><strong>RESIGNAL</strong></span>
 </p>
@@ -1963,13 +1966,13 @@
     <code class="classname">java.lang.Long</code>.).</p>
 <p>When the Java method of an SQL/JRT routine returns a value, it
     should be within the size and precision limits defined in the return type
-    of the SQL-invoked routine, otherwise an exception is raised. The scale
-    difference are ignored and corrected. For example, in the above example,
-    the <code class="literal">RETURNS CHAR VARYING(100)</code> clause limits the length
-    of the strings returned from the Java method to 100. But if the number of
-    digits after the decimal point (scale) of a returned BigDecimal value is
-    larger than the scale specified in the RETURNS clause, the decimal
-    fraction is silently truncated and no exception of warning is
+    of the SQL-invoked routine, otherwise an exception is raised. Any
+    difference in numeric scale is ignored and corrected. For example, in the
+    above example, the <code class="literal">RETURNS CHAR VARYING(100)</code> clause
+    limits the length of the strings returned from the Java method to 100. But
+    if the number of digits after the decimal point (scale) of a returned
+    BigDecimal value is larger than the scale specified in the RETURNS clause,
+    the decimal fraction is silently truncated and no exception of warning is
     raised.</p>
 <p>When the function is specified as RETURNS TABLE(...) the static Java
     method should return a JDBCResultSet instance. For an example of how to
@@ -2246,12 +2249,12 @@
       FUNCTION</code> statement where the name of the function is the
       double quoted, fully qualified name of the Java method used.</p>
 </div>
-<div class="section" title="Securing Access to Classes">
+<div class="section" title="Securing Access to Classes and Routines">
 <div class="titlepage">
 <div>
 <div>
 <h3 class="title">
-<a name="src_jrt_access_control"></a>Securing Access to Classes</h3>
+<a name="src_jrt_access_control"></a>Securing Access to Classes and Routines</h3>
 </div>
 </div>
 </div>
@@ -2273,18 +2276,20 @@
       in the <code class="classname">org.you.lib</code> package. Note that if the
       property is not defined, no access control is performed at this
       level.</p>
+<p>The user who creates a Java routine must have the relevant access
+      privileges on the tables that are used inside the Java method.</p>
 <p>Once the routine has been defined, the normal database access
-      control still applies. The routine can be executed only by the users who
-      have been granted EXECUTE privileges on it. The user who executes a Java
-      routine must also have the relevant access privileges on the tables that
-      are used inside the Java method.</p>
+      control applies to its user. The routine can be executed only by those
+      users who have been granted EXECUTE privileges on it. Access to routines
+      can be granted to users with GRANT EXECUTE or GRANT ALL. For example
+      <code class="literal">GRANT EXECUTE ON myroutine TO PUBLIC</code>.</p>
 </div>
 <div class="section" title="Warning">
 <div class="titlepage">
 <div>
 <div>
 <h3 class="title">
-<a name="N133A3"></a>Warning</h3>
+<a name="N134D5"></a>Warning</h3>
 </div>
 </div>
 </div>
@@ -2302,28 +2307,28 @@
       accessible and will return "Error in script file". There is no need ever
       to execute the procedure. However, to avoid accidental use, you can
       ensure that it does not execute the SQL/JRT routines by adding a line
-      such as <code class="literal">IF TRUE THEN RETURN;</code> before any references to
-      the SQL/JRT routines.</p>
+      such as <code class="literal">IF TRUE THEN SIGNAL SQLSTATE '45000';</code> before
+      any references to the SQL/JRT routines.</p>
 </div>
 </div>
-<div class="section" title="User Defined Aggregate Functions">
+<div class="section" title="User-Defined Aggregate Functions">
 <div class="titlepage">
 <div>
 <div>
 <h2 class="title" style="clear: both">
-<a name="src_aggregate_functions"></a>User Defined Aggregate Functions</h2>
+<a name="src_aggregate_functions"></a>User-Defined Aggregate Functions</h2>
 </div>
 </div>
 </div>
 <p>HyperSQL adds an extension to the SQL Standard to allow user-defined
     aggregate functions. A user-defined aggregate function has a single
     parameter when it is used in SQL statements. Unlike the predefined
-    aggregate functions, the keyword DISTINCT cannot be used when a user
-    defined aggregate function is invoked. Like all user-defined functions, an
-    aggregate function belongs to a schema and can be polymorphic (using
-    multiple function definitions with the same name but different parameter
-    types).</p>
-<p>A user defined aggregate function can be used in SQL statements
+    aggregate functions, the keyword DISTINCT cannot be used when a
+    user-defined aggregate function is invoked. Like all user-defined
+    functions, an aggregate function belongs to a schema and can be
+    polymorphic (with multiple function definitions with the same name but
+    different parameter types).</p>
+<p>A user-defined aggregate function can be used in SQL statements
     where a predefined aggregate function is allowed.</p>
 <div class="section" title="Definition of Aggregate Functions">
 <div class="titlepage">
@@ -2339,10 +2344,10 @@
       invoked in SQL statements, the rest of the parameter are invisible to
       the invoking SQL statement. The type of the first parameter is user
       defined. The type of the second parameter must be BOOLEAN. The third and
-      fourth parameters have user defined types and must be defined as INOUT
+      fourth parameters have user-defined types and must be defined as INOUT
       parameters. The defined return type of the function determines the type
       of the value returned when the function is invoked.</p>
-<a name="N133BD" class="indexterm"></a>
+<a name="N134EF" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE AGGREGATE
       FUNCTION</strong></span>
@@ -2407,7 +2412,7 @@
 </div>
 </div>
 </div>
-<p>The example below features a user defined version of the Standard
+<p>The example below features a user-defined version of the Standard
       <code class="literal">AVG(&lt;value expression&gt;)</code> aggregate function for
       INTEGER input and output types. This function behaves differently from
       the Standard AVG function as it returns 0 when all the input values are
@@ -2420,13 +2425,13 @@
        RETURN addup / counter;
      ELSE
        SET counter = COALESCE(counter, 0) + 1;
-       SET addup = COALESCE(addup, 0) || COALESCE(x, 0);
+       SET addup = COALESCE(addup, 0) + COALESCE(x, 0);
        RETURN NULL;
      END IF;
    END
 
 </pre>
-<p>The user defined aggregate function is used in a select statement
+<p>The user-defined aggregate function is used in a select statement
       in the example below. Only the first parameter is visible and utilised
       in the select statement.</p>
 <pre class="programlisting"> SELECT udavg(id) FROM customers GROUP BY lastname;</pre>
@@ -2558,7 +2563,7 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">

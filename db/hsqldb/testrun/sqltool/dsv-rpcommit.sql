@@ -1,5 +1,5 @@
 /*
- * $Id: dsv-rpcommit.sql 4543 2011-10-15 14:54:17Z unsaved $
+ * $Id: dsv-rpcommit.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests *DSV_RECORDS_PER_COMMIT setting
  */
@@ -24,15 +24,11 @@ CREATE TABLE t (i INT);
 ROLLBACK;
 
 SELECT COUNT(*) FROM t;
-*if (*? != 13)
-    \q *DSV_RECORDS_PER_COMMIT committed only *{?} records instead 13
-*end if
+*if (*? != 13) \q *DSV_RECORDS_PER_COMMIT committed only *{?} records instead 13
 
 DELETE FROM t;
 * *DSV_REJECT_REPORT = ${java.io.tmpdir}/test-rpcommit-${user.name}.dsv
 \m dsv-rpcommit.dsv
 
 SELECT COUNT(*) FROM t;
-*if (*? != 21)
-    \q *DSV_RECORDS_PER_COMMIT committed only *{?} records instead 21
-*end if
+*if (*? != 21) \q *DSV_RECORDS_PER_COMMIT committed only *{?} records instead 21

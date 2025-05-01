@@ -1,5 +1,5 @@
 /*
- * $Id: sqlpsm.sql 826 2009-01-17 05:04:52Z unsaved $
+ * $Id: sqlpsm.sql 5407 2014-10-13 21:16:17Z unsaved $
  *
  * Tests SQL/JRT
  */
@@ -15,13 +15,9 @@ create procedure new_customer(firstname varchar(50), lastname varchar(50))
 .;
 
 SELECT count(*) FROM customers;
-*if (*? != 0)
-    \q SQL/PSM preparation failed
-*end if
+*if (*? != 0) \q SQL/PSM preparation failed
 
 CALL new_customer('blaine', 'simpson');
 
 SELECT count(*) FROM customers;
-*if (*? != 1)
-    \q SQL/PSM procedure failed
-*end if
+*if (*? != 1) \q SQL/PSM procedure failed

@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,7 +43,7 @@ import org.hsqldb.rowio.RowInputInterface;
  * Interface for a store for CachedObject objects.
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.3
  * @since 1.9.0
  */
 public interface PersistentStore {
@@ -52,6 +52,8 @@ public interface PersistentStore {
     int               INT_STORE_SIZE   = 4;
     int               LONG_STORE_SIZE  = 8;
     PersistentStore[] emptyArray       = new PersistentStore[]{};
+
+    boolean isRowStore();
 
     TableBase getTable();
 
@@ -62,8 +64,6 @@ public interface PersistentStore {
     boolean isMemory();
 
     void setMemory(boolean mode);
-
-    int getAccessCount();
 
     void set(CachedObject object);
 
@@ -76,6 +76,8 @@ public interface PersistentStore {
     CachedObject get(CachedObject object, boolean keep);
 
     /** add new object */
+    void add(CachedObject object, boolean keep);
+
     void add(Session session, CachedObject object, boolean tx);
 
     boolean canRead(Session session, long key, int mode, int[] colMap);
@@ -161,6 +163,10 @@ public interface PersistentStore {
     void reindex(Session session, Index index);
 
     void setReadOnly(boolean readonly);
+
+    void readLock();
+
+    void readUnlock();
 
     void writeLock();
 

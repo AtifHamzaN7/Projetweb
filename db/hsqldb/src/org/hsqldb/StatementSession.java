@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2011, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ import org.hsqldb.types.Type;
  * Implementation of Statement for SQL session statements.<p>
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.2.6
+ * @version 2.3.4
  * @since 1.9.0
  */
 public class StatementSession extends Statement {
@@ -102,7 +102,7 @@ public class StatementSession extends Statement {
 
             default :
                 throw Error.runtimeError(ErrorCode.U_S0500,
-                                         "StateemntSession");
+                                         "StatementSession");
         }
     }
 
@@ -175,11 +175,12 @@ public class StatementSession extends Statement {
             case StatementTypes.SET_CONNECTION :
             case StatementTypes.SET_CONSTRAINT :
             case StatementTypes.SET_DESCRIPTOR :
+            case StatementTypes.SET_SESSION_AUTOCOMMIT :
             case StatementTypes.SET_SESSION_CHARACTERISTICS :
-            case StatementTypes.SET_TRANSFORM_GROUP :
+            case StatementTypes.SET_SESSION_FEATURE :
             case StatementTypes.SET_SESSION_RESULT_MAX_ROWS :
             case StatementTypes.SET_SESSION_RESULT_MEMORY_ROWS :
-            case StatementTypes.SET_SESSION_AUTOCOMMIT :
+            case StatementTypes.SET_TRANSFORM_GROUP :
                 group = StatementTypes.X_HSQLDB_SESSION;
                 break;
 
@@ -221,6 +222,8 @@ public class StatementSession extends Statement {
 
         switch (type) {
 
+            case StatementTypes.TRANSACTION_LOCK_CATALOG :
+            case StatementTypes.TRANSACTION_UNLOCK_CATALOG :
             case StatementTypes.TRANSACTION_LOCK_TABLE :
                 group = StatementTypes.X_HSQLDB_TRANSACTION;
                 break;
@@ -314,6 +317,8 @@ public class StatementSession extends Statement {
             case StatementTypes.PREPARE :
                 return Result.updateZeroResult;
 
+            case StatementTypes.TRANSACTION_LOCK_CATALOG :
+            case StatementTypes.TRANSACTION_UNLOCK_CATALOG :
             case StatementTypes.TRANSACTION_LOCK_TABLE : {
                 return Result.updateZeroResult;
             }
@@ -395,9 +400,8 @@ public class StatementSession extends Statement {
                     Result result = (Result) value;
 
                     if (result.isData()) {
-                        Object[] data =
-                            (Object[]) result.getNavigator().getNext();
-                        boolean single = !result.getNavigator().next();
+                        Object[] data   = result.getNavigator().getNext();
+                        boolean  single = !result.getNavigator().next();
 
                         if (single && data != null && data[0] != null) {
                             value = data[0];
@@ -542,7 +546,7 @@ public class StatementSession extends Statement {
                     }
 
                     if (session.getGrantee().canChangeAuthorisation()) {
-                        session.setUser((User) userObject);
+                        session.setUser(userObject);
                         session.setRole(null);
                         session.resetSchema();
 
@@ -636,6 +640,14 @@ public class StatementSession extends Statement {
                     return Result.newErrorResult(e, sql);
                 }
             }
+            case StatementTypes.SET_SESSION_FEATURE : {
+                String  feature = (String) parameters[0];
+                Boolean value   = (Boolean) parameters[1];
+
+                session.setFeature(feature, value.booleanValue());
+
+                return Result.updateZeroResult;
+            }
             case StatementTypes.SET_SESSION_RESULT_MAX_ROWS : {
                 int size = ((Integer) parameters[0]).intValue();
 
@@ -664,7 +676,8 @@ public class StatementSession extends Statement {
             case StatementTypes.DECLARE_SESSION_TABLE : {
                 Table         table           = (Table) parameters[0];
                 HsqlArrayList tempConstraints = (HsqlArrayList) parameters[1];
-                StatementDMQL statement       = (StatementDMQL) parameters[2];
+                StatementDMQL statement       = (StatementDMQL) parameters[3];
+                Boolean       ifNotExists     = (Boolean) parameters[4];
 
                 try {
                     if (tempConstraints.size() != 0) {
@@ -674,7 +687,17 @@ public class StatementSession extends Statement {
                     }
 
                     table.compile(session, null);
-                    session.sessionContext.addSessionTable(table);
+
+                    try {
+                        session.sessionContext.addSessionTable(table);
+                    } catch (HsqlException e) {
+                        if (ifNotExists != null
+                                && ifNotExists.booleanValue()) {
+                            return Result.updateZeroResult;
+                        } else {
+                            return Result.newErrorResult(e, sql);
+                        }
+                    }
 
                     if (table.hasLobColumn) {
                         throw Error.error(ErrorCode.X_42534);

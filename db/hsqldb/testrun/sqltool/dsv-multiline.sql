@@ -1,5 +1,5 @@
 /*
- * $Id: dsv-multiline.sql 4497 2011-10-09 18:43:39Z unsaved $
+ * $Id: dsv-multiline.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Does a DSV export using a multi-line custom query instead of just
  * specifying the table name.
@@ -23,23 +23,15 @@ SELECT
 \x : WHERE i = 1
 
 SELECT count(*) FROM t WHERE i = 1 AND a = 149 AND d IS null;
-*if (*? != 1)
-    \q Pre-check of inserted data failed (1)
-*end if
+*if (*? != 1) \q Pre-check of inserted data failed (1)
 SELECT count(*) FROM t WHERE i = 2 AND a IS NULL AND d = '2007-06-24';
-*if (*? != 1)
-    \q Pre-check of inserted data failed (2)
-*end if
+*if (*? != 1) \q Pre-check of inserted data failed (2)
 
 
 /* Import */
 \m *{*DSV_TARGET_FILE}
 
 SELECT count(*) FROM t WHERE i = 1 AND a = 149 AND d IS null;
-*if (*? != 2)
-    \q Post-check of imported data failed (1)
-*end if
+*if (*? != 2) \q Post-check of imported data failed (1)
 SELECT count(*) FROM t WHERE i = 2 AND a IS NULL AND d = '2007-06-24';
-*if (*? != 1)
-    \q Post-check of imported data failed (2)
-*end if
+*if (*? != 1) \q Post-check of imported data failed (2)

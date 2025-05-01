@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,9 +58,9 @@ import org.hsqldb.types.Types;
 /**
  * Expression class.
  *
- * @author Campbell Boucher-Burnet (boucherb@users dot sourceforge.net)
+ * @author Campbell Burnet (boucherb@users dot sourceforge.net)
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.0
+ * @version 2.3.4
  * @since 1.9.0
  */
 public class Expression implements Cloneable {
@@ -171,6 +171,7 @@ public class Expression implements Cloneable {
 
     // aggregate
     private boolean isAggregate;
+    boolean         isDistinctAggregate;
 
     // VALUE
     protected Object       valueData;
@@ -206,7 +207,9 @@ public class Expression implements Cloneable {
     byte    nullability = SchemaObject.Nullability.NULLABLE_UNKNOWN;
 
     //
-    Collation collation;
+    Collation    collation;
+    RangeGroup[] rangeGroups;
+    RangeGroup   rangeGroup;
 
     Expression(int type) {
         opType = type;
@@ -551,7 +554,7 @@ public class Expression implements Cloneable {
     /**
      * For GROUP only.
      */
-    boolean isComposedOf(Expression exprList[], int start, int end,
+    boolean isComposedOf(Expression[] exprList, int start, int end,
                          OrderedIntHashSet excludeSet) {
 
         switch (opType) {
@@ -689,6 +692,12 @@ public class Expression implements Cloneable {
             case OpTypes.VAR_POP :
             case OpTypes.VAR_SAMP :
                 return false;
+
+            case OpTypes.FUNCTION :
+            case OpTypes.SQL_FUNCTION :
+                if (nodes.length == 0) {
+                    return true;
+                }
         }
 
 /*
@@ -820,6 +829,10 @@ public class Expression implements Cloneable {
         return isAggregate;
     }
 
+    boolean isDistinctAggregate() {
+        return isDistinctAggregate;
+    }
+
     void setAggregate() {
         isAggregate = true;
     }
@@ -882,6 +895,10 @@ public class Expression implements Cloneable {
         nodes[RIGHT] = e;
     }
 
+    int getSubType() {
+        return exprSubType;
+    }
+
     void setSubType(int subType) {
         exprSubType = subType;
     }
@@ -898,6 +915,10 @@ public class Expression implements Cloneable {
      */
     Expression replaceAliasInOrderBy(Session session, Expression[] columns,
                                      int length) {
+
+        if (isSelfAggregate()) {
+            return this;
+        }
 
         for (int i = 0; i < nodes.length; i++) {
             if (nodes[i] == null) {
@@ -1124,6 +1145,27 @@ public class Expression implements Cloneable {
         return unresolvedSet;
     }
 
+    public void setCorrelatedReferences(RangeGroup resolvedRangeGroup) {
+
+        if (rangeGroups == null) {
+            for (int i = 0; i < nodes.length; i++) {
+                if (nodes[i] != null) {
+                    nodes[i].setCorrelatedReferences(resolvedRangeGroup);
+                }
+            }
+        } else if (ArrayUtil.find(rangeGroups, resolvedRangeGroup) > -1) {
+            for (int idx = rangeGroups.length - 1; idx >= 0; idx--) {
+                if (rangeGroups[idx] == resolvedRangeGroup) {
+                    break;
+                }
+
+                rangeGroups[idx].setCorrelated();
+            }
+
+            rangeGroup.setCorrelated();
+        }
+    }
+
     public OrderedHashSet getUnkeyedColumns(OrderedHashSet unresolvedSet) {
 
         if (opType == OpTypes.VALUE) {
@@ -1152,6 +1194,8 @@ public class Expression implements Cloneable {
                     unresolvedSet.add(this);
                 }
                 break;
+
+            default :
         }
 
         return unresolvedSet;
@@ -1215,7 +1259,7 @@ public class Expression implements Cloneable {
                 QueryExpression queryExpression = table.queryExpression;
 
                 queryExpression.resolveTypes(session);
-                table.prepareTable();
+                table.prepareTable(session);
 
                 nodeDataTypes = queryExpression.getColumnTypes();
                 dataType      = nodeDataTypes[0];
@@ -1242,7 +1286,7 @@ public class Expression implements Cloneable {
                     dataExpression.resolveTypes(session, null);
                 }
 
-                table.prepareTable();
+                table.prepareTable(session);
 
                 nodeDataTypes = table.getColumnTypes();
                 dataType      = nodeDataTypes[0];
@@ -1584,7 +1628,7 @@ public class Expression implements Cloneable {
                 Object[] value = table.getValues(session);
 
                 if (value.length == 1) {
-                    return ((Object[]) value)[0];
+                    return value[0];
                 }
 
                 return value;
@@ -1665,8 +1709,7 @@ public class Expression implements Cloneable {
                               Type[] newType) {
 
         for (int i = 0; i < data.length; i++) {
-            if (dataType[i].typeComparisonGroup
-                    != newType[i].typeComparisonGroup) {
+            if (!dataType[i].canConvertFrom(newType[i])) {
                 data[i] = newType[i].convertToType(session, data[i],
                                                    dataType[i]);
             }
@@ -1680,8 +1723,7 @@ public class Expression implements Cloneable {
     static QuerySpecification getCheckSelect(Session session, Table t,
             Expression e) {
 
-        CompileContext compileContext = new CompileContext(session, null,
-            null);
+        CompileContext compileContext = new CompileContext(session);
 
         compileContext.setNextRangeVarIndex(0);
 
@@ -2071,9 +2113,7 @@ public class Expression implements Cloneable {
         return false;
     }
 
-    RangeVariable[] getJoinRangeVariables(RangeVariable[] ranges) {
-        return RangeVariable.emptyArray;
-    }
+    void getJoinRangeVariables(RangeVariable[] ranges, HsqlList list) {}
 
     double costFactor(Session session, RangeVariable range, int operation) {
         return Index.minimumSelectivity;

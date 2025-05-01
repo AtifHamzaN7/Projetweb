@@ -1,7 +1,7 @@
 /*
  * For work developed by the HSQL Development Group:
  *
- * Copyright (c) 2001-2014, The HSQL Development Group
+ * Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -70,10 +70,6 @@
 
 package org.hsqldb.index;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import org.hsqldb.Constraint;
 import org.hsqldb.HsqlNameManager.HsqlName;
 import org.hsqldb.OpTypes;
@@ -89,7 +85,6 @@ import org.hsqldb.error.Error;
 import org.hsqldb.error.ErrorCode;
 import org.hsqldb.lib.ArrayUtil;
 import org.hsqldb.lib.OrderedHashSet;
-import org.hsqldb.lib.ReadWriteLockDummy;
 import org.hsqldb.navigator.RowIterator;
 import org.hsqldb.persist.PersistentStore;
 import org.hsqldb.rights.Grantee;
@@ -113,7 +108,7 @@ import org.hsqldb.types.Type;
  *
  * @author Thomas Mueller (Hypersonic SQL Group)
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.3
  * @since Hypersonic SQL
  */
 public class IndexAVL implements Index {
@@ -144,11 +139,6 @@ public class IndexAVL implements Index {
 
     //
     Object[] nullData;
-
-    //
-    ReadWriteLock lock;
-    Lock          readLock;
-    Lock          writeLock;
 
     /**
      * Constructor declaration
@@ -204,23 +194,6 @@ public class IndexAVL implements Index {
         isSimpleOrder = simpleOrder;
         isSimple      = isSimpleOrder && colIndex.length == 1;
         nullData      = new Object[colIndex.length];
-
-        //
-        switch (table.getTableType()) {
-
-            case TableBase.MEMORY_TABLE :
-            case TableBase.CACHED_TABLE :
-            case TableBase.TEXT_TABLE :
-                lock = new ReentrantReadWriteLock();
-                break;
-
-            default :
-                lock = new ReadWriteLockDummy();
-                break;
-        }
-
-        readLock  = lock.readLock();
-        writeLock = lock.writeLock();
     }
 
     // SchemaObject implementation
@@ -256,9 +229,7 @@ public class IndexAVL implements Index {
 
     public String getSQL() {
 
-        StringBuffer sb = new StringBuffer();
-
-        sb = new StringBuffer(64);
+        StringBuffer sb = new StringBuffer(128);
 
         sb.append(Tokens.T_CREATE).append(' ');
 
@@ -384,6 +355,10 @@ public class IndexAVL implements Index {
         this.table = table;
     }
 
+    public TableBase getTable() {
+        return table;
+    }
+
     public void setClustered(boolean clustered) {
         isClustered = clustered;
     }
@@ -396,25 +371,11 @@ public class IndexAVL implements Index {
      * Returns the node count.
      */
     public long size(Session session, PersistentStore store) {
-
-        readLock.lock();
-
-        try {
-            return store.elementCount(session);
-        } finally {
-            readLock.unlock();
-        }
+        return store.elementCount(session);
     }
 
     public long sizeUnique(PersistentStore store) {
-
-        readLock.lock();
-
-        try {
-            return store.elementCountUnique(this);
-        } finally {
-            readLock.unlock();
-        }
+        return store.elementCountUnique(this);
     }
 
     public double[] searchCost(Session session, PersistentStore store) {
@@ -425,7 +386,7 @@ public class IndexAVL implements Index {
         int      depth       = 0;
         int[]    depths      = new int[1];
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL node = getAccessor(store);
@@ -505,7 +466,7 @@ public class IndexAVL implements Index {
 */
             return changes;
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -538,33 +499,26 @@ public class IndexAVL implements Index {
 
     public long getNodeCount(Session session, PersistentStore store) {
 
-        long count = 0;
+        long        count = 0;
+        RowIterator it    = firstRow(session, store, 0, null);
 
-        readLock.lock();
+        while (it.hasNext()) {
+            it.getNextRow();
 
-        try {
-            RowIterator it = firstRow(session, store, 0);
-
-            while (it.hasNext()) {
-                it.getNextRow();
-
-                count++;
-            }
-
-            return count;
-        } finally {
-            readLock.unlock();
+            count++;
         }
+
+        return count;
     }
 
     public boolean isEmpty(PersistentStore store) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             return getAccessor(store) == null;
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -573,24 +527,18 @@ public class IndexAVL implements Index {
      */
     public void unlinkNodes(NodeAVL primaryRoot) {
 
-        writeLock.lock();
+        NodeAVL x = primaryRoot;
+        NodeAVL l = x;
 
-        try {
-            NodeAVL x = primaryRoot;
-            NodeAVL l = x;
+        while (l != null) {
+            x = l;
+            l = x.getLeft(null);
+        }
 
-            while (l != null) {
-                x = l;
-                l = x.getLeft(null);
-            }
+        while (x != null) {
+            NodeAVL n = nextUnlink(x);
 
-            while (x != null) {
-                NodeAVL n = nextUnlink(x);
-
-                x = n;
-            }
-        } finally {
-            writeLock.unlock();
+            x = n;
         }
     }
 
@@ -636,7 +584,7 @@ public class IndexAVL implements Index {
 
     public void checkIndex(PersistentStore store) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL p = getAccessor(store);
@@ -658,7 +606,7 @@ public class IndexAVL implements Index {
                 f = next(store, f);
             }
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -862,7 +810,7 @@ public class IndexAVL implements Index {
                 if (uniqueNulls) {
                     break;
                 }
-            } else {
+            } else if (!uniqueNulls) {
                 compareId = false;
 
                 break;
@@ -883,87 +831,66 @@ public class IndexAVL implements Index {
         int     compare      = -1;
         boolean compareRowId = !isUnique || hasNulls(session, row.getData());
 
-        writeLock.lock();
-        store.writeLock();
+        n = getAccessor(store);
+        x = n;
 
-        try {
-            n = getAccessor(store);
-            x = n;
+        if (n == null) {
+            store.setAccessor(this, ((RowAVL) row).getNode(position));
+
+            return;
+        }
+
+        while (true) {
+            Row currentRow = n.getRow(store);
+
+            compare = compareRowForInsertOrDelete(session, row, currentRow,
+                                                  compareRowId, 0);
+
+            // after the first match and check, all compares are with row id
+            if (compare == 0 && session != null && !compareRowId
+                    && session.database.txManager.isMVRows()) {
+                if (!isEqualReadable(session, store, n)) {
+                    compareRowId = true;
+                    compare = compareRowForInsertOrDelete(session, row,
+                                                          currentRow,
+                                                          compareRowId,
+                                                          colIndex.length);
+                }
+            }
+
+            if (compare == 0) {
+                Constraint c = null;
+
+                if (isConstraint) {
+                    c = ((Table) table).getUniqueConstraintForIndex(this);
+                }
+
+                if (c == null) {
+                    throw Error.error(ErrorCode.X_23505, name.statementName);
+                } else {
+                    throw c.getException(row.getData());
+                }
+            }
+
+            isleft = compare < 0;
+            x      = n;
+            n      = x.child(store, isleft);
 
             if (n == null) {
-                store.setAccessor(this, ((RowAVL) row).getNode(position));
-
-                return;
+                break;
             }
-
-            while (true) {
-                Row currentRow = n.getRow(store);
-
-                compare = compareRowForInsertOrDelete(session, row,
-                                                      currentRow,
-                                                      compareRowId, 0);
-
-                // after the first match and check, all compares are with row id
-                if (compare == 0 && session != null && !compareRowId
-                        && session.database.txManager.isMVRows()) {
-                    if (!isEqualReadable(session, store, n)) {
-                        compareRowId = true;
-                        compare = compareRowForInsertOrDelete(session, row,
-                                                              currentRow,
-                                                              compareRowId,
-                                                              colIndex.length);
-                    }
-                }
-
-                if (compare == 0) {
-                    Constraint c = null;
-
-                    if (isConstraint) {
-                        c = ((Table) table).getUniqueConstraintForIndex(this);
-                    }
-
-                    if (c == null) {
-                        throw Error.error(ErrorCode.X_23505,
-                                          name.statementName);
-                    } else {
-                        throw c.getException(row.getData());
-                    }
-                }
-
-                isleft = compare < 0;
-                x      = n;
-                n      = x.child(store, isleft);
-
-                if (n == null) {
-                    break;
-                }
-            }
-
-            x = x.set(store, isleft, ((RowAVL) row).getNode(position));
-
-            balance(store, x, isleft);
-        } catch (RuntimeException e) {
-            throw e;
-        } finally {
-            store.writeUnlock();
-            writeLock.unlock();
         }
+
+        x = x.set(store, isleft, ((RowAVL) row).getNode(position));
+
+        balance(store, x, isleft);
     }
 
     public void delete(Session session, PersistentStore store, Row row) {
 
-        if (!row.isInMemory()) {
-            row = (Row) store.get(row, false);
-        }
+        row = (Row) store.get(row, false);
 
-        NodeAVL node = ((RowAVL) row).getNode(position);
-
-        if (node != null) {
-            delete(store, node);
-        }
-    }
-
-    void delete(PersistentStore store, NodeAVL x) {
+        NodeAVL x = ((RowAVL) row).getNode(position);
 
         if (x == null) {
             return;
@@ -971,172 +898,162 @@ public class IndexAVL implements Index {
 
         NodeAVL n;
 
-        writeLock.lock();
-        store.writeLock();
+        if (x.getLeft(store) == null) {
+            n = x.getRight(store);
+        } else if (x.getRight(store) == null) {
+            n = x.getLeft(store);
+        } else {
+            NodeAVL d = x;
 
-        try {
-            if (x.getLeft(store) == null) {
-                n = x.getRight(store);
-            } else if (x.getRight(store) == null) {
-                n = x.getLeft(store);
-            } else {
-                NodeAVL d = x;
+            x = x.getLeft(store);
 
-                x = x.getLeft(store);
+            while (true) {
+                NodeAVL temp = x.getRight(store);
 
-                while (true) {
-                    NodeAVL temp = x.getRight(store);
-
-                    if (temp == null) {
-                        break;
-                    }
-
-                    x = temp;
+                if (temp == null) {
+                    break;
                 }
 
-                // x will be replaced with n later
-                n = x.getLeft(store);
+                x = temp;
+            }
 
-                // swap d and x
-                int b = x.getBalance(store);
+            // x will be replaced with n later
+            n = x.getLeft(store);
 
-                x = x.setBalance(store, d.getBalance(store));
-                d = d.setBalance(store, b);
+            // swap d and x
+            int b = x.getBalance(store);
 
-                // set x.parent
-                NodeAVL xp = x.getParent(store);
-                NodeAVL dp = d.getParent(store);
+            x = x.setBalance(store, d.getBalance(store));
+            d = d.setBalance(store, b);
 
-                if (d.isRoot(store)) {
-                    store.setAccessor(this, x);
-                }
+            // set x.parent
+            NodeAVL xp = x.getParent(store);
+            NodeAVL dp = d.getParent(store);
 
-                x = x.setParent(store, dp);
+            if (d.isRoot(store)) {
+                store.setAccessor(this, x);
+            }
 
-                if (dp != null) {
-                    if (dp.isRight(d)) {
-                        dp = dp.setRight(store, x);
-                    } else {
-                        dp = dp.setLeft(store, x);
-                    }
-                }
+            x = x.setParent(store, dp);
 
-                // relink d.parent, x.left, x.right
-                if (d.equals(xp)) {
-                    d = d.setParent(store, x);
-
-                    if (d.isLeft(x)) {
-                        x = x.setLeft(store, d);
-
-                        NodeAVL dr = d.getRight(store);
-
-                        x = x.setRight(store, dr);
-                    } else {
-                        x = x.setRight(store, d);
-
-                        NodeAVL dl = d.getLeft(store);
-
-                        x = x.setLeft(store, dl);
-                    }
+            if (dp != null) {
+                if (dp.isRight(d)) {
+                    dp = dp.setRight(store, x);
                 } else {
-                    d  = d.setParent(store, xp);
-                    xp = xp.setRight(store, d);
+                    dp = dp.setLeft(store, x);
+                }
+            }
 
-                    NodeAVL dl = d.getLeft(store);
+            // relink d.parent, x.left, x.right
+            if (d.equals(xp)) {
+                d = d.setParent(store, x);
+
+                if (d.isLeft(x)) {
+                    x = x.setLeft(store, d);
+
                     NodeAVL dr = d.getRight(store);
 
-                    x = x.setLeft(store, dl);
                     x = x.setRight(store, dr);
+                } else {
+                    x = x.setRight(store, d);
+
+                    NodeAVL dl = d.getLeft(store);
+
+                    x = x.setLeft(store, dl);
                 }
+            } else {
+                d  = d.setParent(store, xp);
+                xp = xp.setRight(store, d);
 
-                x.getRight(store).setParent(store, x);
-                x.getLeft(store).setParent(store, x);
+                NodeAVL dl = d.getLeft(store);
+                NodeAVL dr = d.getRight(store);
 
-                // set d.left, d.right
-                d = d.setLeft(store, n);
-
-                if (n != null) {
-                    n = n.setParent(store, d);
-                }
-
-                d = d.setRight(store, null);
-                x = d;
+                x = x.setLeft(store, dl);
+                x = x.setRight(store, dr);
             }
 
-            boolean isleft = x.isFromLeft(store);
+            x.getRight(store).setParent(store, x);
+            x.getLeft(store).setParent(store, x);
 
-            x.replace(store, this, n);
+            // set d.left, d.right
+            d = d.setLeft(store, n);
 
-            n = x.getParent(store);
+            if (n != null) {
+                n = n.setParent(store, d);
+            }
 
-            x.delete();
+            d = d.setRight(store, null);
+            x = d;
+        }
 
-            while (n != null) {
-                x = n;
+        boolean isleft = x.isFromLeft(store);
 
-                int sign = isleft ? 1
-                                  : -1;
+        x.replace(store, this, n);
 
-                switch (x.getBalance(store) * sign) {
+        n = x.getParent(store);
 
-                    case -1 :
-                        x = x.setBalance(store, 0);
-                        break;
+        x.delete();
 
-                    case 0 :
-                        x = x.setBalance(store, sign);
+        while (n != null) {
+            x = n;
 
-                        return;
+            int sign = isleft ? 1
+                              : -1;
 
-                    case 1 :
-                        NodeAVL r = x.child(store, !isleft);
-                        int     b = r.getBalance(store);
+            switch (x.getBalance(store) * sign) {
 
-                        if (b * sign >= 0) {
-                            x.replace(store, this, r);
+                case -1 :
+                    x = x.setBalance(store, 0);
+                    break;
 
-                            NodeAVL child = r.child(store, isleft);
+                case 0 :
+                    x = x.setBalance(store, sign);
 
-                            x = x.set(store, !isleft, child);
-                            r = r.set(store, isleft, x);
+                    return;
 
-                            if (b == 0) {
-                                x = x.setBalance(store, sign);
-                                r = r.setBalance(store, -sign);
+                case 1 :
+                    NodeAVL r = x.child(store, !isleft);
+                    int     b = r.getBalance(store);
 
-                                return;
-                            }
+                    if (b * sign >= 0) {
+                        x.replace(store, this, r);
 
-                            x = x.setBalance(store, 0);
-                            r = r.setBalance(store, 0);
-                            x = r;
-                        } else {
-                            NodeAVL l = r.child(store, isleft);
+                        NodeAVL child = r.child(store, isleft);
 
-                            x.replace(store, this, l);
+                        x = x.set(store, !isleft, child);
+                        r = r.set(store, isleft, x);
 
-                            b = l.getBalance(store);
-                            r = r.set(store, isleft, l.child(store, !isleft));
-                            l = l.set(store, !isleft, r);
-                            x = x.set(store, !isleft, l.child(store, isleft));
-                            l = l.set(store, isleft, x);
-                            x = x.setBalance(store, (b == sign) ? -sign
-                                                                : 0);
-                            r = r.setBalance(store, (b == -sign) ? sign
-                                                                 : 0);
-                            l = l.setBalance(store, 0);
-                            x = l;
+                        if (b == 0) {
+                            x = x.setBalance(store, sign);
+                            r = r.setBalance(store, -sign);
+
+                            return;
                         }
-                }
 
-                isleft = x.isFromLeft(store);
-                n      = x.getParent(store);
+                        x = x.setBalance(store, 0);
+                        r = r.setBalance(store, 0);
+                        x = r;
+                    } else {
+                        NodeAVL l = r.child(store, isleft);
+
+                        x.replace(store, this, l);
+
+                        b = l.getBalance(store);
+                        r = r.set(store, isleft, l.child(store, !isleft));
+                        l = l.set(store, !isleft, r);
+                        x = x.set(store, !isleft, l.child(store, isleft));
+                        l = l.set(store, isleft, x);
+                        x = x.setBalance(store, (b == sign) ? -sign
+                                                            : 0);
+                        r = r.setBalance(store, (b == -sign) ? sign
+                                                             : 0);
+                        l = l.setBalance(store, 0);
+                        x = l;
+                    }
             }
-        } catch (RuntimeException e) {
-            throw e;
-        } finally {
-            store.writeUnlock();
-            writeLock.unlock();
+
+            isleft = x.isFromLeft(store);
+            n      = x.getParent(store);
         }
     }
 
@@ -1255,9 +1172,9 @@ public class IndexAVL implements Index {
      * @return Iterator for first row
      */
     public RowIterator firstRow(Session session, PersistentStore store,
-                                int distinctCount) {
+                                int distinctCount, boolean[] map) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL x = getAccessor(store);
@@ -1287,13 +1204,13 @@ public class IndexAVL implements Index {
             return new IndexRowIterator(session, store, this, x,
                                         distinctCount, false, false);
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
     public RowIterator firstRow(PersistentStore store) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL x = getAccessor(store);
@@ -1310,7 +1227,7 @@ public class IndexAVL implements Index {
 
             return new IndexRowIterator(null, store, this, x, 0, false, false);
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -1320,9 +1237,9 @@ public class IndexAVL implements Index {
      * @return last row
      */
     public RowIterator lastRow(Session session, PersistentStore store,
-                               int distinctCount) {
+                               int distinctCount, boolean[] map) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL x = getAccessor(store);
@@ -1352,7 +1269,7 @@ public class IndexAVL implements Index {
             return new IndexRowIterator(session, store, this, x,
                                         distinctCount, false, true);
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -1632,7 +1549,7 @@ public class IndexAVL implements Index {
                      int[] rowColMap, int fieldCount, int compareType,
                      int readMode, boolean reversed) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL x          = getAccessor(store);
@@ -1736,7 +1653,8 @@ public class IndexAVL implements Index {
                             break;
                         }
                         default :
-                            Error.runtimeError(ErrorCode.U_S0500, "Index");
+                            throw Error.runtimeError(ErrorCode.U_S0500,
+                                                     "Index");
                     }
                 } else if (i < 0) {
                     n = x.getRight(store);
@@ -1786,14 +1704,14 @@ public class IndexAVL implements Index {
 
             return result;
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
     NodeAVL findDistinctNode(Session session, PersistentStore store,
                              NodeAVL node, int fieldCount, boolean reversed) {
 
-        readLock.lock();
+        store.readLock();
 
         try {
             NodeAVL  x          = getAccessor(store);
@@ -1853,7 +1771,7 @@ public class IndexAVL implements Index {
 
             return result;
         } finally {
-            readLock.unlock();
+            store.readUnlock();
         }
     }
 
@@ -1988,20 +1906,33 @@ public class IndexAVL implements Index {
             if (single) {
                 nextnode = null;
             } else {
-                index.readLock.lock();
-                store.writeLock();
+                store.readLock();
 
                 try {
-                    if (reversed) {
-                        nextnode = index.last(session, store, nextnode,
-                                              distinctCount);
-                    } else {
-                        nextnode = index.next(session, store, nextnode,
-                                              distinctCount);
+                    while (true) {
+                        if (reversed) {
+                            nextnode = index.last(session, store, nextnode,
+                                                  distinctCount);
+                        } else {
+                            nextnode = index.next(session, store, nextnode,
+                                                  distinctCount);
+                        }
+
+                        if (nextnode == null) {
+                            break;
+                        }
+
+                        Row row = nextnode.getRow(store);
+
+                        if (session == null
+                                || store.canRead(
+                                    session, row,
+                                    TransactionManager.ACTION_READ, null)) {
+                            break;
+                        }
                     }
                 } finally {
-                    store.writeUnlock();
-                    index.readLock.unlock();
+                    store.readUnlock();
                 }
             }
 
@@ -2025,12 +1956,12 @@ public class IndexAVL implements Index {
 
         public void release() {}
 
-        public boolean setRowColumns(boolean[] columns) {
-            return false;
-        }
-
         public long getRowId() {
             return nextnode.getPos();
+        }
+
+        public TableBase getCurrentTable() {
+            return index.table;
         }
     }
 }

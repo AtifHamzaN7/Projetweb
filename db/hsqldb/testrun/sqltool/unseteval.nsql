@@ -1,10 +1,8 @@
 /*
- * $Id: unseteval.nsql 4432 2011-10-01 04:07:19Z unsaved $
+ * $Id: unseteval.nsql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Invokes another script that defines variables.
  * Then we test that we have access to the variables.
  */
 
-*if (*{unset} == 3)
-    \p Should not succeed
-*end if
+*if (*{unset} == 3) \p Should not succeed

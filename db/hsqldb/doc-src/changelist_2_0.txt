@@ -1,3 +1,54 @@
+16 May 2016 - version 2.3.4
+-- added support for storing live Java Objects in mem: databases with sql.live_object connection property
+-- added support for UUID data type
+-- added support for CREATE SYSNONYM FOR, for tables, views and sequences
+-- added support for ON UPDATE CURRENT_TIMESTAMP for auto updated TIMESTAMP columns
+-- added REGEXP_REPLACE function
+-- added support for PERIOD and CONTAINS, EQUALS, PRECEDES and SUCCEEDS predicates in SQL
+-- added support for UTF-16 text source files for TEXT tables
+-- added support for the cancel() method of JDBC Statement and PreparedStatement
+-- added support for END STATEMENT to end long-running statements
+-- added support for CallableStatement parameter reference by name
+-- added date range checks to setDate and setTimestamp methods in PreparedStatement
+-- added support for lowercase patterns for TO_DATE etc.
+-- added support for VARCHAR string literals with sql.char_literal property
+-- improved MYS syntax mode for INSERT, REPLACE and ON DUPLICATE KEY UPDATE
+-- improved DB2 syntax mode for queries
+-- extensive review and improvement of transaction management in muti-threaded access
+-- fixed issue with user application Thread.interrupt disabling in-process database session
+-- fixed regression with interaction of FK constraints with ON DELETE CASCADE and NO ACTION
+-- fixed regression with opening database with CACHED table with files_readonly 
+-- fixed issue with SEQUENCE increment in multi-row inserts
+-- fixed issue with incorrect results in multiple LEFT JOIN with NATURAL or USING
+-- fixed issue with ClobInputStream 
+-- fixed issue with missing references to views used in routines
+-- fixed issue with .lobs file space reuse at CHECKPOINT
+-- fixed issue with readonly session blocking in MVLOCKS mode
+-- fixed several minor bugs
+
+28 June 2015 - version 2.3.3
+-- extensive review and improvement of concurrent updates
+-- fixed an issue with CHECKPOINT DEFRAG that could cause minor inconsistencies
+-- fixed a rarely occuring error immediately after CHECKPOINT
+-- fixed regression with comparison of TIMESTAMP values when one value is WITH TIME ZONE and the other WITHOUT
+-- fixed reporting of DISTINCT and DOMAIN types in JDBC DatabaseMetaData getColumns results
+-- fixed issue with new FK constraints, existing rows are now checked
+-- fixed restrictions with FK constraints with NO ACTION, all valid outcomes are now allowed
+-- fixed regression in 2.3.2, multiple rows with partial null values could not be inserted in UNIQUE indexes
+-- fixed issue with removal of IDENTITY when using ALTER COLUMN <name> <type>
+-- fixed issue with getExportedKeys reporting wrong DEFERABILITY
+-- fixed issue with CURRENT VALUE FOR usage
+-- fixed issue with LIKE with parametric escape character
+-- fixed an issue with CACHED table persistence
+-- fixed issue with TEMP table with ON COMMIT PRESERVE ROWS and RESULT MEMORY ROWS setting
+-- fixed several minor bugs
+-- improved usage of DECLARE CURSOR and DECLARE TABLE in SQL routines
+-- improved ORA, PGS, MSS and MYS syntax compatibility modes for CREATE TABLE and other statements
+-- added support for MYS syntax INSERT IGNORE, REPLACE and ON DUPLICATE KEY UPDATE
+-- added support for ALTER CONSTRAINT <name> RENAME TO <new name>
+-- added support for LIMIT in DELETE and UPDATE statements
+-- added support for DELETE in MERGE statement
+
 12 February 2014 - version 2.3.2
 -- fixed several minor issues
 -- fixed bug with incomplete rollback of MVCC transaction that inserts and updates the same row

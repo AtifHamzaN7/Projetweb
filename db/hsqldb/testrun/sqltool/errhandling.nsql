@@ -1,13 +1,11 @@
 /*
- * $Id: errhandling.nsql 610 2008-12-22 15:54:18Z unsaved $
+ * $Id: errhandling.nsql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Negative tests error handling inside of blocks and in subscripts.
  */
 
 * if (1)
-    *if (2)
-        \i errhandlingn.isql
-    *end if
+    *if (2) \i errhandlingn.isql
     worse;
 * end if 
 

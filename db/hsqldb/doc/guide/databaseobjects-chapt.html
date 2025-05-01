@@ -44,12 +44,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5243 $</p>
+<p class="releaseinfo">$Revision: 5576 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N10C61"></a>
-<p>Copyright 2009-2013 Fred Toussi. Permission is granted to
+<a name="N10C85"></a>
+<p>Copyright 2009-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -112,6 +112,9 @@
 </dt>
 <dt>
 <span class="section"><a href="databaseobjects-chapt.html#dbc_indexes">Indexes</a></span>
+</dt>
+<dt>
+<span class="section"><a href="databaseobjects-chapt.html#N10E7B">Synonyms</a></span>
 </dt>
 </dl>
 </dd>
@@ -205,7 +208,7 @@
 </div>
 <p>The persistent elements of an SQL environment are database objects.
     The database consists of catalogs plus authorizations.</p>
-<p>A catalog contains schemas, while schemas contain the objects that
+<p>A catalog contains schemas, and schemas contain the objects that
     contain data or govern the data.</p>
 <p>Each catalog contains a special schema called INFORMATION_SCHEMA.
     This schema is read-only and contains some views and other schema objects.
@@ -516,7 +519,7 @@
       &lt;name&gt;</code> expression. This expression can be used for
       inserting and updating table rows.</p>
 <div class="example">
-<a name="N10D36"></a>
+<a name="N10D5A"></a>
 <p class="title">
 <b>Example&nbsp;4.1.&nbsp;inserting the next sequence value into a table row</b>
 </p>
@@ -529,7 +532,7 @@
       to number the returned rows of a SELECT in sequential order, you can
       use:</p>
 <div class="example">
-<a name="N10D3D"></a>
+<a name="N10D61"></a>
 <p class="title">
 <b>Example&nbsp;4.2.&nbsp;numbering returned rows of a SELECT in sequential order</b>
 </p>
@@ -556,7 +559,7 @@
       returned by the sequence, the same value 15 is inserted in the three
       rows.</p>
 <div class="example">
-<a name="N10D49"></a>
+<a name="N10D6D"></a>
 <p class="title">
 <b>Example&nbsp;4.3.&nbsp;using the last value of a sequence</b>
 </p>
@@ -804,7 +807,7 @@
       values in different rows. The following example satisfies a UNIQUE
       constraint on the two columns</p>
 <div class="example">
-<a name="N10DE7"></a>
+<a name="N10E0B"></a>
 <p class="title">
 <b>Example&nbsp;4.4.&nbsp;Column values which satisfy a 2-column UNIQUE
         constraint</b>
@@ -932,6 +935,30 @@
       Standard. HyperSQL has a dedicated name-space for indexes in each
       schema.</p>
 </div>
+<div class="section" title="Synonyms">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title">
+<a name="N10E7B"></a>Synonyms</h3>
+</div>
+</div>
+</div>
+<p>Synonyms are user-defined names that refer to other schema
+      objects. Synonyms can be defined for TABLE, VIEW, SEQUENCE, PROCEDURE
+      and FUNCTION names and used in SELECT, UPDATE, CALL, etc. statements.
+      They cannot be used in DDL statements. Synonym are in schemas, but they
+      are used without a schema qualifier. When used, a synonym is immediately
+      translated to the target name and the target name is used in the actual
+      statement. The access privileges to the target object are
+      checked.</p>
+<pre class="programlisting"> CREATE SYNONYM REG FOR OTHER_SCHEMA.REGISTRATION_DETAIL_TABLE
+
+ SELECT R_ID, R_DATE FROM REG WHERE R_DATA &gt; CURRENT_DATE - 3 DAY
+</pre>
+<p>A synonym cannot be the same as the name of any existing object in
+      the schema.</p>
+</div>
 </div>
 <div class="section" title="Statements for Schema Definition and Manipulation">
 <div class="titlepage">
@@ -958,7 +985,7 @@
 <p>These elements and statements are used for different types of
       object. They are described here, before the statements that can use
       them.</p>
-<a name="N10E63" class="indexterm"></a>
+<a name="N10E90" class="indexterm"></a>
 <p>
 <span class="bold"><strong>identifier</strong></span>
 </p>
@@ -1036,7 +1063,7 @@
 </li>
 </ul>
 </div>
-<a name="N10EAC" class="indexterm"></a>
+<a name="N10ED9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CASCADE or RESTRICT</strong></span>
 </p>
@@ -1057,7 +1084,7 @@
       referencing objects are modified or dropped with cascading effect.
       Whether a referencing object is modified or dropped, depends on the kind
       of schema object that is dropped.</p>
-<a name="N10EC6" class="indexterm"></a>
+<a name="N10EF3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>IF EXISTS</strong></span>
 </p>
@@ -1073,7 +1100,23 @@
       sequences and indexes). If it is specified, then the statement does not
       return an error if the drop statement is issued on a non-existent
       object.</p>
-<a name="N10ED7" class="indexterm"></a>
+<a name="N10F04" class="indexterm"></a>
+<p>
+<span class="bold"><strong>IF NOT EXISTS</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>create condition (HyperSQL)</em></span>
+</p>
+<p>
+<code class="literal">&lt;if not exists clause&gt; ::= IF NOT
+      EXISTS</code>
+</p>
+<p>This clause is not part of the SQL standard and is a HyperSQL
+      extension to CREATE statements that create tables, views, sequences and
+      indexes, as well as ALTER TABLE ... ADD CONSTRAINT statements. If it is
+      specified, then the statement does not return an error if the create
+      statement is for an object name that already exists.</p>
+<a name="N10F15" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SPECIFIC</strong></span>
 </p>
@@ -1091,7 +1134,9 @@
 <p>This clause is used in statements that need to specify one of the
       multiple versions of an overloaded routine. The <code class="literal">&lt;specific
       name&gt;</code> is the one specified in the <code class="literal">&lt;routine
-      definition&gt;</code> statement.</p>
+      definition&gt;</code> statement. The keyword
+      <code class="literal">ROUTINE</code> can be used instead of either
+      <code class="literal">FUNCTION</code> or <code class="literal">PROCEDURE</code>.</p>
 </div>
 <div class="section" title="Renaming Objects">
 <div class="titlepage">
@@ -1102,7 +1147,7 @@
 </div>
 </div>
 </div>
-<a name="N10EF5" class="indexterm"></a>
+<a name="N10F3C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>RENAME</strong></span>
 </p>
@@ -1138,7 +1183,7 @@
 </div>
 </div>
 </div>
-<a name="N10F16" class="indexterm"></a>
+<a name="N10F5D" class="indexterm"></a>
 <p>
 <span class="bold"><strong>COMMENT</strong></span>
 </p>
@@ -1153,17 +1198,18 @@
 <p>Adds a comment to the object metadata, which can later be read
       from an INFORMATION_SCHEMA view. This command is not part of the SQL
       Standard. The strange syntax is due to compatibility with other database
-      engines that support the statement.<code class="literal"> The &lt;name&gt;</code>
+      engines that support the statement. The <code class="literal">&lt;name&gt;</code>
       is the name of a table, view, column or routine. The name of the column
       consists of dot-separated<code class="literal"> &lt;table name&gt; . &lt;column
       name&gt;</code>. The name of the table, view or routine can be a
       simple name. All names can be qualified with a schema name. If there is
       already a comment on the object, the new comment will replace it.</p>
 <p>The comments appear in the results returned by JDBC
-      DatabaseMetaData methods, getTables() and getColumns(). The
-      INFORMATION_SCHEMA.SYSTEM_COMMENTS view contains the comments. You can
-      query this view using the schema, table, and column names to retrieve
-      the comments.</p>
+      DatabaseMetaData methods, <code class="literal">getTables()</code> and
+      <code class="literal">getColumns()</code>. The
+      <code class="literal">INFORMATION_SCHEMA.SYSTEM_COMMENTS</code> view contains the
+      comments. You can query this view using the schema, table, and column
+      names to retrieve the comments.</p>
 </div>
 <div class="section" title="Schema Creation">
 <div class="titlepage">
@@ -1174,25 +1220,25 @@
 </div>
 </div>
 </div>
-<a name="N10F33" class="indexterm"></a>
+<a name="N10F83" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE SCHEMA</strong></span>
 </p>
 <p>
 <span class="emphasis"><em>schema definition</em></span>
 </p>
-<p>The CREATE_SCHEMA or DBA role is required in order to create a
-      schema. A schema can be created with or without schema objects. Schema
-      objects can always be added after creating the schema, or existing ones
-      can be dropped. Within the <code class="literal">&lt;schema definition&gt;</code>
-      statement, all schema object creation takes place inside the newly
-      created schema. Therefore, if a schema name is specified for the schema
-      objects, the name must match that of the new schema. In addition to
-      statements for creating schema objects, the statement can include
-      instances of <code class="literal">&lt;grant statement&gt;</code> and
-      <code class="literal">&lt;role definition&gt;</code>. This is a curious aspect of
-      the SQL standard, as these elements do not really belong to schema
-      creation.</p>
+<p>The <code class="literal">CREATE_SCHEMA</code> or <code class="literal">DBA</code>
+      role is required in order to create a schema. A schema can be created
+      with or without schema objects. Schema objects can always be added after
+      creating the schema, or existing ones can be dropped. Within the
+      <code class="literal">&lt;schema definition&gt;</code> statement, all schema
+      object creation takes place inside the newly created schema. Therefore,
+      if a schema name is specified for the schema objects, the name must
+      match that of the new schema. In addition to statements for creating
+      schema objects, the statement can include instances of
+      <code class="literal">&lt;grant statement&gt;</code> and <code class="literal">&lt;role
+      definition&gt;</code>. This is a curious aspect of the SQL standard,
+      as these elements do not really belong to schema creation.</p>
 <p>
 <code class="literal">&lt;schema definition&gt; ::= CREATE SCHEMA &lt;schema
       name clause&gt; [ &lt;schema character set specification&gt; ] [
@@ -1221,7 +1267,7 @@
       generator definition&gt; | &lt;grant statement&gt; | &lt;role
       definition&gt;</code>
 </p>
-<p>An example of the command is given below. Note that a single
+<p>An example of the statement is given below. Note that a single
       semicolon appears at the end. There should be no semicolon between the
       statements:</p>
 <pre class="programlisting"> CREATE SCHEMA ACCOUNTS AUTHORIZATION DBA
@@ -1234,7 +1280,7 @@
 <p>It is not really necessary to create a schema and all its objects
       as one command. The schema can be created first, and its objects can be
       created one by one.</p>
-<a name="N10F67" class="indexterm"></a>
+<a name="N10FBD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP SCHEMA</strong></span>
 </p>
@@ -1249,8 +1295,9 @@
 <p>This command destroys an existing schema. If <code class="literal">&lt;drop
       behavior&gt;</code> is <code class="literal">RESTRICT</code>, the schema must
       be empty, otherwise an error is raised. If <code class="literal">CASCADE</code> is
-      specified, then all the objects contained in the schema are destroyed
-      with a CASCADE option.</p>
+      specified as <code class="literal">&lt;drop behavior&gt;</code>, then all the
+      objects contained in the schema are destroyed with a CASCADE
+      option.</p>
 </div>
 <div class="section" title="Table Creation">
 <div class="titlepage">
@@ -1261,7 +1308,7 @@
 </div>
 </div>
 </div>
-<a name="N10F85" class="indexterm"></a>
+<a name="N10FDE" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE TABLE</strong></span>
 </p>
@@ -1270,9 +1317,9 @@
 </p>
 <p>
 <code class="literal">&lt;table definition&gt; ::= CREATE [ { &lt;table
-      scope&gt; | &lt;table type&gt; } ] TABLE &lt;table name&gt; &lt;table
-      contents source&gt; [ ON COMMIT { PRESERVE | DELETE } ROWS
-      ]</code>
+      scope&gt; | &lt;table type&gt; } ] TABLE [ IF NOT EXISTS ] &lt;table
+      name&gt; &lt;table contents source&gt; [ ON COMMIT { PRESERVE | DELETE }
+      ROWS ]</code>
 </p>
 <p>
 <code class="literal">&lt;table scope&gt; ::= { GLOBAL | LOCAL }
@@ -1359,7 +1406,7 @@
 <pre class="programlisting"> CREATE TABLE t (a, b, c) AS (SELECT * FROM atable) WITH DATA
 </pre>
 </div>
-<a name="N10FE9" class="indexterm"></a>
+<a name="N11042" class="indexterm"></a>
 <p>
 <span class="emphasis"><em>column definition</em></span>
 </p>
@@ -1373,8 +1420,9 @@
 <code class="literal">&lt;column definition&gt; ::= &lt;column name&gt; [
       &lt;data type or domain name&gt; ] [ &lt;default clause&gt; |
       &lt;identity column specification&gt; | &lt;identity column sequence
-      specification&gt; | &lt;generation clause&gt; ] [ &lt;column constraint
-      definition&gt;... ] [ &lt;collate clause&gt; ]</code>
+      specification&gt; | &lt;generation clause&gt; ] [ &lt;update clause&gt;
+      ] [ &lt;column constraint definition&gt;... ] [ &lt;collate clause&gt;
+      ]</code>
 </p>
 <p>
 <code class="literal">&lt;data type or domain name&gt; ::= &lt;data type&gt;
@@ -1399,7 +1447,10 @@
       then a UNIQUE or PRIMARY KEY constraint or an INDEX on the column will
       use the specified collation. Otherwise the default collation for the
       database is used.</p>
-<a name="N1101B" class="indexterm"></a>
+<a name="N11074" class="indexterm"></a>
+<p>
+<span class="bold"><strong>GENERATED</strong></span>
+</p>
 <p>
 <span class="emphasis"><em>generated columns</em></span>
 </p>
@@ -1494,7 +1545,7 @@
  INSERT INTO t (id, firstname, lastname, fullname) VALUES (2, 'Pink', 'Panther', DEFAULT)
 </pre>
 </div>
-<a name="N11069" class="indexterm"></a>
+<a name="N110C6" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DEFAULT</strong></span>
 </p>
@@ -1520,7 +1571,27 @@
 <p>In PGS (PostgreSQL) compatibility mode, a NEXTVAL function can be
       used. Also, in MSS compatibility mode, the default value can be enclosed
       in parentheses.</p>
-<a name="N11087" class="indexterm"></a>
+<a name="N110E4" class="indexterm"></a>
+<p>
+<span class="bold"><strong>ON UPDATE</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>on update clause</em></span>
+</p>
+<p>If a column has a <code class="literal">&lt;on update clause&gt;</code> then
+      every time an UPDATE or MERGE statement updates the values of the other
+      columns of the row, the value in this column is updated to the
+      CURRENT_TIMESTAMP. If the UPDATE statement explicitly updates this
+      column, then the explicit value is used instead of CURRENT
+      TIMESTAMP.</p>
+<p>
+<code class="literal">&lt;on update clause&gt; ::= ON UPDATE
+      CURRENT_TIMESTAMP</code>
+</p>
+<p>The type of the column must be TIMESTAMP or TIMESTAMP WITH TIME
+      ZONE.</p>
+<p>This feature is similar to MySQL's ON UPDATE clause.</p>
+<a name="N110FC" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CONSTRAINT</strong></span>
 </p>
@@ -1552,7 +1623,7 @@
       This feature of the SQL Standard has been criticised because it allows a
       session to read uncommitted data that violates database integrity
       constraints but has not yet been checked.</p>
-<a name="N110A7" class="indexterm"></a>
+<a name="N1111C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CONSTRAINT</strong></span>
 </p>
@@ -1573,7 +1644,7 @@
       (including PRIMARY KEY), FOREIGN KEY and CHECK. Each kind has its own
       rules to limit the values that can be specified for different columns in
       each row of the table.</p>
-<a name="N110BB" class="indexterm"></a><a name="N110C0" class="indexterm"></a>
+<a name="N11130" class="indexterm"></a><a name="N11135" class="indexterm"></a>
 <p>
 <span class="bold"><strong>UNIQUE</strong></span>
 </p>
@@ -1599,7 +1670,7 @@
       an implicit NOT NULL constraint.</p>
 <p>If <code class="literal">UNIQUE( VALUE )</code> is specified, the
       constraint created on all columns of the table.</p>
-<a name="N110DC" class="indexterm"></a>
+<a name="N11151" class="indexterm"></a>
 <p>
 <span class="bold"><strong>FOREIGN KEY</strong></span>
 </p>
@@ -1687,7 +1758,7 @@
       referencing rows to be set to NULL. Similarly, the SET DEFAULT option
       results in the columns of the referencing rows to be set to their
       default values.</p>
-<a name="N11127" class="indexterm"></a>
+<a name="N1119C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CHECK</strong></span>
 </p>
@@ -1729,7 +1800,7 @@
       inserted into the database belongs to the future (at the time of
       insertion), or any similar constraint, then use a TRIGGER with the
       desired condition.</p>
-<a name="N11150" class="indexterm"></a>
+<a name="N111C5" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP TABLE</strong></span>
 </p>
@@ -1761,7 +1832,7 @@
 </div>
 <p>Table manipulation statements change the attributes of tables or
       modify the objects such as columns and constraints.</p>
-<a name="N1116D" class="indexterm"></a>
+<a name="N111E2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE CLUSTERED</strong></span>
 </p>
@@ -1792,7 +1863,7 @@
       all future reordering of rows. Note that if extensive inserts or updates
       are performed on the tables, the rows will get out of order until the
       next reordering.</p>
-<a name="N11182" class="indexterm"></a>
+<a name="N111F7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE TYPE</strong></span>
 </p>
@@ -1807,7 +1878,7 @@
       and MEMORY types.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N11195" class="indexterm"></a>
+<a name="N1120A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE
       writeability</strong></span>
@@ -1823,7 +1894,7 @@
       by default. This statement can be used to change the property between
       <code class="literal">READ ONLY</code> and <code class="literal">READ WRITE</code>. This is
       a feature of HyperSQL.</p>
-<a name="N111AC" class="indexterm"></a>
+<a name="N11221" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE SOURCE</strong></span>
 </p>
@@ -2039,7 +2110,7 @@
 <pre class="programlisting"> SET TABLE mytable SOURCE 'myfile;fs=|;vs=.;vs=~'</pre>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N11238" class="indexterm"></a>
+<a name="N112AD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE SOURCE
       HEADER</strong></span>
@@ -2058,7 +2129,7 @@
       the first line of the source file of the text table. This line is not
       part of the table data. Only a user with the DBA role can execute this
       statement.</p>
-<a name="N1124C" class="indexterm"></a>
+<a name="N112C1" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE SOURCE
       on-off</strong></span>
@@ -2079,7 +2150,7 @@
       user to replace the file with a different file, or delete it. When ON is
       specified, the source file is read. Only a user with the DBA role can
       execute this statement</p>
-<a name="N1125D" class="indexterm"></a>
+<a name="N112D2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER TABLE</strong></span>
 </p>
@@ -2098,7 +2169,7 @@
 </p>
 <p>Change the definition of a table. Specific types of this
       statement are covered below.</p>
-<a name="N11271" class="indexterm"></a>
+<a name="N112E6" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ADD COLUMN</strong></span>
 </p>
@@ -2120,7 +2191,7 @@
       GENERATED. The column values for each row is then filled with the result
       of the <code class="literal">&lt;default clause&gt;</code> or the generated
       value.</p>
-<a name="N11293" class="indexterm"></a>
+<a name="N11308" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP COLUMN</strong></span>
 </p>
@@ -2140,7 +2211,7 @@
       specified. If <code class="literal">CASCADE</code> is specified, then any
       CONSTRAINT, VIEW or TRIGGER object that references the column is dropped
       with a cascading effect.</p>
-<a name="N112B3" class="indexterm"></a>
+<a name="N11328" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ADD CONSTRAINT</strong></span>
 </p>
@@ -2154,7 +2225,7 @@
 <p>Add a constraint to a table. The existing rows of the table
       must conform to the added constraint, otherwise the statement will not
       succeed.</p>
-<a name="N112C4" class="indexterm"></a>
+<a name="N11339" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP CONSTRAINT</strong></span>
 </p>
@@ -2176,7 +2247,7 @@
       relationship exists between these columns and the other columns in that
       query expression, then the VIEW or other schema object will be dropped
       when <code class="literal">CASCADE</code> is specified.</p>
-<a name="N112DE" class="indexterm"></a>
+<a name="N11353" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER COLUMN</strong></span>
 </p>
@@ -2198,7 +2269,7 @@
 <p>Change a column and its definition. Specific types of this
       statement are covered below. See also the RENAME statement
       above.</p>
-<a name="N112F2" class="indexterm"></a>
+<a name="N11367" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DEFAULT</strong></span>
 </p>
@@ -2211,7 +2282,7 @@
 </p>
 <p>Set the default clause for a column. This can be used if the
       column is not defined as GENERATED.</p>
-<a name="N11303" class="indexterm"></a>
+<a name="N11378" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP DEFAULT</strong></span>
 </p>
@@ -2223,7 +2294,7 @@
       DEFAULT</code>
 </p>
 <p>Drop the default clause from a column.</p>
-<a name="N11314" class="indexterm"></a>
+<a name="N11389" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATA TYPE</strong></span>
 </p>
@@ -2240,7 +2311,7 @@
       enlarge. HyperSQL allows changing the type if all the existing values
       can be cast into the new type without string truncation or loss of
       significant digits.</p>
-<a name="N11325" class="indexterm"></a>
+<a name="N1139A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>alter column add identity
       generator</strong></span>
@@ -2257,7 +2328,7 @@
       column must be an integral type and the existing values must not include
       nulls. This option is specific to HyperSQL</p>
 <pre class="programlisting"> ALTER TABLE mytable ALTER COLUMN id GENERATED ALWAYS AS IDENTITY (START WITH 20000)</pre>
-<a name="N11338" class="indexterm"></a>
+<a name="N113AD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>alter column identity
       generator</strong></span>
@@ -2281,7 +2352,7 @@
 <pre class="programlisting"> ALTER TABLE mytable ALTER COLUMN id RESTART WITH 1000
  ALTER TABLE mytable ALTER COLUMN id SET INCREMENT BY 5
 </pre>
-<a name="N1134E" class="indexterm"></a>
+<a name="N113C3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP GENERATED</strong></span>
 </p>
@@ -2297,7 +2368,7 @@
       option is specific to HyperSQL</p>
 <pre class="programlisting">  ALTER TABLE mytable ALTER COLUMN id DROP GENERATED
 </pre>
-<a name="N11361" class="indexterm"></a>
+<a name="N113D6" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET [ NOT ] NULL</strong></span>
 </p>
@@ -2320,7 +2391,7 @@
 </div>
 </div>
 </div>
-<a name="N11376" class="indexterm"></a>
+<a name="N113EB" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE VIEW</strong></span>
 </p>
@@ -2328,9 +2399,10 @@
 <span class="emphasis"><em>view definition</em></span>
 </p>
 <p>
-<code class="literal">&lt;view definition&gt; ::= CREATE VIEW &lt;table
-      name&gt; &lt;view specification&gt; AS &lt;query expression&gt; [ WITH [
-      CASCADED | LOCAL ] CHECK OPTION ]</code>
+<code class="literal">&lt;view definition&gt; ::= CREATE VIEW [ IF NOT
+      EXISTS ] &lt;table name&gt; &lt;view specification&gt; AS &lt;query
+      expression&gt; [ WITH [ CASCADED | LOCAL ] CHECK OPTION
+      ]</code>
 </p>
 <p>
 <code class="literal">&lt;view specification&gt; ::= [ &lt;left paren&gt;
@@ -2359,7 +2431,7 @@
       <code class="literal">&lt;query expression&gt;</code> of the view references
       another view, then the search condition of the underlying view should
       also be satisfied by the update or insert operation.</p>
-<a name="N113AA" class="indexterm"></a>
+<a name="N1141F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP VIEW</strong></span>
 </p>
@@ -2373,7 +2445,7 @@
 </p>
 <p>Destroy a view. The <code class="literal">&lt;drop behavior&gt;</code> is
       similar to dropping a table.</p>
-<a name="N113BE" class="indexterm"></a>
+<a name="N11433" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER VIEW</strong></span>
 </p>
@@ -2400,7 +2472,7 @@
 </div>
 </div>
 </div>
-<a name="N113D3" class="indexterm"></a>
+<a name="N11448" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE DOMAIN</strong></span>
 </p>
@@ -2429,7 +2501,7 @@
 <pre class="programlisting"> CREATE DOMAIN valid_string AS VARCHAR(20) DEFAULT 'NO VALUE' CHECK (value IS NOT NULL AND CHARACTER_LENGTH(value) &gt; 2) 
 </pre>
 </div>
-<a name="N113F0" class="indexterm"></a>
+<a name="N11465" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER DOMAIN</strong></span>
 </p>
@@ -2447,7 +2519,7 @@
       definition&gt;</code>
 </p>
 <p>Change a domain and its definition.</p>
-<a name="N11404" class="indexterm"></a>
+<a name="N11479" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DEFAULT</strong></span>
 </p>
@@ -2459,7 +2531,7 @@
       clause&gt;</code>
 </p>
 <p>Set the default value in a domain.</p>
-<a name="N11415" class="indexterm"></a>
+<a name="N1148A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP DEFAULT</strong></span>
 </p>
@@ -2471,7 +2543,7 @@
       DEFAULT</code>
 </p>
 <p>Remove the default clause of a domain.</p>
-<a name="N11426" class="indexterm"></a>
+<a name="N1149B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ADD CONSTRAINT</strong></span>
 </p>
@@ -2483,7 +2555,7 @@
       &lt;domain constraint&gt;</code>
 </p>
 <p>Add a constraint to a domain.</p>
-<a name="N11437" class="indexterm"></a>
+<a name="N114AC" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP CONSTRAINT</strong></span>
 </p>
@@ -2500,7 +2572,7 @@
       is a UNIQUE constraint which is referenced by a FOREIGN KEY constraint
       on another table, then the FOREIGN KEY constraint is also
       dropped.</p>
-<a name="N1144E" class="indexterm"></a>
+<a name="N114C3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP DOMAIN</strong></span>
 </p>
@@ -2526,7 +2598,7 @@
 </div>
 </div>
 </div>
-<a name="N11469" class="indexterm"></a>
+<a name="N114DE" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE TRIGGER</strong></span>
 </p>
@@ -2634,7 +2706,7 @@
       interface.</p>
 <p>HyperSQL do not yet allow the use of OLD TABLE or NEW TABLE in
       statement level trigger definitions.</p>
-<a name="N114D1" class="indexterm"></a>
+<a name="N11546" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP TRIGGER</strong></span>
 </p>
@@ -2656,7 +2728,7 @@
 </div>
 </div>
 </div>
-<a name="N114E6" class="indexterm"></a>
+<a name="N1155B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>schema routine</strong></span>
 </p>
@@ -2828,7 +2900,7 @@
 <p>Define an SQL-invoked routine. A few of the options are not used
       by HyperSQL and have default behaviours. See the <a class="link" href="sqlroutines-chapt.html" title="Chapter&nbsp;8.&nbsp;SQL-Invoked Routines">SQL-Invoked Routines</a> chapter for more details of
       various options and examples.</p>
-<a name="N11565" class="indexterm"></a>
+<a name="N115DA" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER routine</strong></span>
 </p>
@@ -2878,7 +2950,7 @@
   return str;
   END
 </pre>
-<a name="N11588" class="indexterm"></a>
+<a name="N115FD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP</strong></span>
 </p>
@@ -2900,7 +2972,7 @@
 </div>
 </div>
 </div>
-<a name="N1159D" class="indexterm"></a>
+<a name="N11612" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE SEQUENCE</strong></span>
 </p>
@@ -2909,8 +2981,8 @@
 </p>
 <p>
 <code class="literal">&lt;sequence generator definition&gt; ::= CREATE
-      SEQUENCE &lt;sequence generator name&gt; [ &lt;sequence generator
-      options&gt; ]</code>
+      SEQUENCE [ IF NOT EXISTS ] &lt;sequence generator name&gt; [
+      &lt;sequence generator options&gt; ]</code>
 </p>
 <p>
 <code class="literal">&lt;sequence generator options&gt; ::= &lt;sequence
@@ -2995,7 +3067,7 @@
 <p>The integer types: SMALLINT, INTEGER, BIGINT, DECIMAL and NUMERIC
       can be used as the type of the sequence. DECIMAL and NUMERIC types must
       have a scale of 0 and a precision not exceeding 18.</p>
-<a name="N115EC" class="indexterm"></a>
+<a name="N11661" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER SEQUENCE</strong></span>
 </p>
@@ -3033,7 +3105,7 @@
 <p>If RESTART is used by itself (without a value), then the current
       value of the sequence is reset to the start value. Otherwise, the
       current value is reset to the given restart value.</p>
-<a name="N1160E" class="indexterm"></a>
+<a name="N11683" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP SEQUENCE</strong></span>
 </p>
@@ -3060,7 +3132,7 @@
 </div>
 </div>
 </div>
-<a name="N1162A" class="indexterm"></a>
+<a name="N1169F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SQL procedure
       statement</strong></span>
@@ -3124,7 +3196,37 @@
 </div>
 </div>
 </div>
-<a name="N1164B" class="indexterm"></a>
+<a name="N116C0" class="indexterm"></a>
+<p>
+<span class="bold"><strong>CREATE SYNONYM</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>create synonym statement</em></span>
+</p>
+<p>
+<code class="literal">&lt;create synonym statement&gt; ::= CREATE SYNONYM
+      &lt;synonym name&gt; FOR &lt;target object name&gt;</code>
+</p>
+<p>Creates a synonym for the <code class="literal">&lt;target object
+      name&gt;</code>. The synonym is defined in the current schema, unless
+      the name is qualified with a different schema name. The target object
+      name can be a schema object in the current schema or in another schema.
+      The synonym can be used only without the schema name.</p>
+<a name="N116D4" class="indexterm"></a>
+<p>
+<span class="bold"><strong>DROP SYNONYM</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>drop synonym statement</em></span>
+</p>
+<p>
+<code class="literal">&lt;drop synonym statement&gt; ::= DROP SYNONYM
+      &lt;synonym name&gt;</code>
+</p>
+<p>Drops the synonym. The <code class="literal">&lt;synonym name&gt;</code> can
+      be the simple name of the synonym or qualified with the schema
+      name.</p>
+<a name="N116E8" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE INDEX</strong></span>
 </p>
@@ -3132,9 +3234,10 @@
 <span class="emphasis"><em>create index statement</em></span>
 </p>
 <p>
-<code class="literal">&lt;create index statement&gt; ::= CREATE INDEX
-      &lt;index name&gt; ON &lt;table name&gt; &lt;left paren&gt; {&lt;column
-      name&gt; [ASC | DESC]}, ... &lt;right paren&gt;</code>
+<code class="literal">&lt;create index statement&gt; ::= CREATE INDEX [ IF
+      NOT EXISTS ] &lt;index name&gt; ON &lt;table name&gt; &lt;left paren&gt;
+      {&lt;column name&gt; [ASC | DESC]}, ... &lt;right
+      paren&gt;</code>
 </p>
 <p>Creates an index on a group of columns of a table. The optional
       [ASC | DESC] specifies if the column is indexed in the ascending or
@@ -3144,7 +3247,7 @@
       not duplicate the columns of PRIMARY KEY, UNIQUE or FOREIGN key
       constraints as each of these constraints creates an index
       automatically.</p>
-<a name="N1165C" class="indexterm"></a>
+<a name="N116F9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP INDEX</strong></span>
 </p>
@@ -3156,7 +3259,7 @@
       EXISTS ] &lt;index name&gt; [ IF EXISTS ]</code>
 </p>
 <p>Destroy an index.</p>
-<a name="N1166D" class="indexterm"></a>
+<a name="N1170A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER INDEX</strong></span>
 </p>
@@ -3171,7 +3274,7 @@
 <p>Redefine an index with a new column list. This statement is
       more efficient than dropping an existing index and creating a new
       one.</p>
-<a name="N1167E" class="indexterm"></a>
+<a name="N1171B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE TYPE</strong></span>
 </p>
@@ -3193,7 +3296,7 @@
 </p>
 <p>Define a user-defined type. Currently only simple distinct
       types can be defined without further attributes.</p>
-<a name="N11695" class="indexterm"></a>
+<a name="N11732" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE CAST</strong></span>
 </p>
@@ -3220,7 +3323,7 @@
 </p>
 <p>Define a user-defined cast. This feature may be supported in a
       future versions of HyperSQL.</p>
-<a name="N116AF" class="indexterm"></a>
+<a name="N1174C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP CAST</strong></span>
 </p>
@@ -3234,7 +3337,7 @@
 </p>
 <p>Destroy a user-defined cast. This feature may be supported in a
       future versions of HyperSQL.</p>
-<a name="N116C0" class="indexterm"></a>
+<a name="N1175D" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE CHARACTER SET</strong></span>
 </p>
@@ -3257,7 +3360,7 @@
       CHARACTER SET. Currently this statement has no effect, as the character
       set used by HSQLDB is Unicode and there is no need for subset character
       sets.</p>
-<a name="N116D7" class="indexterm"></a>
+<a name="N11774" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP CHARACTER SET</strong></span>
 </p>
@@ -3272,7 +3375,7 @@
       referenced in any database object, the command fails. Note that
       <code class="literal">CASCADE</code> or <code class="literal">RESTRICT</code> cannot be
       specified for this command.</p>
-<a name="N116EE" class="indexterm"></a>
+<a name="N1178B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE COLLATION</strong></span>
 </p>
@@ -3305,7 +3408,7 @@
       FROM "French" NO PAD</code>, results in a French collation without
       padding. This collation can be used for sorting or for individual
       columns of tables.</p>
-<a name="N1170D" class="indexterm"></a>
+<a name="N117AA" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP COLLATION</strong></span>
 </p>
@@ -3320,7 +3423,7 @@
       behavior&gt;</code> is <code class="literal">CASCADE</code>, then all
       references to the collation revert to the default collation that would
       be in force if the dropped collation was not specified.</p>
-<a name="N11724" class="indexterm"></a>
+<a name="N117C1" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE TRANSLATION</strong></span>
 </p>
@@ -3356,7 +3459,7 @@
 </p>
 <p>Define a character transliteration. This feature may be supported
       in a future versions of HyperSQL.</p>
-<a name="N11744" class="indexterm"></a>
+<a name="N117E1" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP TRANSLATION</strong></span>
 </p>
@@ -3369,7 +3472,7 @@
 </p>
 <p>Destroy a character transliteration. This feature may be
       supported in a future versions of HyperSQL.</p>
-<a name="N11755" class="indexterm"></a>
+<a name="N117F2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE ASSERTION</strong></span>
 </p>
@@ -3384,7 +3487,7 @@
 </p>
 <p>Specify an integrity constraint. This feature may be supported
       in a future versions of HyperSQL.</p>
-<a name="N11766" class="indexterm"></a>
+<a name="N11803" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP ASSERTION</strong></span>
 </p>
@@ -3575,229 +3678,229 @@
 <p>The following views are defined by the SQL Standard and supported
       by HyperSQL. The columns and contents exactly match the Standard
       requirements.</p>
-<a name="N117CD" class="indexterm"></a>
+<a name="N1186A" class="indexterm"></a>
 <p>ADMINISTRABLE_ROLE_AUTHORIZATIONS</p>
 <p>Information on ROLE authorizations, all granted by the admin
       role.</p>
-<a name="N117D6" class="indexterm"></a>
+<a name="N11873" class="indexterm"></a>
 <p>APPLICABLE_ROLES</p>
 <p>Information on ROLE authorizations for the current user</p>
-<a name="N117DF" class="indexterm"></a>
+<a name="N1187C" class="indexterm"></a>
 <p>ASSERTIONS</p>
 <p>Empty view as ASSERTION objects are not yet supported.</p>
-<a name="N117E8" class="indexterm"></a>
+<a name="N11885" class="indexterm"></a>
 <p>AUTHORIZATIONS</p>
 <p>Top level information on USER and ROLE objects in the
       database</p>
-<a name="N117F1" class="indexterm"></a>
+<a name="N1188E" class="indexterm"></a>
 <p>CHARACTER_SETS</p>
 <p>List of supported CHARACTER SET objects</p>
-<a name="N117FA" class="indexterm"></a>
+<a name="N11897" class="indexterm"></a>
 <p>CHECK_CONSTRAINTS</p>
 <p>Additional information specific to each CHECK constraint,
       including the search condition</p>
-<a name="N11803" class="indexterm"></a>
+<a name="N118A0" class="indexterm"></a>
 <p>CHECK_CONSTRAINT_ROUTINE_USAGE</p>
 <p>Information on FUNCTION objects referenced in CHECK constraints
       search conditions</p>
-<a name="N1180C" class="indexterm"></a>
+<a name="N118A9" class="indexterm"></a>
 <p>COLLATIONS</p>
 <p>Information on collations supported by the database.</p>
-<a name="N11815" class="indexterm"></a>
+<a name="N118B2" class="indexterm"></a>
 <p>COLUMNS</p>
 <p>Information on COLUMN objects in TABLE and VIEW definitions</p>
-<a name="N1181E" class="indexterm"></a>
+<a name="N118BB" class="indexterm"></a>
 <p>COLUMN_COLUMN_USAGE</p>
 <p>Information on references to COLUMN objects from other, GENERATED,
       COLUMN objects</p>
-<a name="N11827" class="indexterm"></a>
+<a name="N118C4" class="indexterm"></a>
 <p>COLUMN_DOMAIN_USAGE</p>
 <p>Information on DOMAIN objects used in type definition of COLUMN
       objects</p>
-<a name="N11830" class="indexterm"></a>
+<a name="N118CD" class="indexterm"></a>
 <p>COLUMN_PRIVILEGES</p>
 <p>Information on privileges on each COLUMN object, granted to
       different ROLE and USER authorizations</p>
-<a name="N11839" class="indexterm"></a>
+<a name="N118D6" class="indexterm"></a>
 <p>COLUMN_UDT_USAGE</p>
 <p>Information on distinct TYPE objects used in type definition of
       COLUMN objects</p>
-<a name="N11842" class="indexterm"></a>
+<a name="N118DF" class="indexterm"></a>
 <p>CONSTRAINT_COLUMN_USAGE</p>
 <p>Information on COLUMN objects referenced by CONSTRAINT objects in
       the database</p>
-<a name="N1184B" class="indexterm"></a>
+<a name="N118E8" class="indexterm"></a>
 <p>CONSTRAINT_TABLE_USAGE</p>
 <p>Information on TABLE and VIEW objects referenced by CONSTRAINT
       objects in the database</p>
-<a name="N11854" class="indexterm"></a>
+<a name="N118F1" class="indexterm"></a>
 <p>DATA_TYPE_PRIVILEGES</p>
 <p>Information on top level schema objects of various kinds that
       reference TYPE objects</p>
-<a name="N1185D" class="indexterm"></a>
+<a name="N118FA" class="indexterm"></a>
 <p>DOMAINS</p>
 <p>Top level information on DOMAIN objects in the database.</p>
-<a name="N11866" class="indexterm"></a>
+<a name="N11903" class="indexterm"></a>
 <p>DOMAIN_CONSTRAINTS</p>
 <p>Information on CONSTRAINT definitions used for DOMAIN
       objects</p>
-<a name="N1186F" class="indexterm"></a>
+<a name="N1190C" class="indexterm"></a>
 <p>ELEMENT_TYPES</p>
 <p>Information on the type of elements of ARRAY used in database
       columns or routine parameters and return values</p>
-<a name="N11878" class="indexterm"></a>
+<a name="N11915" class="indexterm"></a>
 <p>ENABLED_ROLES</p>
 <p>Information on ROLE privileges enabled for the current
       session</p>
-<a name="N11881" class="indexterm"></a>
+<a name="N1191E" class="indexterm"></a>
 <p>INFORMATION_SCHEMA_CATALOG_NAME</p>
 <p>Information on the single CATALOG object of the database</p>
-<a name="N1188A" class="indexterm"></a>
+<a name="N11927" class="indexterm"></a>
 <p>KEY_COLUMN_USAGE</p>
 <p>Information on COLUMN objects of tables that are used by PRIMARY
       KEY, UNIQUE and FOREIGN KEY constraints</p>
-<a name="N11893" class="indexterm"></a>
+<a name="N11930" class="indexterm"></a>
 <p>PARAMETERS</p>
 <p>Information on parameters of each FUNCTION or PROCEDURE</p>
-<a name="N1189C" class="indexterm"></a>
+<a name="N11939" class="indexterm"></a>
 <p>REFERENTIAL_CONSTRAINTS</p>
 <p>Additional information on FOREIGN KEY constraints, including
       triggered action and name of UNIQUE constraint they refer to</p>
-<a name="N118A5" class="indexterm"></a>
+<a name="N11942" class="indexterm"></a>
 <p>ROLE_AUTHORIZATION_DESCRIPTORS</p>
-<a name="N118AC" class="indexterm"></a>
+<a name="N11949" class="indexterm"></a>
 <p>ROLE_COLUMN_GRANTS</p>
 <p>Information on privileges on COLUMN objects granted to or by the
       current session roles</p>
-<a name="N118B5" class="indexterm"></a>
+<a name="N11952" class="indexterm"></a>
 <p>ROLE_ROUTINE_GRANTS</p>
 <p>Information on privileges on FUNCTION and PROCEDURE objects
       granted to or by the current session roles</p>
-<a name="N118BE" class="indexterm"></a>
+<a name="N1195B" class="indexterm"></a>
 <p>ROLE_TABLE_GRANTS</p>
 <p>Information on privileges on TABLE and VIEW objects granted to or
       by the current session roles</p>
-<a name="N118C7" class="indexterm"></a>
+<a name="N11964" class="indexterm"></a>
 <p>ROLE_UDT_GRANTS</p>
 <p>Information on privileges on TYPE objects granted to or by the
       current session roles</p>
-<a name="N118D0" class="indexterm"></a>
+<a name="N1196D" class="indexterm"></a>
 <p>ROLE_USAGE_GRANTS</p>
 <p>Information on privileges on USAGE privileges granted to or by the
       current session roles</p>
-<a name="N118D9" class="indexterm"></a>
+<a name="N11976" class="indexterm"></a>
 <p>ROUTINE_COLUMN_USAGE</p>
 <p>Information on COLUMN objects of different tables that are
       referenced in FUNCTION and PROCEDURE definitions</p>
-<a name="N118E2" class="indexterm"></a>
+<a name="N1197F" class="indexterm"></a>
 <p>ROUTINE_JAR_USAGE</p>
 <p>Information on JAR usage by Java language FUNCTION and PROCEDURE
       objects.</p>
-<a name="N118EB" class="indexterm"></a>
+<a name="N11988" class="indexterm"></a>
 <p>ROUTINE_PRIVILEGES</p>
 <p>Information on EXECUTE privileges granted on PROCEDURE and
       FUNCTION objects</p>
-<a name="N118F4" class="indexterm"></a>
+<a name="N11991" class="indexterm"></a>
 <p>ROUTINE_ROUTINE_USAGE</p>
 <p>Information on PROCEDURE and FUNCTION objects that are referenced
       in FUNCTION and PROCEDURE definitions</p>
-<a name="N118FD" class="indexterm"></a>
+<a name="N1199A" class="indexterm"></a>
 <p>ROUTINE_SEQUENCE_USAGE</p>
 <p>Information on SEQUENCE objects that are referenced in FUNCTION
       and PROCEDURE definitions</p>
-<a name="N11906" class="indexterm"></a>
+<a name="N119A3" class="indexterm"></a>
 <p>ROUTINE_TABLE_USAGE</p>
 <p>Information on TABLE and VIEW objects that are referenced in
       FUNCTION and PROCEDURE definitions</p>
-<a name="N1190F" class="indexterm"></a>
+<a name="N119AC" class="indexterm"></a>
 <p>ROUTINES</p>
 <p>Top level information on all PROCEDURE and FUNCTION objects in the
       database</p>
-<a name="N11918" class="indexterm"></a>
+<a name="N119B5" class="indexterm"></a>
 <p>SCHEMATA</p>
 <p>Information on all the SCHEMA objects in the database</p>
-<a name="N11921" class="indexterm"></a>
+<a name="N119BE" class="indexterm"></a>
 <p>SEQUENCES</p>
 <p>Information on SEQUENCE objects</p>
-<a name="N1192A" class="indexterm"></a>
+<a name="N119C7" class="indexterm"></a>
 <p>SQL_FEATURES</p>
 <p>List of all SQL:2008 standard features, including information on
       whether they are supported or not supported by HyperSQL</p>
-<a name="N11933" class="indexterm"></a>
+<a name="N119D0" class="indexterm"></a>
 <p>SQL_IMPLEMENTATION_INFO</p>
 <p>Information on name, capabilities and defaults of the database
       engine software.</p>
-<a name="N1193C" class="indexterm"></a>
+<a name="N119D9" class="indexterm"></a>
 <p>SQL_PACKAGES</p>
 <p>List of the SQL:2008 Standard packages, including information on
       whether they are supported or not supported by HyperSQL</p>
-<a name="N11945" class="indexterm"></a>
+<a name="N119E2" class="indexterm"></a>
 <p>SQL_PARTS</p>
 <p>List of the SQL:2008 Standard parts, including information on
       whether they are supported or not supported by HyperSQL</p>
-<a name="N1194E" class="indexterm"></a>
+<a name="N119EB" class="indexterm"></a>
 <p>SQL_SIZING</p>
 <p>List of the SQL:2008 Standard maximum supported sizes for
       different features as supported by HyperSQL</p>
-<a name="N11957" class="indexterm"></a>
+<a name="N119F4" class="indexterm"></a>
 <p>SQL_SIZING_PROFILES</p>
-<a name="N1195E" class="indexterm"></a>
+<a name="N119FB" class="indexterm"></a>
 <p>TABLES</p>
 <p>Information on all TABLE and VIEW object, including the
       INFORMATION_SCHEMA views themselves</p>
-<a name="N11967" class="indexterm"></a>
+<a name="N11A04" class="indexterm"></a>
 <p>TABLE_CONSTRAINTS</p>
 <p>Information on all table level constraints, including PRIMARY KEY,
       UNIQUE, FOREIGN KEY and CHECK constraints</p>
-<a name="N11970" class="indexterm"></a>
+<a name="N11A0D" class="indexterm"></a>
 <p>TABLE_PRIVILEGES</p>
 <p>Information on privileges on TABLE and VIEW objects owned or given
       to the current user</p>
-<a name="N11979" class="indexterm"></a>
+<a name="N11A16" class="indexterm"></a>
 <p>TRANSLATIONS</p>
-<a name="N11980" class="indexterm"></a>
+<a name="N11A1D" class="indexterm"></a>
 <p>TRIGGERED_UPDATE_COLUMNS</p>
 <p>Information on columns that have been used in TRIGGER definitions
       in the ON UPDATE clause</p>
-<a name="N11989" class="indexterm"></a>
+<a name="N11A26" class="indexterm"></a>
 <p>TRIGGERS</p>
 <p>Top level information on the TRIGGER definitions in the
       databases</p>
-<a name="N11992" class="indexterm"></a>
+<a name="N11A2F" class="indexterm"></a>
 <p>TRIGGER_COLUMN_USAGE</p>
 <p>Information on COLUMN objects that have been referenced in the
       body of TRIGGER definitions</p>
-<a name="N1199B" class="indexterm"></a>
+<a name="N11A38" class="indexterm"></a>
 <p>TRIGGER_ROUTINE_USAGE</p>
 <p>Information on FUNCTION and PROCEDURE objects that have been used
       in TRIGGER definitions</p>
-<a name="N119A4" class="indexterm"></a>
+<a name="N11A41" class="indexterm"></a>
 <p>TRIGGER_SEQUENCE_USAGE</p>
 <p>Information on SEQUENCE objects that been referenced in TRIGGER
       definitions</p>
-<a name="N119AD" class="indexterm"></a>
+<a name="N11A4A" class="indexterm"></a>
 <p>TRIGGER_TABLE_USAGE</p>
 <p>Information on TABLE and VIEW objects that have been referenced in
       TRIGGER definitions</p>
-<a name="N119B6" class="indexterm"></a>
+<a name="N11A53" class="indexterm"></a>
 <p>USAGE_PRIVILEGES</p>
 <p>Information on USAGE privileges granted to or owned by the current
       user</p>
-<a name="N119BF" class="indexterm"></a>
+<a name="N11A5C" class="indexterm"></a>
 <p>USER_DEFINED_TYPES</p>
 <p>Top level information on TYPE objects in the database</p>
-<a name="N119C8" class="indexterm"></a>
+<a name="N11A65" class="indexterm"></a>
 <p>VIEWS</p>
 <p>Top Level information on VIEW objects in the database</p>
-<a name="N119D1" class="indexterm"></a>
+<a name="N11A6E" class="indexterm"></a>
 <p>VIEW_COLUMN_USAGE</p>
 <p>Information on COLUMN objects referenced in the query expressions
       of the VIEW objects</p>
-<a name="N119DA" class="indexterm"></a>
+<a name="N11A77" class="indexterm"></a>
 <p>VIEW_ROUTINE_USAGE</p>
 <p>Information on FUNCTION and PROCEDURE objects that have been used
       in the query expressions of the VIEW objects</p>
-<a name="N119E3" class="indexterm"></a>
+<a name="N11A80" class="indexterm"></a>
 <p>VIEW_TABLE_USAGE</p>
 <p>Information on TABLE and VIEW objects that have been referenced in
       the query expressions of the VIEW objects</p>
@@ -3814,93 +3917,93 @@
         views are used directly by JDBC DatabaseMetaData method calls and are
         indicated as such. Some views contain information that is specific to
         HyperSQL and is not covered by the SQL Standard views.</p>
-<a name="N119F2" class="indexterm"></a>
+<a name="N11A8F" class="indexterm"></a>
 <p>SYSTEM_BESTROWIDENTIFIER</p>
 <p>For DatabaseMetaData.getBestRowIdentifier</p>
-<a name="N119FB" class="indexterm"></a>
+<a name="N11A98" class="indexterm"></a>
 <p>SYSTEM_CACHEINFO</p>
 <p>Contains the current settings and variables of the data cache
         used for all CACHED tables, and the data cache of each TEXT
         table.</p>
-<a name="N11A04" class="indexterm"></a>
+<a name="N11AA1" class="indexterm"></a>
 <p>SYSTEM_COLUMN_SEQUENCE_USAGE</p>
 <p>Contains a row for each column that is defined as GENERATED BY
         DEFAULT AS SEQUENCE with the column name and sequence name</p>
-<a name="N11A0D" class="indexterm"></a>
+<a name="N11AAA" class="indexterm"></a>
 <p>SYSTEM_COLUMNS</p>
 <p>For DatabaseMetaData.getColumns, contains a row for each
         column</p>
-<a name="N11A16" class="indexterm"></a>
+<a name="N11AB3" class="indexterm"></a>
 <p>SYSTEM_COMMENTS</p>
 <p>Contains the user-defined comments added to tables and their
         columns.</p>
-<a name="N11A1F" class="indexterm"></a>
+<a name="N11ABC" class="indexterm"></a>
 <p>SYSTEM_CONNECTION_PROPERTIES</p>
 <p>For DatabaseMetaData.getClientInfoProperties</p>
-<a name="N11A28" class="indexterm"></a>
+<a name="N11AC5" class="indexterm"></a>
 <p>SYSTEM_CROSSREFERENCE</p>
 <p>Full list of all columns referenced by FOREIGN KEY constraints.
         For DatabaseMetaData.getCrossReference, getExportedKeys and
         getImportedKeys.</p>
-<a name="N11A31" class="indexterm"></a>
+<a name="N11ACE" class="indexterm"></a>
 <p>SYSTEM_INDEXINFO</p>
 <p>For DatabaseMetaData.getIndexInfo</p>
-<a name="N11A3A" class="indexterm"></a>
+<a name="N11AD7" class="indexterm"></a>
 <p>SYSTEM_PRIMARYKEYS</p>
 <p>For DatabaseMetaData.getPrimaryKeys</p>
-<a name="N11A43" class="indexterm"></a>
+<a name="N11AE0" class="indexterm"></a>
 <p>SYSTEM_PROCEDURECOLUMNS</p>
 <p>For DatabaseMetaData.getProcedureColumns</p>
-<a name="N11A4C" class="indexterm"></a>
+<a name="N11AE9" class="indexterm"></a>
 <p>SYSTEM_PROCEDURES</p>
 <p>For DatabaseMetaData.getFunctionColumns, getFunctions and
         getProcedures</p>
-<a name="N11A55" class="indexterm"></a>
+<a name="N11AF2" class="indexterm"></a>
 <p>SYSTEM_PROPERTIES</p>
 <p>Contains the current values of all the database level
         properties. Settings such as SQL rule enforcement, database
         transaction model and default transaction level are all reported in
-        this view. The names of the properties are listed in the <a class="link" href="dbproperties-chapt.html" title="Chapter&nbsp;12.&nbsp;Properties">Properties</a> chapter together with the
+        this view. The names of the properties are listed in the <a class="link" href="dbproperties-chapt.html" title="Chapter&nbsp;13.&nbsp;Properties">Properties</a> chapter together with the
         corresponding SQL statements used to change the properties.</p>
-<a name="N11A63" class="indexterm"></a>
+<a name="N11B00" class="indexterm"></a>
 <p>SYSTEM_SCHEMAS</p>
 <p>For DatabaseMetaData.getSchemas</p>
-<a name="N11A6C" class="indexterm"></a>
+<a name="N11B09" class="indexterm"></a>
 <p>SYSTEM_SEQUENCES</p>
-<a name="N11A73" class="indexterm"></a>
+<a name="N11B10" class="indexterm"></a>
 <p>SYSTEM_SESSIONINFO</p>
 <p>Information on the settings and properties of the current
         session.</p>
-<a name="N11A7C" class="indexterm"></a>
+<a name="N11B19" class="indexterm"></a>
 <p>SYSTEM_SESSIONS</p>
 <p>Information on all open sessions in the database (when used by a
         DBA user), or just the current session. Includes the current
         transaction state of each session.</p>
-<a name="N11A85" class="indexterm"></a>
+<a name="N11B22" class="indexterm"></a>
 <p>SYSTEM_TABLES</p>
 <p>Information on tables and views for
         DatabaseMetaData.getTables</p>
-<a name="N11A8E" class="indexterm"></a>
+<a name="N11B2B" class="indexterm"></a>
 <p>SYSTEM_TABLESTATS</p>
 <p>Information on table spaces and cardinality for each
         table</p>
-<a name="N11A97" class="indexterm"></a>
+<a name="N11B34" class="indexterm"></a>
 <p>SYSTEM_TABLETYPES</p>
 <p>For DatabaseMetaData.getTableTypes</p>
-<a name="N11AA0" class="indexterm"></a>
+<a name="N11B3D" class="indexterm"></a>
 <p>SYSTEM_TEXTTABLES</p>
 <p>Information on the settings of each text table.</p>
-<a name="N11AA9" class="indexterm"></a>
+<a name="N11B46" class="indexterm"></a>
 <p>SYSTEM_TYPEINFO</p>
 <p>For DatabaseMetaData.getTypeInfo</p>
-<a name="N11AB2" class="indexterm"></a>
+<a name="N11B4F" class="indexterm"></a>
 <p>SYSTEM_UDTS</p>
 <p>For DatabaseMetaData.getUDTs</p>
-<a name="N11ABB" class="indexterm"></a>
+<a name="N11B58" class="indexterm"></a>
 <p>SYSTEM_USERS</p>
 <p>Contains the list of all users in the database (when used by a
         DBA user), or just the current user.</p>
-<a name="N11AC4" class="indexterm"></a>
+<a name="N11B61" class="indexterm"></a>
 <p>SYSTEM_VERSIONCOLUMNS</p>
 <p>For DatabaseMetaData.getVersionColumns</p>
 </div>
@@ -3908,7 +4011,7 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">

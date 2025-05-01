@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
 
 package org.hsqldb.persist;
 
-import org.hsqldb.HsqlException;
 import org.hsqldb.Row;
 import org.hsqldb.RowAction;
 import org.hsqldb.Session;
@@ -51,9 +50,11 @@ public abstract class SimpleStore implements PersistentStore {
 
     public DataFileCache        cache;
     protected TableSpaceManager spaceManager;
-    long                        storageSize;
     protected int               defaultObjectSize;
 
+    public boolean isRowStore() {
+        return false;
+    }
     public void set(CachedObject object) {}
 
     public CachedObject get(long i) {
@@ -92,7 +93,7 @@ public abstract class SimpleStore implements PersistentStore {
     }
 
     public CachedObject getNewCachedObject(Session session, Object object,
-                                           boolean tx) throws HsqlException {
+                                           boolean tx) {
         throw Error.runtimeError(ErrorCode.U_S0500, "PersistentStore");
     }
 
@@ -149,16 +150,15 @@ public abstract class SimpleStore implements PersistentStore {
 
     public void setElementCount(Index key, long size, long uniqueSize) {}
 
-    public void setAccessor(Index key, long accessor) {}
-
     public void setAccessor(Index key, CachedObject accessor) {}
+
+    public void setAccessor(Index key, long accessor) {}
 
     public boolean hasNull(int pos) {
         return false;
     }
 
-    public void resetAccessorKeys(Session session,
-                                  Index[] keys) throws HsqlException {}
+    public void resetAccessorKeys(Session session, Index[] keys) {}
 
     public void setMemory(boolean mode) {}
 
@@ -168,16 +168,12 @@ public abstract class SimpleStore implements PersistentStore {
         return object;
     }
 
-    public void indexRow(Session session, Row row) throws HsqlException {}
+    public void indexRow(Session session, Row row) {}
 
-    public void indexRows(Session session) throws HsqlException {}
+    public void indexRows(Session session) {}
 
     public RowIterator rowIterator() {
         return null;
-    }
-
-    public int getAccessCount() {
-        return 0;
     }
 
     public Index[] getAccessorKeys() {
@@ -190,6 +186,10 @@ public abstract class SimpleStore implements PersistentStore {
                          int adjust) {}
 
     public void setReadOnly(boolean readonly) {}
+
+    public void readLock() {}
+
+    public void readUnlock() {}
 
     public void writeLock() {}
 

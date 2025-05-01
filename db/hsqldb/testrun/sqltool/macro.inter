@@ -1,5 +1,5 @@
 /*
- * $Id: macro.inter 610 2008-12-22 15:54:18Z unsaved $
+ * $Id: macro.inter 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests interactive macro commands /...
  *
@@ -30,12 +30,8 @@ SELECT count(*) FROM t
 
 /q i > 3;
 
-* if (*? != 2)
-    \q Query returned *{?} rows, should have returned 2.
-* end if
+* if (*? != 2) \q Query returned *{?} rows, should have returned 2.
 
 /q i > 2
 :;
-* if (*? != 3)
-    \q Query returned *{?} rows, should have returned 3.
-* end if
+* if (*? != 3) \q Query returned *{?} rows, should have returned 3.

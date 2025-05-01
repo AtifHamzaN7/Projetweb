@@ -1,10 +1,10 @@
 /**
- * $Id: build-dist.gradle 5357 2014-02-13 22:14:26Z unsaved $
+ * $Id: build-dist.gradle 5457 2015-04-09 01:11:00Z unsaved $
  *
  * Invoke this build file with Gradle's -b switch for zip and jar
  * distribution building.
  *
- * Unfortunately, it is impractical to encpsulate all of the needed processing
+ * Unfortunately, it is impractical to encpasulate all of the needed processing
  * here, so there is some tight coupling between this file and "build.gradle".
  * (This file loads/applies "build.gradle").
  *

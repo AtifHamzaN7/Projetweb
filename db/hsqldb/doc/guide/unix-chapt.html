@@ -1,40 +1,40 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Chapter&nbsp;14.&nbsp;HyperSQL on UNIX</title>
+<title>Chapter&nbsp;15.&nbsp;HyperSQL on UNIX</title>
 <link href="../docbook.css" type="text/css" rel="stylesheet">
 <meta content="DocBook XSL-NS Stylesheets V1.76.1" name="generator">
 <meta name="keywords" content="HSQLDB, HyperSQL, UNIX, Linux, HOWTO">
 <meta name="keywords" content="Hsqldb, HyperSQL, Database, JDBC, Java">
 <link rel="home" href="index.html" title="HyperSQL User Guide">
 <link rel="up" href="index.html" title="HyperSQL User Guide">
-<link rel="prev" href="listeners-chapt.html" title="Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners (Servers)">
-<link rel="next" href="deployment-chapt.html" title="Chapter&nbsp;15.&nbsp;Deployment Guide">
+<link rel="prev" href="listeners-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners (Servers)">
+<link rel="next" href="deployment-chapt.html" title="Chapter&nbsp;16.&nbsp;Deployment Guide">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navheader">
 <table summary="Navigation header" width="100%">
 <tr>
-<td align="left" width="30%"><a accesskey="p" href="listeners-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;14.&nbsp;HyperSQL on UNIX</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="deployment-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
+<td align="left" width="30%"><a accesskey="p" href="listeners-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;15.&nbsp;HyperSQL on UNIX</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="deployment-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="30%">Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners
-    (Servers)&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;15.&nbsp;Deployment Guide</td>
+<td valign="top" align="left" width="30%">Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners
+    (Servers)&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;16.&nbsp;Deployment Guide</td>
 </tr>
 </table>
 </div>
 <HR>
-<div class="chapter" title="Chapter&nbsp;14.&nbsp;HyperSQL on UNIX">
+<div class="chapter" title="Chapter&nbsp;15.&nbsp;HyperSQL on UNIX">
 <div class="titlepage">
 <div>
 <div>
 <h2 class="title">
-<a name="unix-chapt"></a>Chapter&nbsp;14.&nbsp;HyperSQL on UNIX</h2>
+<a name="unix-chapt"></a>Chapter&nbsp;15.&nbsp;HyperSQL on UNIX</h2>
 </div>
 <div>
 <h3 class="subtitle">
-<i>How to quickly get a HyperSQL (aka HSQLDB) Listener up and
-    running on UNIX, including Mac OS X</i>
+<i>How to quickly get a HyperSQL Listener up and running on UNIX,
+    including Mac OS X</i>
 </h3>
 </div>
 <div>
@@ -49,10 +49,10 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5212 $</p>
+<p class="releaseinfo">$Revision: 5582 $</p>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -303,10 +303,10 @@
     the <a class="link" href="unix-chapt.html#uxc_cat_setup" title="Setting up a HyperSQL Persistent Database Catalog and a HyperSQL Network Listener"> next section of this
     document</a>. Otherwise build a new
     <code class="filename">hsqldb.jar</code>.</p>
-<div class="procedure" title="Procedure&nbsp;14.1.&nbsp;Building hsqldb.jar">
-<a name="N160FB"></a>
+<div class="procedure" title="Procedure&nbsp;15.1.&nbsp;Building hsqldb.jar">
+<a name="N163E4"></a>
 <p class="title">
-<b>Procedure&nbsp;14.1.&nbsp;Building hsqldb.jar</b>
+<b>Procedure&nbsp;15.1.&nbsp;Building hsqldb.jar</b>
 </p>
 <ol class="procedure" type="1">
 <li class="step" title="Step 1">
@@ -783,7 +783,7 @@ password
 </div>
 </div>
 </div>
-<a name="N1624A" class="indexterm"></a>
+<a name="N16533" class="indexterm"></a>
 <p>You can, of course, run HSQLDB through inittab on System V
     UNIXes, but usually an init script is more convenient and manageable. This
     section explains how to set up and use our UNIX init script. Our init
@@ -906,9 +906,9 @@ password
           catalog. You must supply for this catalog, a hsql: JDBC URL, an
           administrative user name, and the password.</p>
 <div class="example">
-<a name="N162C6"></a>
+<a name="N165AF"></a>
 <p class="title">
-<b>Example&nbsp;14.1.&nbsp;example sqltool.rc stanza</b>
+<b>Example&nbsp;15.1.&nbsp;example sqltool.rc stanza</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting"> urlid localhostdb1
@@ -1243,7 +1243,7 @@ URLIDS='localhostdb1'
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">
@@ -1251,8 +1251,8 @@ URLIDS='localhostdb1'
 <td align="left" width="40%"><a accesskey="p" href="listeners-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;<a accesskey="n" href="deployment-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="40%">Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners
-    (Servers)&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;15.&nbsp;Deployment Guide</td>
+<td valign="top" align="left" width="40%">Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners
+    (Servers)&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;16.&nbsp;Deployment Guide</td>
 </tr>
 </table>
 </div>

@@ -1,34 +1,34 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Chapter&nbsp;15.&nbsp;Deployment Guide</title>
+<title>Chapter&nbsp;16.&nbsp;Deployment Guide</title>
 <link href="../docbook.css" type="text/css" rel="stylesheet">
 <meta content="DocBook XSL-NS Stylesheets V1.76.1" name="generator">
 <meta name="keywords" content="Hsqldb, HyperSQL, SQL">
 <meta name="keywords" content="Hsqldb, HyperSQL, Database, JDBC, Java">
 <link rel="home" href="index.html" title="HyperSQL User Guide">
 <link rel="up" href="index.html" title="HyperSQL User Guide">
-<link rel="prev" href="unix-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL on UNIX">
+<link rel="prev" href="unix-chapt.html" title="Chapter&nbsp;15.&nbsp;HyperSQL on UNIX">
 <link rel="next" href="lists-app.html" title="Appendix&nbsp;A.&nbsp;Lists of Keywords">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navheader">
 <table summary="Navigation header" width="100%">
 <tr>
-<td align="left" width="30%"><a accesskey="p" href="unix-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;15.&nbsp;Deployment Guide</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="lists-app.html"><img src="../images/db/next.png" alt="Next"></a></td>
+<td align="left" width="30%"><a accesskey="p" href="unix-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;16.&nbsp;Deployment Guide</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="lists-app.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="30%">Chapter&nbsp;14.&nbsp;HyperSQL on UNIX&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Appendix&nbsp;A.&nbsp;Lists of Keywords</td>
+<td valign="top" align="left" width="30%">Chapter&nbsp;15.&nbsp;HyperSQL on UNIX&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Appendix&nbsp;A.&nbsp;Lists of Keywords</td>
 </tr>
 </table>
 </div>
 <HR>
-<div class="chapter" title="Chapter&nbsp;15.&nbsp;Deployment Guide">
+<div class="chapter" title="Chapter&nbsp;16.&nbsp;Deployment Guide">
 <div class="titlepage">
 <div>
 <div>
 <h2 class="title">
-<a name="deployment-chapt"></a>Chapter&nbsp;15.&nbsp;Deployment Guide</h2>
+<a name="deployment-chapt"></a>Chapter&nbsp;16.&nbsp;Deployment Guide</h2>
 </div>
 <div>
 <div class="authorgroup">
@@ -44,12 +44,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5256 $</p>
+<p class="releaseinfo">$Revision: 5581 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N163B2"></a>
-<p>Copyright 2002-2013 Fred Toussi. Permission is granted to
+<a name="N1669B"></a>
+<p>Copyright 2002-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -172,7 +172,7 @@
 </div>
 </div>
 </div>
-<a name="N163B9" class="indexterm"></a>
+<a name="N166A2" class="indexterm"></a>
 <p>Memory used by the program can be thought of as two distinct pools:
     memory used for table data which is not released unless the data is
     deleted and memory that can be released or is released automatically,
@@ -353,9 +353,9 @@
       change the lob schema storage to CACHED tables with the following
       statements:</p>
 <div class="example">
-<a name="N16428"></a>
+<a name="N16711"></a>
 <p class="title">
-<b>Example&nbsp;15.1.&nbsp;Using CACHED tables for the LOB schema</b>
+<b>Example&nbsp;16.1.&nbsp;Using CACHED tables for the LOB schema</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> SET TABLE SYSTEM_LOBS.BLOCKS TYPE CACHED
@@ -601,9 +601,9 @@
       arguments (if any), then an empty string to separate it from the next
       main class.</p>
 <div class="example">
-<a name="N164B6"></a>
+<a name="N1679F"></a>
 <p class="title">
-<b>Example&nbsp;15.2.&nbsp;MainInvoker Example</b>
+<b>Example&nbsp;16.2.&nbsp;MainInvoker Example</b>
 </p>
 <div class="example-contents">
 <pre class="screen">  java -cp path/to/your/app.jar:path/to/hsqldb.jar org.hsqldb.util.MainInvoker com.your.main.App "" org.hsqldb.server.Server</pre>
@@ -760,13 +760,13 @@
 </div>
 </div>
 </div>
-<a name="N16518" class="indexterm"></a>
+<a name="N16801" class="indexterm"></a>
 <p>Any database that is not produced with the release version of
     HyperSQL 2.0 must be upgraded to this version.</p>
-<div class="procedure" title="Procedure&nbsp;15.1.&nbsp;Upgrading Databases Created with Version 1.8.x">
-<a name="N1651E"></a>
+<div class="procedure" title="Procedure&nbsp;16.1.&nbsp;Upgrading Databases Created with Version 1.8.x">
+<a name="N16807"></a>
 <p class="title">
-<b>Procedure&nbsp;15.1.&nbsp;Upgrading Databases Created with Version 1.8.x</b>
+<b>Procedure&nbsp;16.1.&nbsp;Upgrading Databases Created with Version 1.8.x</b>
 </p>
 <ol class="procedure" type="1">
 <li class="step" title="Step 1">
@@ -827,10 +827,10 @@
       database, including database object definitions and data, to a file of
       your choice. You can export a script file using the old version of the
       database engine and open the script as a database with 2.0.</p>
-<div class="procedure" title="Procedure&nbsp;15.2.&nbsp;Upgrade Using the SCRIPT Procedure for Very Old Versions">
-<a name="N16542"></a>
+<div class="procedure" title="Procedure&nbsp;16.2.&nbsp;Upgrade Using the SCRIPT Procedure for Very Old Versions">
+<a name="N1682B"></a>
 <p class="title">
-<b>Procedure&nbsp;15.2.&nbsp;Upgrade Using the SCRIPT Procedure for Very Old
+<b>Procedure&nbsp;16.2.&nbsp;Upgrade Using the SCRIPT Procedure for Very Old
         Versions</b>
 </p>
 <ol class="procedure" type="1">
@@ -1188,9 +1188,9 @@
       project-specific, so see the Maven documentation about that. But you can
       paste this element verbatim:</p>
 <div class="example">
-<a name="N16664"></a>
+<a name="N1694D"></a>
 <p class="title">
-<b>Example&nbsp;15.3.&nbsp;HyperSQL Snapshot Repository Definition</b>
+<b>Example&nbsp;16.3.&nbsp;HyperSQL Snapshot Repository Definition</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting"> &lt;repository&gt;
@@ -1220,9 +1220,9 @@
 </div>
 </div>
 <div class="example">
-<a name="N1666D"></a>
+<a name="N16956"></a>
 <p class="title">
-<b>Example&nbsp;15.4.&nbsp;Sample Snapshot Ivy Dependency</b>
+<b>Example&nbsp;16.4.&nbsp;Sample Snapshot Ivy Dependency</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1231,9 +1231,9 @@
 </div>
 <br class="example-break">
 <div class="example">
-<a name="N16672"></a>
+<a name="N1695B"></a>
 <p class="title">
-<b>Example&nbsp;15.5.&nbsp;Sample Snapshot Maven Dependency</b>
+<b>Example&nbsp;16.5.&nbsp;Sample Snapshot Maven Dependency</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1249,9 +1249,9 @@
 </div>
 <br class="example-break">
 <div class="example">
-<a name="N16677"></a>
+<a name="N16960"></a>
 <p class="title">
-<b>Example&nbsp;15.6.&nbsp;Sample Snapshot Gradle Dependency</b>
+<b>Example&nbsp;16.6.&nbsp;Sample Snapshot Gradle Dependency</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1270,9 +1270,9 @@
         <code class="literal">ivyxml</code>. See the <a class="link" href="https://github.com/unsaved/gradle-ivyxml-plugin/raw/master/README.txt" target="_top">
         Ivyxml documentation</a> to see exactly how. </p>
 <div class="example">
-<a name="N1668F"></a>
+<a name="N16978"></a>
 <p class="title">
-<b>Example&nbsp;15.7.&nbsp;Sample Snapshot ivy.xml loaded by Ivyxml plugin</b>
+<b>Example&nbsp;16.7.&nbsp;Sample Snapshot ivy.xml loaded by Ivyxml plugin</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1285,9 +1285,9 @@
 <br class="example-break">
 </p>
 <div class="example">
-<a name="N16694"></a>
+<a name="N1697D"></a>
 <p class="title">
-<b>Example&nbsp;15.8.&nbsp;Sample Snapshot Groovy Dependency, using Grape</b>
+<b>Example&nbsp;16.8.&nbsp;Sample Snapshot Groovy Dependency, using Grape</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1353,9 +1353,9 @@
 </table>
 </div>
 <div class="example">
-<a name="N166C0"></a>
+<a name="N169A9"></a>
 <p class="title">
-<b>Example&nbsp;15.9.&nbsp;Sample Range Ivy Dependency</b>
+<b>Example&nbsp;16.9.&nbsp;Sample Range Ivy Dependency</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1369,9 +1369,9 @@
 </div>
 <br class="example-break">
 <div class="example">
-<a name="N166D0"></a>
+<a name="N169B9"></a>
 <p class="title">
-<b>Example&nbsp;15.10.&nbsp;Sample Range Maven Dependency</b>
+<b>Example&nbsp;16.10.&nbsp;Sample Range Maven Dependency</b>
 </p>
 <div class="example-contents">
 <p>See <a class="link" href="deployment-chapt.html#dec_maven_range" title="Limitation of Maven Version Range Specifiers">note above</a>
@@ -1391,9 +1391,9 @@
 </div>
 <br class="example-break">
 <div class="example">
-<a name="N166DB"></a>
+<a name="N169C4"></a>
 <p class="title">
-<b>Example&nbsp;15.11.&nbsp;Sample Range Gradle Dependency</b>
+<b>Example&nbsp;16.11.&nbsp;Sample Range Gradle Dependency</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1412,9 +1412,9 @@
         <code class="literal">ivyxml</code>. See the <a class="link" href="https://github.com/unsaved/gradle-ivyxml-plugin/raw/master/README.txt" target="_top">
         Ivyxml documentation</a> to see exactly how. </p>
 <div class="example">
-<a name="N166F3"></a>
+<a name="N169DC"></a>
 <p class="title">
-<b>Example&nbsp;15.12.&nbsp;Sample Range ivy.xml loaded by Ivyxml plugin</b>
+<b>Example&nbsp;16.12.&nbsp;Sample Range ivy.xml loaded by Ivyxml plugin</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1427,9 +1427,9 @@
 <br class="example-break">
 </p>
 <div class="example">
-<a name="N166F8"></a>
+<a name="N169E1"></a>
 <p class="title">
-<b>Example&nbsp;15.13.&nbsp;Sample Range Groovy Dependency, using Grape</b>
+<b>Example&nbsp;16.13.&nbsp;Sample Range Groovy Dependency, using Grape</b>
 </p>
 <div class="example-contents">
 <pre class="programlisting">
@@ -1442,7 +1442,7 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">
@@ -1450,7 +1450,7 @@
 <td align="left" width="40%"><a accesskey="p" href="unix-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;<a accesskey="n" href="lists-app.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="40%">Chapter&nbsp;14.&nbsp;HyperSQL on UNIX&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Appendix&nbsp;A.&nbsp;Lists of Keywords</td>
+<td valign="top" align="left" width="40%">Chapter&nbsp;15.&nbsp;HyperSQL on UNIX&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Appendix&nbsp;A.&nbsp;Lists of Keywords</td>
 </tr>
 </table>
 </div>

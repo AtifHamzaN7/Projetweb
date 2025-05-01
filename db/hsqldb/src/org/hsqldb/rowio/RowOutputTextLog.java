@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2011, The HSQL Development Group
+/* Copyright (c) 2001-2015, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,8 +51,7 @@ import org.hsqldb.types.Type;
 
 /**
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @since 2.0.0
- * @version 1.7.2
+ * @version 2.3.3
  */
 public class RowOutputTextLog extends RowOutputBase {
 
@@ -72,7 +71,7 @@ public class RowOutputTextLog extends RowOutputBase {
             BYTES_IS    = " IS ".getBytes("ISO-8859-1");
             BYTES_ARRAY = " ARRAY[".getBytes("ISO-8859-1");
         } catch (UnsupportedEncodingException e) {
-            Error.runtimeError(ErrorCode.U_S0500, "RowOutputTextLog");
+            throw Error.runtimeError(ErrorCode.U_S0500, "RowOutputTextLog");
         }
     }
 
@@ -109,6 +108,8 @@ public class RowOutputTextLog extends RowOutputBase {
     protected void writeSmallint(Number o) {
         this.writeBytes(o.toString());
     }
+
+    public void setStorageSize(int size) {}
 
     public void writeEnd() {}
 
@@ -155,7 +156,7 @@ public class RowOutputTextLog extends RowOutputBase {
                 write(',');
             }
 
-            writeData(type, o[i]);
+            writeData(o[i], type);
         }
 
         write(']');
@@ -238,8 +239,6 @@ public class RowOutputTextLog extends RowOutputBase {
     public void writeLong(long value) {
         this.writeBytes(Long.toString(value));
     }
-
-    public void writeIntData(int i, int position) {}
 
     protected void writeTime(TimeData o, Type type) {
 

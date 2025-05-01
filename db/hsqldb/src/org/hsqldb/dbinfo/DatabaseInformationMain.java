@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -69,7 +69,7 @@ import org.hsqldb.types.NumberType;
 import org.hsqldb.types.Type;
 import org.hsqldb.types.Types;
 
-/* $Id: DatabaseInformationMain.java 5342 2014-01-25 17:51:22Z fredt $ */
+/* $Id: DatabaseInformationMain.java 5552 2016-03-12 21:32:03Z fredt $ */
 
 // fredt@users - 1.7.2 - structural modifications to allow inheritance
 // boucherb@users - 1.7.2 - 20020225
@@ -111,7 +111,7 @@ import org.hsqldb.types.Types;
  * system tables.<p>
  *
  * sysTableSessionDependent indicates which tables contain data that is
- * dependent on the user rights of the User associatiod with the Session.<p>
+ * dependent on the user rights of the User associated with the Session.<p>
  *
  * sysTableSessions contains the Session with whose rights each cached table
  * was built.<p>
@@ -141,9 +141,9 @@ import org.hsqldb.types.Types;
  * object or it is out of date, the table contents are cleared and rebuilt. <p>
  *
  * (fredt@users) <p>
- * @author Campbell Boucher-Burnet (boucherb@users dot sourceforge.net)
+ * @author Campbell Burnet (boucherb@users dot sourceforge.net)
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.3
  * @since 1.7.2
  */
 class DatabaseInformationMain extends DatabaseInformation {
@@ -189,6 +189,8 @@ class DatabaseInformationMain extends DatabaseInformation {
             nonCachedTablesSet.add("SYSTEM_SESSIONS");
             nonCachedTablesSet.add("SYSTEM_PROPERTIES");
             nonCachedTablesSet.add("SYSTEM_SEQUENCES");
+            nonCachedTablesSet.add("SYSTEM_INDEXSTATS");
+            nonCachedTablesSet.add("SYSTEM_TABLESTATS");
         }
     }
 
@@ -200,20 +202,20 @@ class DatabaseInformationMain extends DatabaseInformation {
      * for the specified <code>Database</code> object. <p>
      *
      * <b>Note:</b> before 1.7.2 Alpha N, it was important to observe that
-     * by specifying an instance of this class or one of its descendents to
+     * by specifying an instance of this class or one of its descendants to
      * handle system table production, the new set of builtin permissions
      * and aliases would overwrite those of an existing database, meaning that
      * metadata reporting might have been rendered less secure if the same
      * database were then opened again using a lower numbered system table
      * producer instance (i.e. one in a 1.7.1 or earlier distribution).
      * As of 1.7.2 Alpha N, system-generated permissions and aliases are no
-     * longer recorded in the checkpoint script, obseleting this issue.
+     * longer recorded in the checkpoint script, obsoleting this issue.
      * Checkpointing of system-generated grants and aliases was removed
-     * because their existence is very close to a core requirment for correct
+     * because their existence is very close to a core requirement for correct
      * operation and they are reintroduced to the system at each startup.
      * In a future release, it may even be an exception condition to attempt
      * to remove or alter system-generated grants and aliases,
-     * respectvely. <p>
+     * respectively. <p>
      *
      * @param db the <code>Database</code> object for which this object
      *      produces system tables
@@ -232,7 +234,7 @@ class DatabaseInformationMain extends DatabaseInformation {
         HsqlName     cn;
         ColumnSchema c;
 
-        cn = database.nameManager.newInfoSchemaColumnName(name, t.getName());
+        cn = HsqlNameManager.newInfoSchemaColumnName(name, t.getName());
         c  = new ColumnSchema(cn, type, true, false, null);
 
         t.addColumn(c);
@@ -297,7 +299,7 @@ class DatabaseInformationMain extends DatabaseInformation {
 //            for user tables and views, meaning that even under highly
 //            constrained use cases where the notion of DatabaseMetaData can
 //            be discarded (i.e. the engine operates in a distribution where
-//            DatabaseInforationMain/Full and JDBCDatabaseMetaData have been
+//            DatabaseInformationMain/Full and JDBCDatabaseMetaData have been
 //            dropped from the JAR), it is still impossible to produce a
 //            database which will be incompatible in terms of system table <=>
 //            user table name clashes, if/when imported into a more
@@ -308,7 +310,7 @@ class DatabaseInformationMain extends DatabaseInformation {
 //            JDK 1.1/JDBC 1 and provides, at minimum, what was provided under
 //            earlier implementations.
 //
-//        3.) descendents of DatabaseInformationMain (such as the current
+//        3.) descendants of DatabaseInformationMain (such as the current
 //            DatabaseInformationFull) need not (and indeed: now cannot)
 //            override most of the DatabaseInformationMain table producing
 //            methods, as for the most part they are expected to be already
@@ -512,7 +514,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      * set of visible columns that uniquely identifies a row
      * for each accessible table defined within this database. <p>
      *
-     * Each row describes a single column of the best row indentifier column
+     * Each row describes a single column of the best row identifier column
      * set for a particular table.  Each row has the following
      * columns: <p>
      *
@@ -544,8 +546,8 @@ class DatabaseInformationMain extends DatabaseInformation {
      * <code>true</code>, then the IN_KEY column value is ignored. <p>
      *
      * There is not yet infrastructure in place to make some of the ranking
-     * descisions described below, and it is anticipated that mechanisms
-     * upon which cost descisions could be based will change significantly over
+     * decisions described below, and it is anticipated that mechanisms
+     * upon which cost decisions could be based will change significantly over
      * the next few releases.  Hence, in the interest of simplicity and of not
      * making overly complex dependency on features that will almost certainly
      * change significantly in the near future, the current implementation,
@@ -561,7 +563,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      *  <UL>
      *   <LI> An attribute of a table that, by virtue of its having a set of
      *        columns that are both the full set of columns participating in a
-     *        unique constraint or index and are all not null, yeilds the same
+     *        unique constraint or index and are all not null, yields the same
      *        selectability characteristic that would obtained by declaring a
      *        primary key on those same columns.
      *  </UL> <p>
@@ -572,8 +574,8 @@ class DatabaseInformationMain extends DatabaseInformation {
      *  <LI> The ranking of the expected average performance w.r.t a subset of
      *       a table's columns used to select and/or compare rows, as taken in
      *       relation to all other distinct candidate subsets under
-     *       consideration. This can be estimated by comparing each cadidate
-     *       subset in terms of total column count, relative peformance of
+     *       consideration. This can be estimated by comparing each candidate
+     *       subset in terms of total column count, relative performance of
      *       comparisons amongst the domains of the columns and differences
      *       in other costs involved in the execution plans generated using
      *       each subset under consideration for row selection/comparison.
@@ -586,7 +588,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      * best row identifier are as follows, in order of precedence: <p>
      *
      * <OL>
-     * <LI> if the table under consideration has a primary key contraint, then
+     * <LI> if the table under consideration has a primary key constraint, then
      *      the columns of the primary key are reported, with no consideration
      *      given to the column set performance ranking over the set of
      *      candidate keys. Each row has its IN_KEY column set to TRUE.
@@ -600,8 +602,8 @@ class DatabaseInformationMain extends DatabaseInformation {
      *      Each row has its IN_KEY column set to TRUE.
      *
      * <LI> if both 1.) and 2.) do not hold, then, if possible, a unique
-     *      contraint/index is selected from the set of unique
-     *      contraints/indices containing at least one column having
+     *      constraint/index is selected from the set of unique
+     *      constraints/indices containing at least one column having
      *      a not null constraint, with no consideration given to the
      *      column set performance ranking over the set of all such
      *      candidate column sets. If there exists a tie for lowest non-zero
@@ -678,7 +680,7 @@ class DatabaseInformationMain extends DatabaseInformation {
         // DatabaseMetaData.getBestRowIdentifier()
         // result set
         //-------------------------------------------
-        String  tableCatalog;    // table calalog
+        String  tableCatalog;    // table catalog
         String  tableSchema;     // table schema
         String  tableName;       // table name
         Boolean inKey;           // column participates in PK or AK?
@@ -817,7 +819,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      * SCOPE_CATLOG      VARCHAR   catalog of REF attribute scope table
      * SCOPE_SCHEMA      VARCHAR   schema of REF attribute scope table
      * SCOPE_TABLE       VARCHAR   name of REF attribute scope table
-     * SOURCE_DATA_TYPE  VARCHAR   source type of REF attribute
+     * SOURCE_DATA_TYPE  SMALLINT  source type of REF attribute
      * TYPE_SUB          INTEGER   HSQLDB data subtype code
      * </pre> <p>
      *
@@ -853,7 +855,7 @@ class DatabaseInformationMain extends DatabaseInformation {
             addColumn(t, "SCOPE_CATALOG", SQL_IDENTIFIER);          // 18
             addColumn(t, "SCOPE_SCHEMA", SQL_IDENTIFIER);           // 19
             addColumn(t, "SCOPE_TABLE", SQL_IDENTIFIER);            // 20
-            addColumn(t, "SOURCE_DATA_TYPE", SQL_IDENTIFIER);       // 21
+            addColumn(t, "SOURCE_DATA_TYPE", Type.SQL_SMALLINT);    // 21
 
             // ----------------------------------------------------------------
             // JDBC 4.0 - added Mustang b86
@@ -1000,7 +1002,7 @@ class DatabaseInformationMain extends DatabaseInformation {
                 }
 
                 if (type.isDateTimeType()) {
-                    int size = (int) column.getDataType().displaySize();
+                    int size = column.getDataType().displaySize();
 
                     row[icolumn_size] = ValuePool.getInt(size);
                     row[isql_datetime_sub] = ValuePool.getInt(
@@ -1015,9 +1017,9 @@ class DatabaseInformationMain extends DatabaseInformation {
                 row[iis_nullable]      = column.isNullable() ? "YES"
                                                              : "NO";
 
-                if (type.isDistinctType()) {
-                    row[isource_data_type] =
-                        type.getName().getSchemaQualifiedStatementName();
+                if (type.isDistinctType() || type.isDomainType()) {
+                    row[itype_name]        = type.getTypeDefinition();
+                    row[isource_data_type] = row[idata_type];
                 }
 
                 // JDBC 4.0
@@ -1173,7 +1175,7 @@ class DatabaseInformationMain extends DatabaseInformation {
             constraintCount = constraints.length;
 
             for (int i = 0; i < constraintCount; i++) {
-                constraint = (Constraint) constraints[i];
+                constraint = constraints[i];
 
                 if (constraint.getConstraintType() == SchemaObject
                         .ConstraintTypes
@@ -1475,13 +1477,12 @@ class DatabaseInformationMain extends DatabaseInformation {
         String primaryKeyName;
 
         // Intermediate holders
-        Iterator       tables;
-        Table          table;
-        Object[]       row;
-        Constraint     constraint;
-        int[]          cols;
-        int            colCount;
-        HsqlProperties p;
+        Iterator   tables;
+        Table      table;
+        Object[]   row;
+        Constraint constraint;
+        int[]      cols;
+        int        colCount;
 
         // column number mappings
         final int itable_cat   = 0;
@@ -1492,7 +1493,6 @@ class DatabaseInformationMain extends DatabaseInformation {
         final int ipk_name     = 5;
 
         // Initialization
-        p = database.getProperties();
         tables =
             database.schemaManager.databaseObjectIterator(SchemaObject.TABLE);
 
@@ -1574,7 +1574,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      *                           input and output parameters for a procedure.
      *                           A value of 0 is returned if this row describes
      *                           the procedure's return value.
-     * IS_NULLABLE       VARCHAR ISO rules are used to determinte the nulliblity
+     * IS_NULLABLE       VARCHAR ISO rules are used to determine the nullability
      *                           for a column.
      *
      *                           YES (enclosed in quotes)  --- if the column can include NULLs
@@ -1757,7 +1757,7 @@ class DatabaseInformationMain extends DatabaseInformation {
                     }
 
                     if (type.isDateTimeType()) {
-                        int size = (int) column.getDataType().displaySize();
+                        int size = column.getDataType().displaySize();
 
                         row[numeric_precision] = ValuePool.getInt(size);
                     }
@@ -1909,7 +1909,7 @@ class DatabaseInformationMain extends DatabaseInformation {
             addColumn(t, "DESCRIPTION", SQL_IDENTIFIER);      // not null
 
             HsqlName name = HsqlNameManager.newInfoSchemaObjectName(
-                sysTableHsqlNames[SYSTEM_PRIMARYKEYS].name, false,
+                sysTableHsqlNames[SYSTEM_CONNECTION_PROPERTIES].name, false,
                 SchemaObject.INDEX);
 
             t.createPrimaryKeyConstraint(name, new int[]{ 0 }, true);
@@ -2378,7 +2378,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      * Retrieves a <code>Table</code> object describing the table types
      * available in this database. <p>
      *
-     * In general, the range of values that may be commonly encounted across
+     * In general, the range of values that may be commonly encountered across
      * most DBMS implementations is: <p>
      *
      * <UL>
@@ -2470,7 +2470,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      *                              NULL specified?
      * LOCAL_TYPE_NAME    VARCHAR   localized name of data type;
      *                              - NULL if not supported.
-     *                              - for human consuption only
+     *                              - for human consumption only
      * MINIMUM_SCALE      SMALLINT  minimum scale supported.
      * MAXIMUM_SCALE      SMALLINT  maximum scale supported.
      * SQL_DATA_TYPE      INTEGER   value expected in SQL CLI SQL_DESC_TYPE
@@ -2654,7 +2654,7 @@ class DatabaseInformationMain extends DatabaseInformation {
      *
      * Schema-specific UDTs may have type JAVA_OBJECT, STRUCT, or DISTINCT.
      *
-     * <P>Each row is a UDT descripion with the following columns:
+     * <P>Each row is a UDT description with the following columns:
      * <OL>
      *   <LI><B>TYPE_CAT</B> <code>VARCHAR</code> => the type's catalog
      *   <LI><B>TYPE_SCHEM</B> <code>VARCHAR</code> => type's schema
@@ -3183,12 +3183,11 @@ class DatabaseInformationMain extends DatabaseInformation {
                     .SQL_DECIMAL) ? 10
                                   : 2;
 
-            row[sequence_catalog] = database.getCatalogName().name;
-            row[sequence_schema]  = sequence.getSchemaName().name;
-            row[sequence_name]    = sequence.getName().name;
-            row[data_type]        = sequence.getDataType().getFullNameString();
-            row[numeric_precision] =
-                ValuePool.getInt((int) type.getPrecision());
+            row[sequence_catalog]           = database.getCatalogName().name;
+            row[sequence_schema]            = sequence.getSchemaName().name;
+            row[sequence_name]              = sequence.getName().name;
+            row[data_type] = sequence.getDataType().getFullNameString();
+            row[numeric_precision] = ValuePool.getInt(type.getPrecision());
             row[numeric_precision_radix]    = ValuePool.getInt(radix);
             row[numeric_scale]              = ValuePool.INTEGER_0;
             row[maximum_value] = String.valueOf(sequence.getMaxValue());
@@ -3288,12 +3287,11 @@ class DatabaseInformationMain extends DatabaseInformation {
                     .SQL_DECIMAL) ? 10
                                   : 2;
 
-            row[sequence_catalog] = database.getCatalogName().name;
-            row[sequence_schema]  = sequence.getSchemaName().name;
-            row[sequence_name]    = sequence.getName().name;
-            row[data_type]        = sequence.getDataType().getFullNameString();
-            row[numeric_precision] =
-                ValuePool.getInt((int) type.getPrecision());
+            row[sequence_catalog]           = database.getCatalogName().name;
+            row[sequence_schema]            = sequence.getSchemaName().name;
+            row[sequence_name]              = sequence.getName().name;
+            row[data_type] = sequence.getDataType().getFullNameString();
+            row[numeric_precision] = ValuePool.getInt(type.getPrecision());
             row[numeric_precision_radix]    = ValuePool.getInt(radix);
             row[numeric_scale]              = ValuePool.INTEGER_0;
             row[maximum_value] = String.valueOf(sequence.getMaxValue());
@@ -3323,7 +3321,7 @@ class DatabaseInformationMain extends DatabaseInformation {
 
 /**
      * The TABLE_PRIVILEGES view has one row for each visible access
-     * right for each accessible table definied within this database. <p>
+     * right for each accessible table defined within this database. <p>
      *
      * Each row is a table privilege description with the following columns: <p>
      *
@@ -3360,7 +3358,8 @@ class DatabaseInformationMain extends DatabaseInformation {
 
             //
             HsqlName name = HsqlNameManager.newInfoSchemaObjectName(
-                sysTableHsqlNames[SEQUENCES].name, false, SchemaObject.INDEX);
+                sysTableHsqlNames[TABLE_PRIVILEGES].name, false,
+                SchemaObject.INDEX);
 
             t.createPrimaryKeyConstraint(name, new int[] {
                 0, 1, 2, 3, 4, 5, 6

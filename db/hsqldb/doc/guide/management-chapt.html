@@ -9,16 +9,16 @@
 <link rel="home" href="index.html" title="HyperSQL User Guide">
 <link rel="up" href="index.html" title="HyperSQL User Guide">
 <link rel="prev" href="builtinfunctions-chapt.html" title="Chapter&nbsp;10.&nbsp;Built In Functions">
-<link rel="next" href="dbproperties-chapt.html" title="Chapter&nbsp;12.&nbsp;Properties">
+<link rel="next" href="compatibility-chapt.html" title="Chapter&nbsp;12.&nbsp;Compatibility With Other DBMS">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navheader">
 <table summary="Navigation header" width="100%">
 <tr>
-<td align="left" width="30%"><a accesskey="p" href="builtinfunctions-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;11.&nbsp;System Management</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="dbproperties-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
+<td align="left" width="30%"><a accesskey="p" href="builtinfunctions-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;11.&nbsp;System Management</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="compatibility-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="30%">Chapter&nbsp;10.&nbsp;Built In Functions&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;12.&nbsp;Properties</td>
+<td valign="top" align="left" width="30%">Chapter&nbsp;10.&nbsp;Built In Functions&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;12.&nbsp;Compatibility With Other DBMS</td>
 </tr>
 </table>
 </div>
@@ -44,12 +44,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5321 $</p>
+<p class="releaseinfo">$Revision: 5579 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N143A5"></a>
-<p>Copyright 2002-2012 Fred Toussi. Permission is granted to
+<a name="N14517"></a>
+<p>Copyright 2002-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -75,7 +75,7 @@
 <span class="section"><a href="management-chapt.html#mtc_modes_operation">Mode of Operation</a></span>
 </dt>
 <dt>
-<span class="section"><a href="management-chapt.html#N143CE">Database Types</a></span>
+<span class="section"><a href="management-chapt.html#N14540">Database Types</a></span>
 </dt>
 <dt>
 <span class="section"><a href="management-chapt.html#mtc_table_types">Tables</a></span>
@@ -97,17 +97,20 @@
 <span class="section"><a href="management-chapt.html#mtc_acid">Atomicity, Consistency, Isolation, Durability</a></span>
 </dt>
 <dt>
-<span class="section"><a href="management-chapt.html#N14491">System Operations</a></span>
+<span class="section"><a href="management-chapt.html#N14603">System Operations</a></span>
 </dt>
 </dl>
 </dd>
 <dt>
-<span class="section"><a href="management-chapt.html#mtc_backup">Backing Up Database Catalogs</a></span>
+<span class="section"><a href="management-chapt.html#mtc_backup">Backing Up and Restoring Database Catalogs</a></span>
 </dt>
 <dd>
 <dl>
 <dt>
 <span class="section"><a href="management-chapt.html#mtc_online_backup">Making Online Backups</a></span>
+</dt>
+<dt>
+<span class="section"><a href="management-chapt.html#mtc_backup_syntax">Offline Backup Utility Syntax</a></span>
 </dt>
 <dt>
 <span class="section"><a href="management-chapt.html#mtc_offline_backup">Making Offline Backups</a></span>
@@ -168,34 +171,6 @@
 </dt>
 <dt>
 <span class="section"><a href="management-chapt.html#mtc_authentication_control">Authentication Control</a></span>
-</dt>
-</dl>
-</dd>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_other">Compatibility with Other RDBMS</a></span>
-</dt>
-<dd>
-<dl>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_postgres">PostgreSQL Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_mysql">MySQL Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_firebird">Firebird Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_derby">Apache Derby Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_oracle">Oracle Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_db2">DB2 Compatibility</a></span>
-</dt>
-<dt>
-<span class="section"><a href="management-chapt.html#mtc_compatibility_mssql">MS SQLServer and Sybase Compatibility</a></span>
 </dt>
 </dl>
 </dd>
@@ -286,7 +261,7 @@
 <div>
 <div>
 <h3 class="title">
-<a name="N143CE"></a>Database Types</h3>
+<a name="N14540"></a>Database Types</h3>
 </div>
 </div>
 </div>
@@ -326,7 +301,7 @@
 <div>
 <div>
 <h4 class="title">
-<a name="N14401"></a>RES and Files Readonly Databases</h4>
+<a name="N14573"></a>RES and Files Readonly Databases</h4>
 </div>
 </div>
 </div>
@@ -447,7 +422,7 @@
       becomes an issue, you can change one or all LOB schema tables to CACHED
       tables. See statements below:</p>
 <div class="example">
-<a name="N14451"></a>
+<a name="N145C3"></a>
 <p class="title">
 <b>Example&nbsp;11.1.&nbsp;Using CACHED tables for the LOB schema</b>
 </p>
@@ -508,10 +483,9 @@
 </div>
 </div>
 </div>
-<p>HyperSQL 2.0 uses the same persistence mechanism as version 1.8, but
-    with important enhancements. The code has proven reliable, as the last
+<p>HyperSQL's persistence mechanism has proven reliable, as the last
     critical issue was fixed 2 years before the release of version 2.0.</p>
-<p>There are further enhancements in version 2.2</p>
+<p>There are further enhancements in version 2.3.4</p>
 <div class="itemizedlist">
 <ul class="itemizedlist" type="disc">
 <li class="listitem">
@@ -538,7 +512,7 @@
     computer hardware. A database system like HSQLDB can perform millions of
     read and write operations in an hour. As system hardware and software can
     go wrong, it is impossible to achieve zero failure rate. Therefore regular
-    backups are recommended. HyperSQL 2.2 has built-in database backup and
+    backups are recommended. HyperSQL 2.3 has built-in database backup and
     restore features, discussed elsewhere in this chapter.</p>
 <p>A note regarding the NIO file access implementation: This
     implementation applies only to CACHED table data in the
@@ -548,8 +522,8 @@
     recommended for Sun JVM's. This does not apply to other JVM's. In such
     environments, it is therefore recommended to test the CHECKPOINT DEFRAG
     operation and the shutting down and restarting the database inside the
-    same Java process extensively with NIO. Use of NIO can be turned off if
-    necessary.</p>
+    same Java process extensively with NIO. Use of NIO is not essential and
+    can be turned off if necessary.</p>
 <div class="section" title="Atomicity, Consistency, Isolation, Durability">
 <div class="titlepage">
 <div>
@@ -586,7 +560,7 @@
 <div>
 <div>
 <h3 class="title">
-<a name="N14491"></a>System Operations</h3>
+<a name="N14603"></a>System Operations</h3>
 </div>
 </div>
 </div>
@@ -618,7 +592,7 @@
       is to reduce the total size of database files and to allow a quick
       restart in case the database is closed without a proper shutdown. The
       <code class="literal">CHECKPOINT DEFRAG</code> variant compacts the
-      <code class="literal">.data</code> file the same way as <code class="literal">SHUTDOWN
+      <code class="literal">.data</code> file in a similar way to <code class="literal">SHUTDOWN
       COMPACT</code> does. Obviously this variant takes much longer than a
       normal <code class="literal">CHECKPOINT</code>. A database setting allows a
       <code class="literal">CHECKPOINT DEFRAG</code> to be performed automatically when
@@ -631,16 +605,16 @@
       system tables.</p>
 </div>
 </div>
-<div class="section" title="Backing Up Database Catalogs">
+<div class="section" title="Backing Up and Restoring Database Catalogs">
 <div class="titlepage">
 <div>
 <div>
 <h2 class="title" style="clear: both">
-<a name="mtc_backup"></a>Backing Up Database Catalogs</h2>
+<a name="mtc_backup"></a>Backing Up and Restoring Database Catalogs</h2>
 </div>
 </div>
 </div>
-<a name="N144DC" class="indexterm"></a>
+<a name="N1464E" class="indexterm"></a>
 <p>The database engine saves the files containing all the data in a
     file catalog when a shutdown takes place. It automatically recovers from
     an abnormal termination and preserves the data when the catalog is opened
@@ -693,6 +667,31 @@
       command and its options. See the sections below about restoring a
       backup.</p>
 </div>
+<div class="section" title="Offline Backup Utility Syntax">
+<div class="titlepage">
+<div>
+<div>
+<h3 class="title">
+<a name="mtc_backup_syntax"></a>Offline Backup Utility Syntax</h3>
+</div>
+</div>
+</div>
+<p>The <code class="classname">DbBackup</code> class is used from the
+      command-line to make offline backups and to restore backups. Here is how
+      to see all options for <code class="classname">DbBackup</code>. </p>
+<div class="example">
+<a name="N14690"></a>
+<p class="title">
+<b>Example&nbsp;11.2.&nbsp;Displaying DbBackup Syntax</b>
+</p>
+<div class="example-contents">
+<pre class="screen"> java -cp hsqldb.jar org.hsqldb.lib.tar.DbBackupMain</pre>
+</div>
+</div>
+<p>
+<br class="example-break">
+</p>
+</div>
 <div class="section" title="Making Offline Backups">
 <div class="titlepage">
 <div>
@@ -707,9 +706,9 @@
       database is named dbname and is in the dbdir directory. The backup is
       saved to a file named backup.tar in the tardir directory.</p>
 <div class="example">
-<a name="N14518"></a>
+<a name="N1469B"></a>
 <p class="title">
-<b>Example&nbsp;11.2.&nbsp;Offline Backup Example</b>
+<b>Example&nbsp;11.3.&nbsp;Offline Backup Example</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> java -cp hsqldb.jar org.hsqldb.lib.tar.DbBackupMain --save tardir/backup.tar dbdir/dbname</pre>
@@ -737,9 +736,9 @@
       or with any Pax-compliant tar or pax client (this includes GNU tar),
       </p>
 <div class="example">
-<a name="N14539"></a>
+<a name="N146BC"></a>
 <p class="title">
-<b>Example&nbsp;11.3.&nbsp;Listing a Backup with DbBackup</b>
+<b>Example&nbsp;11.4.&nbsp;Listing a Backup with DbBackup</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> java -cp hsqldb.jar org.hsqldb.lib.tar.DbBackupMain --list tardir/backup.tar</pre>
@@ -767,9 +766,9 @@
 <p>You use <code class="classname">DbBackup</code> on your operating system
       command line to restore a catalog from a backup. </p>
 <div class="example">
-<a name="N14550"></a>
+<a name="N146D3"></a>
 <p class="title">
-<b>Example&nbsp;11.4.&nbsp;Restoring a Backup with DbBackup</b>
+<b>Example&nbsp;11.5.&nbsp;Restoring a Backup with DbBackup</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> java -cp hsqldb.jar org.hsqldb.lib.tar.DbBackupMain --extract tardir/backup.tar dbdir</pre>
@@ -1015,7 +1014,7 @@
 <ol class="orderedlist" type="1">
 <li class="listitem">
 <p>The server can use SSL and IP address access control lists. See
-        the <a class="link" href="listeners-chapt.html" title="Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners (Servers)">HyperSQL Network Listeners
+        the <a class="link" href="listeners-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners (Servers)">HyperSQL Network Listeners
     (Servers)</a> chapter.</p>
 </li>
 <li class="listitem">
@@ -1120,7 +1119,7 @@
       password authentication. Each user is created with a password, which is
       stored in the database and checked each time a new database connection
       is created.</p>
-<a name="N14612" class="indexterm"></a>
+<a name="N14795" class="indexterm"></a>
 <p>
 <span class="bold"><strong>Password Complexity
       Check</strong></span>
@@ -1130,7 +1129,7 @@
       the database. Each time a user connects, the user's name and password
       are checked against the stored list of users and passwords. The
       connection attempt is rejected if there is no match.</p>
-<a name="N1461D" class="indexterm"></a>
+<a name="N147A0" class="indexterm"></a>
 <p>
 <span class="bold"><strong>External
       Authentication</strong></span>
@@ -1144,468 +1143,6 @@
       the user's credential without it.</p>
 <p>You can override external authentication for a user with the ALTER
       USER statement. See the <a class="link" href="accesscontrol-chapt.html" title="Chapter&nbsp;6.&nbsp;Access Control">Access Control</a> chapter</p>
-</div>
-</div>
-<div class="section" title="Compatibility with Other RDBMS">
-<div class="titlepage">
-<div>
-<div>
-<h2 class="title" style="clear: both">
-<a name="mtc_compatibility_other"></a>Compatibility with Other RDBMS</h2>
-</div>
-</div>
-</div>
-<p>HyperSQL is used more than any other database engine for application
-    testing and development targeted at other databases. Over the years, this
-    usage resulted in developers finding and reporting many obscure bugs in
-    HyperSQL, which have all been fixed in the latest version. Also, HyperSQL
-    2 has been written to the SQL Standard and avoids the traps caused by
-    superficial imitation of existing RDBMS.</p>
-<p>HyperSQL has many property settings that relax conformance to the
-    Standard in order to allow compatibility with other RDBMS, without
-    breaking the core integrity of the database. These properties are modified
-    with SET DATABASE SQL statements described in the SQL Conformance Settings
-    section of this chapter</p>
-<p>The SQL Standard has existed since 1989 and has been expanded over
-    the years in several revisions. Also, the X-Open specification has defined
-    a number of SQL functions which are implemented by most RDBMS.</p>
-<p>Each RDBMS supports additional functions that are not covered by the
-    standard. Some RDBMS use non-standard syntax for some operations.
-    Fortunately, most popular RDBMS products have introduced better
-    compatibility with the Standard in their recent versions, but there are
-    still some portability issues. HyperSQL overcomes the potability issues
-    using these strategies</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>An extensive set of functions cover the SQL Standard, X-Open,
-        and most of the useful functions that other RDBMS may support.</p>
-</li>
-<li class="listitem">
-<p>Database properties, which can be specified on the URL or as SQL
-        statements, relax conformance to the Standard in order to allow
-        non-standard comparisons and assignments allowed by other
-        RDBMS.</p>
-</li>
-<li class="listitem">
-<p>Specific SQL syntax compatibility modes allow syntax and type
-        names that are supported by some popular RDBMS.</p>
-</li>
-<li class="listitem">
-<p>User-defined types and functions, including aggregate functions,
-        allow any type or function that is supported by some RDBMS to be
-        defined and used.</p>
-</li>
-</ul>
-</div>
-<p>In the future, the supported compatibility modes with other RDBMS
-    will be expanded further.</p>
-<div class="section" title="PostgreSQL Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_postgres"></a>PostgreSQL Compatibility</h3>
-</div>
-</div>
-</div>
-<p>PostgreSQL is fairly compatible with the Standard, but uses some
-      non-standard features.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use <code class="literal">&lt;set database sql syntax PGS
-          statement&gt;</code> to enable the PostgreSQL's non-standard
-          features. References to SERIAL, BIGSERIAL and TEXT data types, as
-          well as sequence functions, are translated into HSQLDB
-          equivalents.</p>
-</li>
-<li class="listitem">
-<p>Use MVCC if your application is multi-user</p>
-</li>
-<li class="listitem">
-<p>PostgreSQL functions are generally supported</p>
-</li>
-<li class="listitem">
-<p>For identity columns, PostgreSQL uses a non-standard linkage
-          with an external identity sequence. In most cases, this can be
-          converted to <code class="literal">GENERATED BY DEFAULT AS IDENTITY</code>. In
-          those cases where the identity sequence needs to be shared by
-          multiple tables, you can use a new HyperSQL 2.2 feature
-          <code class="literal">GENERATED BY DEFAULT AS SEQUENCE &lt;sequence
-          name&gt;</code>, which is the equivalent of the PostgreSQL
-          implementation.</p>
-</li>
-<li class="listitem">
-<p>In CREATE TABLE statements, the SERIAL and BIGSERIAL types are
-          translated into INTEGER or BIGINT, with <code class="literal">GENERATED BY
-          DEFAULT AS IDENTITY</code>. Usage of DEFAULT NEXTVAL(&lt;sequence
-          name&gt;) is supported so long as the <code class="literal">&lt;sequence
-          name&gt;</code> refers to an existing sequence. This usage is
-          translated into <code class="literal">GENERATED BY DEFAULT AS SEQUENCE
-          &lt;sequence name&gt;</code>.</p>
-</li>
-<li class="listitem">
-<p>In SELECT and other statements, the
-          <code class="literal">NEXTVAL(&lt;sequence name&gt;)</code> and
-          <code class="literal">LASTVAL()</code> functions are supported and translated
-          into HyperSQL's <code class="literal">NEXT VALUE FOR &lt;sequence
-          name&gt;</code> and <code class="literal">IDENTITY()</code>
-          expressions.</p>
-</li>
-<li class="listitem">
-<p>PostgreSQL uses a non-standard expression, <code class="literal">SELECT 'A
-          Test String'</code> to return a single row table. The standard
-          form is <code class="literal">VALUES('A Test String')</code>. In PGS syntax
-          mode, this type of SELECT is supported.</p>
-</li>
-<li class="listitem">
-<p>HyperSQL supports SQL Standard ARRAY types. PostgreSQL also
-          supports this, but not entirely according to the Standard.</p>
-</li>
-<li class="listitem">
-<p>SQL routines are portable, but some syntax elements are
-          different and require changes.</p>
-</li>
-<li class="listitem">
-<p>You may need to use <code class="literal">SET DATABASE SQL TDC { DELETE |
-          UPDATE } FALSE</code> statements, as PostgreSQL does not enforce
-          the subtle rules of the Standard for foreign key cascading deletes
-          and updates.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" title="MySQL Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_mysql"></a>MySQL Compatibility</h3>
-</div>
-</div>
-</div>
-<p>MySQL had many incompatibilities with the Standard. The latest
-      versions have introduced much greater compatibly, but some of these
-      features have to be turned on via properties. You should therefore check
-      the current Standard compatibility settings of your MySQL database and
-      use the available HyperSQL properties to achieve closer results. If you
-      avoid the few anti-Standard features of MySQL you can port your
-      databases to HyperSQL.</p>
-<p>HyperSQL does not have the following non-standard limitations of
-      MySQL.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>With HyperSQL, an UPDATE statement can update UNIQUE and
-          PRIMARY KEY columns of a table without causing an exception due to
-          temporary violation of constraints. These constraints are checked at
-          the end of execution, therefore there is no need for an ORDER BY
-          clause in an UPDATE statement.</p>
-</li>
-<li class="listitem">
-<p>MySQL foreign key constraints are not enforced by the default
-          MyISAM engine. Be aware of the possibility of data being rejected by
-          HyperSQL due to these constraints.</p>
-</li>
-<li class="listitem">
-<p>With HyperSQL INSERT or UPDATE statements either succeed or
-          fail due to constraint violation. MySQL has the non-standard IGNORE
-          overrides to ignore violations, which is not accepted by
-          HyperSQL.</p>
-</li>
-<li class="listitem">
-<p>Unlike MySQL, HyperSQL allows you to modify a table with an
-          INSERT, UPDATE or DELETE statement which selects from the same table
-          in a subquery.</p>
-</li>
-</ul>
-</div>
-<p>Follow the guidelines below for converting MySQL databases and
-      applications.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use <code class="literal">&lt;set database sql syntax MYS
-          statement&gt;</code> to enable support for AUTO_INCREMENT and
-          TEXT data types. These type definitions are translated into HSQLDB
-          equivalents.</p>
-</li>
-<li class="listitem">
-<p>Use MVCC with <code class="literal">&lt;set database transaction control
-          statement&gt;</code> if your application is multi-user.</p>
-</li>
-<li class="listitem">
-<p>Avoid storing invalid values, for example invalid dates such
-          as '0000-00-00' or '2001-00-00' which are rejected by
-          HyperSQL.</p>
-</li>
-<li class="listitem">
-<p>Avoid the MySQL feature that trims spaces at the end of CHAR
-          values.</p>
-</li>
-<li class="listitem">
-<p>In MySQL, a database is the same as a schema. In HyperSQL
-          several schemas can exist in the same database and accessed
-          transparently. In addition a HyperSQL server supports multiple
-          separate databases.</p>
-</li>
-<li class="listitem">
-<p>In MySQL, older, non-standard, forms of database object name
-          case-sensitivity make is difficult to port applications. Use the
-          latest form which encloses case-sensitive names in double
-          quotes.</p>
-</li>
-<li class="listitem">
-<p>MySQL functions are generally supported, including
-          GROUP_CONCAT.</p>
-</li>
-<li class="listitem">
-<p>For fine control over type conversion, check the settings for
-          <code class="literal">&lt;set database sql convert truncate
-          statement&gt;</code>
-</p>
-</li>
-<li class="listitem">
-<p>If you use concatenation of possibly NULL values in your
-          select statements, you may need to change the setting with the
-          <code class="literal">&lt;set database sql concat nulls
-          statement&gt;</code>
-</p>
-</li>
-<li class="listitem">
-<p>MySQL supports most SQL Standard types (except INTERVAL
-          types), as well as non-standard types, which are also supported by
-          HyperSQL. Supported types include SMALLINT, INT, BIGINT, DOUBLE,
-          FLOAT, DECIMAL, NUMERIC, VARCHAR, CHAR, BINARY, VARBINARY, BLOB,
-          DATE, TIMESTAMP (all Standard SQL) and TINYINT, DATETIME (non
-          Standard).</p>
-</li>
-<li class="listitem">
-<p>MySQL uses a non-standard expression, <code class="literal">SELECT 'A Test
-          String'</code> to return a single row table. The standard form is
-          <code class="literal">VALUES('A Test String')</code>. In MYS syntax mode, this
-          type of SELECT is supported.</p>
-</li>
-<li class="listitem">
-<p>SQL user-defined function and procedure syntax is very similar
-          to SQL Standard syntax. A few changes may still be required.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" title="Firebird Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_firebird"></a>Firebird Compatibility</h3>
-</div>
-</div>
-</div>
-<p>Firebird generally follows the SQL Standard. Applications can be
-      ported to HyperSQL without difficulty.</p>
-</div>
-<div class="section" title="Apache Derby Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_derby"></a>Apache Derby Compatibility</h3>
-</div>
-</div>
-</div>
-<p>Apache Derby supports a smaller subset of the SQL Standard
-      compared to HyperSQL. Applications can be ported to HyperSQL without
-      difficulty.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use MVCC with <code class="literal">&lt;set database transaction control
-          statement&gt;</code> if your application is multi-user.</p>
-</li>
-<li class="listitem">
-<p>HyperSQL supports Java language functions and stored
-          procedures with the standard syntax, which is similar to the way
-          Derby supports these features.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" title="Oracle Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_oracle"></a>Oracle Compatibility</h3>
-</div>
-</div>
-</div>
-<p>Recent versions of Oracle support Standard SQL syntax for outer
-      joins and many other operations. In addition, HyperSQL features a
-      setting to support Oracle syntax and semantics for the most widely used
-      non-standard features.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use <code class="literal">&lt;set database sql syntax ORA
-          statement&gt;</code> to enable support for some non-standard
-          syntax of Oracle.</p>
-</li>
-<li class="listitem">
-<p>Use MVCC with <code class="literal">&lt;set database transaction control
-          statement&gt;</code> if your application is multi-user.</p>
-</li>
-<li class="listitem">
-<p>Fine control over MVCC deadlock avoidance is provided by the
-          <code class="literal">&lt;set database transaction rollback on conflict
-          statement&gt;</code> and the corresponding
-          <code class="literal">hsqldb.tx_conflict_rollback</code> connection
-          property.</p>
-</li>
-<li class="listitem">
-<p>If your application relies on Oracle behaviour for nulls in
-          multi-column UNIQUE constraints, use <code class="literal">&lt;set database sql
-          unique nulls statement&gt;</code> to change the default.</p>
-</li>
-<li class="listitem">
-<p>If your application relies on Oracle behaviour for ordering of
-          nulls in SELECT statements with ORDER BY, but without NULLS FIRST or
-          NULLS LAST, use both <code class="literal">&lt;set database sql nulls last
-          statement&gt;</code> and <code class="literal">&lt;set database sql nulls
-          order statement&gt;</code> to change the defaults.</p>
-</li>
-<li class="listitem">
-<p>If you use the non-standard concatenation of possibly NULL
-          values in your select statements, you may need to change the setting
-          for <code class="literal">&lt;set database sql concat nulls
-          statement&gt;</code>.</p>
-</li>
-<li class="listitem">
-<p>Many Oracle functions are supported, including no-arg
-          functions such as SYSDATE and SYSTIMESTAMP and more complex ones
-          such as TO_DATE and TO_CHAR.</p>
-</li>
-<li class="listitem">
-<p>Non-standard data type definitions such as NUMBER, VARCHAR2,
-          NVARCHAR2, BINARY_DOUBLE, BINARY_FLOAT, LONG, RAW are translated
-          into the closest HyperSQL / SQL Standard equivalent in ORA
-          mode.</p>
-</li>
-<li class="listitem">
-<p>The DATE type is interpreted as TIMESTAMP(0) in ORA syntax
-          mode.</p>
-</li>
-<li class="listitem">
-<p>The DUAL table and the expressions, ROWNUM, CURRVAL, NEXTVAL
-          are supported in ORA syntax mode.</p>
-</li>
-<li class="listitem">
-<p>HyperSQL natively supports operations involving datetime and
-          interval values. These features are based on the SQL
-          Standard.</p>
-</li>
-<li class="listitem">
-<p>Many subtle automatic type conversions, syntax refinements and
-          other common features are supported.</p>
-</li>
-<li class="listitem">
-<p>SQL routines are generally portable, but some changes may be
-          required.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" title="DB2 Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_db2"></a>DB2 Compatibility</h3>
-</div>
-</div>
-</div>
-<p>DB2 is highly compatible with the SQL Standard (except its lack of
-      support for the INFORMATION_SCHEMA). Applications can be ported to
-      HyperSQL without difficulty.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use <code class="literal">&lt;set database sql syntax DB2
-          statement&gt;</code> to enable support for some non-standard
-          syntax of DB2.</p>
-</li>
-<li class="listitem">
-<p>Use MVCC with <code class="literal">&lt;set database transaction control
-          statement&gt;</code> if your application is multi-user.</p>
-</li>
-<li class="listitem">
-<p>HyperSQL supports almost the entire syntax of DB2 together
-          with many of the functions. Even local temporary tables using the
-          SESSION pseudo schema are supported.</p>
-</li>
-<li class="listitem">
-<p>The DB2 binary type definition FOR BIT DATA, as well as empty
-          definition of column default values are supported in DB2 syntax
-          mode.</p>
-</li>
-<li class="listitem">
-<p>Many DB2 functions are supported.</p>
-</li>
-<li class="listitem">
-<p>The DUAL table and the expressions, ROWNUM, CURRVAL, NEXTVAL
-          are supported in DB2 syntax mode.</p>
-</li>
-<li class="listitem">
-<p>SQL routines are highly portable with minimal change.</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="section" title="MS SQLServer and Sybase Compatibility">
-<div class="titlepage">
-<div>
-<div>
-<h3 class="title">
-<a name="mtc_compatibility_mssql"></a>MS SQLServer and Sybase Compatibility</h3>
-</div>
-</div>
-</div>
-<p>SQLServer has some incompatibilities with the Standard syntax. The
-      most significant is the use of square brackets instead of double quotes
-      for case-sensitive column names.</p>
-<div class="itemizedlist">
-<ul class="itemizedlist" type="disc">
-<li class="listitem">
-<p>Use <code class="literal">&lt;set database sql syntax MSS
-          statement&gt;</code> to enable support for the
-          <code class="literal">CONVERT(&lt;type definition&gt;, &lt;expression)</code>
-          function with switched order of arguments</p>
-</li>
-<li class="listitem">
-<p>Use MVCC with <code class="literal">&lt;set database transaction control
-          statement&gt;</code> if your application is multi-user.</p>
-</li>
-<li class="listitem">
-<p>If you use the non-standard concatenation of possibly NULL
-          values in your select statements, you may need to change the setting
-          for &lt;set database sql concat nulls statement&gt;.</p>
-</li>
-<li class="listitem">
-<p>HyperSQL supports + for string concatenation. It also supports
-          many functions supported by these dialects.</p>
-</li>
-<li class="listitem">
-<p>SQLServer uses a non-standard expression, <code class="literal">SELECT 'A
-          Test String'</code> to return a single row table. The standard
-          form is <code class="literal">VALUES('A Test String')</code>. In MSS syntax
-          mode, this type of SELECT is supported.</p>
-</li>
-<li class="listitem">
-<p>SQL routines need quite a lot of changes.</p>
-</li>
-</ul>
-</div>
 </div>
 </div>
 <div class="section" title="Statements">
@@ -1631,7 +1168,7 @@
 </div>
 </div>
 <p>These statements perform a system level action.</p>
-<a name="N14793" class="indexterm"></a>
+<a name="N147BD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SHUTDOWN</strong></span>
 </p>
@@ -1710,7 +1247,7 @@
 </div>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N147CD" class="indexterm"></a>
+<a name="N147F7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>BACKUP DATABASE</strong></span>
 </p>
@@ -1768,7 +1305,7 @@
       chapter under Backing up Database Catalogs.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N1480D" class="indexterm"></a>
+<a name="N14837" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CHECKPOINT</strong></span>
 </p>
@@ -1791,7 +1328,7 @@
       sessions.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N1482D" class="indexterm"></a>
+<a name="N14857" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SCRIPT</strong></span>
 </p>
@@ -1824,7 +1361,7 @@
 </div>
 </div>
 <p>These statements change the database settings.</p>
-<a name="N1484C" class="indexterm"></a>
+<a name="N14876" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE
       COLLATION</strong></span>
@@ -1861,7 +1398,7 @@
  SET DATABASE COLLATION "English 1"
  -- this collation is case-sensitive French
  SET DATABASE COLLATION "French 2"  </pre>
-<a name="N14878" class="indexterm"></a>
+<a name="N148A2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE DEFAULT RESULT MEMORY
       ROWS</strong></span>
@@ -1887,7 +1424,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.result_max_memory_rows</code>.</p>
-<a name="N1489A" class="indexterm"></a>
+<a name="N148C4" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE DEFAULT TABLE
       TYPE</strong></span>
@@ -1906,7 +1443,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.default_table_type</code>.</p>
-<a name="N148B4" class="indexterm"></a>
+<a name="N148DE" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE EVENT LOG
       LEVEL</strong></span>
@@ -1953,9 +1490,9 @@
       number. The values for prepared statement parameters are shown in
       parentheses at the end of the statement.</p>
 <div class="example">
-<a name="N148EC"></a>
+<a name="N14916"></a>
 <p class="title">
-<b>Example&nbsp;11.5.&nbsp;SQL Log Example</b>
+<b>Example&nbsp;11.6.&nbsp;SQL Log Example</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> 2012-11-29 10:40:40.250 10 INSERT INTO TEST_CLOB VALUES (1,'Ut wisi enim ad minim veniam, quis nostrud exerci') 
@@ -1967,7 +1504,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N148F1" class="indexterm"></a>
+<a name="N1491B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE GC</strong></span>
 </p>
@@ -1986,28 +1523,28 @@
       deployments, especially with older JVM implementations.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N14907" class="indexterm"></a>
+<a name="N14931" class="indexterm"></a>
 <p>
-<span class="bold"><strong>SET DATABASE UNIQUE
-      NAME</strong></span>
+<span class="bold"><strong>SET DATABASE TEXT TABLE
+      DEFAULTS</strong></span>
 </p>
 <p>
-<span class="emphasis"><em>set database unique name</em></span><code class="literal">
-      </code>
+<span class="emphasis"><em>set database text table defaults
+      statement</em></span>
 </p>
 <p>
-<code class="literal">&lt;set database unique name statement&gt; ::= SET
-      DATABASE UNIQUE NAME &lt;identifier&gt;</code>
+<code class="literal">&lt;set database text table defaults statement&gt; ::=
+      SET DATABASE TEXT TABLE DEFAULTS &lt;character
+      literal&gt;</code>
 </p>
-<p>Each HyperSQL catalog (database) has an engine-generated
-      internal name. This name is a 16 character long string, beginning with
-      HSQLDB and based on the time of creation of the database. The name is
-      used for the log events that are sent to external logging frameworks.
-      The new name must be exactly 16 characters long with no
-      spaces.</p>
+<p>An optional property to override default text table settings.
+      The string literal has the same format as the string used for setting
+      the data source of a text table, but without the file name. See the
+      <a class="link" href="texttables-chapt.html" title="Chapter&nbsp;5.&nbsp;Text Tables">Text Tables</a>
+      chapter.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N1491C" class="indexterm"></a>
+<a name="N14948" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE TRANSACTION
       CONTROL</strong></span>
@@ -2028,7 +1565,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.tx</code>.</p>
-<a name="N14938" class="indexterm"></a>
+<a name="N14964" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE TRANSACTION ROLLBACK ON
       CONFLICT</strong></span>
@@ -2055,7 +1592,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.tx_conflict_rollback</code>.</p>
-<a name="N14954" class="indexterm"></a>
+<a name="N14980" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE DEFAULT ISOLATION
       LEVEL</strong></span>
@@ -2076,25 +1613,25 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.tx_level</code>.</p>
-<a name="N1496E" class="indexterm"></a>
+<a name="N1499A" class="indexterm"></a>
 <p>
-<span class="bold"><strong>SET DATABASE TEXT TABLE
-      DEFAULTS</strong></span>
+<span class="bold"><strong>SET DATABASE UNIQUE
+      NAME</strong></span>
 </p>
 <p>
-<span class="emphasis"><em>set database text table defaults
-      statement</em></span>
+<span class="emphasis"><em>set database unique name</em></span><code class="literal">
+      </code>
 </p>
 <p>
-<code class="literal">&lt;set database text table defaults statement&gt; ::=
-      SET DATABASE TEXT TABLE DEFAULTS &lt;character
-      literal&gt;</code>
+<code class="literal">&lt;set database unique name statement&gt; ::= SET
+      DATABASE UNIQUE NAME &lt;identifier&gt;</code>
 </p>
-<p>An optional property to override default text table settings.
-      The string literal has the same format as the string used for setting
-      the data source of a text table, but without the file name. See the
-      <a class="link" href="texttables-chapt.html" title="Chapter&nbsp;5.&nbsp;Text Tables">Text Tables</a>
-      chapter.</p>
+<p>Each HyperSQL catalog (database) has an engine-generated
+      internal name. This name is a 16 character long string, beginning with
+      HSQLDB and based on the time of creation of the database. The name is
+      used for the log events that are sent to external logging frameworks.
+      The new name must be exactly 16 characters long with no
+      spaces.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
 </div>
@@ -2118,7 +1655,7 @@
       as it is practical, it is best to set the non-conforming defaults to
       TRUE in order to improve the quality of the database
       application.</p>
-<a name="N1498B" class="indexterm"></a>
+<a name="N149B5" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL
       SIZE</strong></span>
@@ -2139,7 +1676,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_size</code>.</p>
-<a name="N149AB" class="indexterm"></a>
+<a name="N149D5" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL
       NAMES</strong></span>
@@ -2163,7 +1700,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_names</code>.</p>
-<a name="N149CA" class="indexterm"></a>
+<a name="N149F4" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL REGULAR
       NAMES</strong></span>
@@ -2189,7 +1726,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.regular_names</code>.</p>
-<a name="N149E7" class="indexterm"></a>
+<a name="N14A11" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL
       REFERENCES</strong></span>
@@ -2216,7 +1753,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_refs</code>.</p>
-<a name="N14A09" class="indexterm"></a>
+<a name="N14A33" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL
       TYPES</strong></span>
@@ -2243,7 +1780,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_type</code>.</p>
-<a name="N14A2D" class="indexterm"></a>
+<a name="N14A57" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL TDC
       DELETE</strong></span>
@@ -2271,7 +1808,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_tdc_delete</code>.</p>
-<a name="N14A4E" class="indexterm"></a>
+<a name="N14A78" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL TDC
       UPDATE</strong></span>
@@ -2299,7 +1836,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.enforce_tdc_update</code>.</p>
-<a name="N14A70" class="indexterm"></a>
+<a name="N14A9A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL TRANSLATE TTI
       TYPES</strong></span>
@@ -2330,7 +1867,35 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">jdbc.translate_tti_types</code>.</p>
-<a name="N14A98" class="indexterm"></a>
+<a name="N14AC2" class="indexterm"></a>
+<p>
+<span class="bold"><strong>SET DATABASE SQL CHARACTER
+      LITERAL</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>set database sql character
+      literal</em></span>
+</p>
+<p>
+<code class="literal">&lt;set database sql character literal statement&gt;
+      ::= SET DATABASE SQL CHARACTER LITERAL { TRUE | FALSE
+      }</code>
+</p>
+<p>When the property is <code class="literal">TRUE</code>, the data type of
+      character literal strings is <code class="literal">CHARACTER</code>. When the
+      property is <code class="literal">FALSE</code> the data type is
+      <code class="literal">VARCHAR</code>.</p>
+<p>Setting this property <code class="literal">FALSE</code> results in
+      strings not padded with spaces in <code class="literal">CASE WHEN</code>
+      expressions that have multiple literal alternatives.</p>
+<p>SQL Standard requires the <code class="literal">CHARACTER</code>
+      type.</p>
+<p>The property is <code class="literal">TRUE</code> by default.</p>
+<p>Only a user with the DBA role can execute this
+      statement.</p>
+<p>This is equivalent to the connection property
+      <code class="literal">sql.char_literal</code>.</p>
+<a name="N14AF8" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL CONCAT
       NULLS</strong></span>
@@ -2349,13 +1914,13 @@
       in the not-null value.</p>
 <p>Setting this property <code class="literal">FALSE</code> results in
       concatenation behaviour similar to Oracle or MS SQL Server.</p>
-<p>SQL Standard requires a NULL result..</p>
+<p>SQL Standard requires a NULL result.</p>
 <p>The property is <code class="literal">TRUE</code> by default.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.concat_nulls</code>.</p>
-<a name="N14AC2" class="indexterm"></a>
+<a name="N14B22" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL UNIQUE
       NULLS</strong></span>
@@ -2385,7 +1950,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.unique_nulls</code>.</p>
-<a name="N14AF2" class="indexterm"></a>
+<a name="N14B52" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL CONVERT
       TRUNCATE</strong></span>
@@ -2413,7 +1978,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.convert_trunc</code>.</p>
-<a name="N14B1A" class="indexterm"></a>
+<a name="N14B7A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL AVG
       SCALE</strong></span>
@@ -2439,7 +2004,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.avg_scale</code>.</p>
-<a name="N14B39" class="indexterm"></a>
+<a name="N14B99" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL DOUBLE
       NAN</strong></span>
@@ -2462,7 +2027,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.double_nan</code>.</p>
-<a name="N14B67" class="indexterm"></a>
+<a name="N14BC7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL NULLS
       FIRST</strong></span>
@@ -2483,7 +2048,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.nulls_first</code>.</p>
-<a name="N14B87" class="indexterm"></a>
+<a name="N14BE7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL NULLS
       ORDER</strong></span>
@@ -2510,7 +2075,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.nulls_order</code>.</p>
-<a name="N14BAE" class="indexterm"></a>
+<a name="N14C0E" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL
       IGNORECASE</strong></span>
@@ -2536,7 +2101,27 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.ignore_case</code>.</p>
-<a name="N14BDC" class="indexterm"></a>
+<a name="N14C3C" class="indexterm"></a>
+<p>
+<span class="bold"><strong>SET DATABASE SQL LIVE
+      OBJECT</strong></span>
+</p>
+<p>
+<span class="emphasis"><em>set database sql live object</em></span>
+</p>
+<p>
+<code class="literal">&lt;set database sql live object&gt; ::= SET DATABASE
+      SQL LIVE OBJECT { TRUE | FALSE }</code>
+</p>
+<p>This property is <code class="literal">FALSE</code> by default and can
+      only be used in <code class="literal">mem:</code> databases.</p>
+<p>When the property is <code class="literal">FALSE</code>, all java objects
+      stored in a column of type <code class="literal">OTHER</code> are serialized. When
+      the property is <code class="literal">FALSE</code>, objects are not serialized at
+      all.</p>
+<p>This is equivalent to the connection property
+      <code class="literal">sql.live_object</code>.</p>
+<a name="N14C63" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL SYNTAX
       DB2</strong></span>
@@ -2561,7 +2146,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.syntax_db2</code>.</p>
-<a name="N14BFF" class="indexterm"></a>
+<a name="N14C86" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL SYNTAX
       MSS</strong></span>
@@ -2584,7 +2169,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.syntax_mss</code>.</p>
-<a name="N14C22" class="indexterm"></a>
+<a name="N14CA9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL SYNTAX
       MYS</strong></span>
@@ -2612,7 +2197,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.syntax_mys</code>.</p>
-<a name="N14C49" class="indexterm"></a>
+<a name="N14CD0" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL SYNTAX
       ORA</strong></span>
@@ -2638,7 +2223,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.syntax_ora</code>.</p>
-<a name="N14C68" class="indexterm"></a>
+<a name="N14CEF" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE SQL SYNTAX
       PGS</strong></span>
@@ -2667,7 +2252,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">sql.syntax_pgs</code>.</p>
-<a name="N14C98" class="indexterm"></a>
+<a name="N14D1F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE REFERENTIAL
       INTEGRITY</strong></span>
@@ -2695,9 +2280,9 @@
 <p>A query example to return the rows in a foreign key table that
       have no parent is given below:</p>
 <div class="example">
-<a name="N14CAF"></a>
+<a name="N14D36"></a>
 <p class="title">
-<b>Example&nbsp;11.6.&nbsp;Finding foreign key rows with no parents after a bulk
+<b>Example&nbsp;11.7.&nbsp;Finding foreign key rows with no parents after a bulk
         import</b>
 </p>
 <div class="example-contents">
@@ -2720,7 +2305,7 @@
 </div>
 <p>These statements control the memory and other settings for
       database persistence.</p>
-<a name="N14CBC" class="indexterm"></a>
+<a name="N14D43" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES BACKUP INCREMENT
       </strong></span>
@@ -2755,7 +2340,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.inc_backup</code>.</p>
-<a name="N14CE0" class="indexterm"></a>
+<a name="N14D67" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES CACHE ROWS</strong></span>
 </p>
@@ -2773,7 +2358,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.cache_rows</code>.</p>
-<a name="N14CFA" class="indexterm"></a>
+<a name="N14D81" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES CACHE SIZE</strong></span>
 </p>
@@ -2793,7 +2378,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.cache_size</code>.</p>
-<a name="N14D14" class="indexterm"></a>
+<a name="N14D9B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES DEFRAG</strong></span>
 </p>
@@ -2811,15 +2396,18 @@
       <code class="literal">.log</code> file reaching the limit set by <code class="literal">SET
       FILES LOG SIZE m</code>, or by the user issuing a CHECKPOINT command,
       the amount of space abandoned since the database was opened is checked
-      and if it is larger than specified percentage, a CHECKPOINT DEFRAG is
-      performed instead of a CHECKPOINT.</p>
+      and if it is larger than the specified percentage, a CHECKPOINT DEFRAG
+      is performed instead of a CHECKPOINT. As the DEFRAG operation uses a lot
+      of memory and takes a long time with large databases, setting the
+      threshold well above zero is suitable for databases that are around than
+      500 MB or more.</p>
 <p>The default is 0, which indicates no DEFRAG. Useful values are
-      between 10 to 50.</p>
+      between 30 to 60.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.defrag_limit</code>.</p>
-<a name="N14D3A" class="indexterm"></a>
+<a name="N14DC1" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES LOG</strong></span>
 </p>
@@ -2837,7 +2425,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.log_data</code>.</p>
-<a name="N14D52" class="indexterm"></a>
+<a name="N14DD9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES LOG SIZE</strong></span>
 </p>
@@ -2857,7 +2445,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.log_size</code>.</p>
-<a name="N14D70" class="indexterm"></a>
+<a name="N14DF7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES NIO</strong></span>
 </p>
@@ -2875,7 +2463,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.nio_data_file</code>.</p>
-<a name="N14D88" class="indexterm"></a>
+<a name="N14E0F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES NIO SIZE</strong></span>
 </p>
@@ -2894,7 +2482,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.nio_max_size</code>.</p>
-<a name="N14DA0" class="indexterm"></a>
+<a name="N14E27" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES WRITE
       DELAY</strong></span>
@@ -2927,7 +2515,7 @@
 <p>This is equivalent to the connection properties
       <code class="literal">hsqldb.write_delay</code> and
       <code class="literal">hsqldb.write_delay_millis</code>.</p>
-<a name="N14DC3" class="indexterm"></a>
+<a name="N14E4A" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES SCALE</strong></span>
 </p>
@@ -2939,7 +2527,7 @@
       &lt;scale value&gt;</code>
 </p>
 <p>Changes the scale factor for the .data file. The default scale
-      is 8 and allows 16GB of data storage capacity. The scale can be
+      is 32 and allows 64GB of data storage capacity. The scale can be
       increased in order to increase the maximum data storage capacity. The
       scale values 8, 16, 32, 64, 128, 256, 512, 1024 are allowed. Scale value
       1024 allows a maximum capacity of 2 TB.</p>
@@ -2954,7 +2542,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.cache_file_scale</code>.</p>
-<a name="N14DE2" class="indexterm"></a>
+<a name="N14E69" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES LOB SCALE</strong></span>
 </p>
@@ -2980,7 +2568,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.lob_file_scale</code>.</p>
-<a name="N14DFC" class="indexterm"></a>
+<a name="N14E83" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES LOB
       COMPRESSED</strong></span>
@@ -3002,7 +2590,7 @@
       statement.</p>
 <p>This is equivalent to the connection property
       <code class="literal">hsqldb.lob_compressed</code>.</p>
-<a name="N14E19" class="indexterm"></a>
+<a name="N14EA0" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET FILES SCRIPT
       FORMAT</strong></span>
@@ -3020,7 +2608,7 @@
       CHECKPOINT.</p>
 <p>Only a user with the DBA role can execute this
       statement.</p>
-<a name="N14E2C" class="indexterm"></a>
+<a name="N14EB3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TABLE TYPE</strong></span>
 </p>
@@ -3048,7 +2636,7 @@
 <p>Two settings are available for authentication control.</p>
 <p>When the default password authentication is used, the passwords
       can be checked for complexity according to administrative rules</p>
-<a name="N14E47" class="indexterm"></a>
+<a name="N14ECE" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE PASSWORD CHECK
       FUNCTION</strong></span>
@@ -3096,7 +2684,7 @@
       completely with a function that uses external authentication servers,
       such as LDAP. This function is called each time a user connects to the
       database.</p>
-<a name="N14E74" class="indexterm"></a>
+<a name="N14EFB" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET DATABASE AUTHENTICATION
       FUNCTION</strong></span>
@@ -3145,15 +2733,15 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">
 <tr>
-<td align="left" width="40%"><a accesskey="p" href="builtinfunctions-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;<a accesskey="n" href="dbproperties-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
+<td align="left" width="40%"><a accesskey="p" href="builtinfunctions-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;<a accesskey="n" href="compatibility-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="40%">Chapter&nbsp;10.&nbsp;Built In Functions&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;12.&nbsp;Properties</td>
+<td valign="top" align="left" width="40%">Chapter&nbsp;10.&nbsp;Built In Functions&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;12.&nbsp;Compatibility With Other DBMS</td>
 </tr>
 </table>
 </div>

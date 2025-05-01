@@ -1,5 +1,5 @@
 /*
- * $Id: nestingschema.sql 437 2008-11-14 04:17:35Z unsaved $
+ * $Id: nestingschema.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests a schema creation statement that nests some objects.
  */
@@ -17,6 +17,4 @@ CREATE SCHEMA FELIX AUTHORIZATION DBA
     CREATE VIEW FELIXV2 AS SELECT AV1 AS C1, NEXT VALUE FOR FELIXS1 AS C2 FROM FELIXT1;
 
 SELECT count(*) FROM felix.felixv2;
-*if (*? != 0)
-    \q Nesting CREATE SCHEMA failed
-*end if
+*if (*? != 0) \q Nesting CREATE SCHEMA failed

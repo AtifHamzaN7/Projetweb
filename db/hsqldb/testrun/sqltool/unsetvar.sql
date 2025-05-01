@@ -1,19 +1,13 @@
 /*
- * $Id: unsetvar.sql 4809 2011-11-20 21:12:35Z unsaved $
+ * $Id: unsetvar.sql 5406 2014-10-13 20:53:18Z unsaved $
  */
 
 \p *{:unsetvar}
 
-*if (*x != *y)
-    \q Two unset variables are not equal
-*end if
+*if (*x != *y) \q Two unset variables are not equal
 
 *x =
-*if (*x == *y)
-    \q A variable set to '' is equal to an unset variable
-*end if
+*if (*x == *y) \q A variable set to '' is equal to an unset variable
 
 *z =
-*if (*x != *z)
-    \q Two variables set to '' are not equal
-*end if
+*if (*x != *z) \q Two variables set to '' are not equal

@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -38,7 +38,6 @@ import org.hsqldb.lib.ArrayUtil;
 import org.hsqldb.lib.HsqlArrayList;
 import org.hsqldb.lib.HsqlList;
 import org.hsqldb.types.ArrayType;
-import org.hsqldb.types.NumberType;
 import org.hsqldb.types.RowType;
 import org.hsqldb.types.Type;
 
@@ -46,12 +45,11 @@ import org.hsqldb.types.Type;
  * Implementation of array aggregate operations
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.0
+ * @version 2.3.3
  * @since 2.0.1
  */
 public class ExpressionArrayAggregate extends Expression {
 
-    boolean      isDistinctAggregate;
     SortAndSlice sort;
     String       separator = ",";
     ArrayType    arrayDataType;
@@ -149,6 +147,8 @@ public class ExpressionArrayAggregate extends Expression {
             case OpTypes.MEDIAN :
                 sb.append(Tokens.T_MEDIAN).append(' ');
                 break;
+
+            default :
         }
 
         if (getLeftNode() != null) {
@@ -176,6 +176,11 @@ public class ExpressionArrayAggregate extends Expression {
         }
 
         unresolvedSet.add(this);
+
+        if (rangeGroup.getRangeVariables().length > 0) {
+            this.rangeGroups = rangeGroups;
+            this.rangeGroup  = rangeGroup;
+        }
 
         return unresolvedSet;
     }
@@ -250,12 +255,11 @@ public class ExpressionArrayAggregate extends Expression {
         if (other instanceof ExpressionArrayAggregate) {
             ExpressionArrayAggregate o = (ExpressionArrayAggregate) other;
 
-            if (opType == other.opType && exprSubType == other.exprSubType
-                    && isDistinctAggregate == o.isDistinctAggregate
-                    && separator.equals(o.separator)
-                    && condition.equals(o.condition)) {
-                return super.equals(other);
-            }
+            return super.equals(other) && opType == other.opType
+                   && exprSubType == other.exprSubType
+                   && isDistinctAggregate == o.isDistinctAggregate
+                   && separator.equals(o.separator)
+                   && condition.equals(o.condition);
         }
 
         return false;
@@ -289,6 +293,10 @@ public class ExpressionArrayAggregate extends Expression {
 
             case OpTypes.MEDIAN :
                 currentVal = nodes[0].getValue(session);
+
+                if (currentVal == null) {
+                    return currValue;
+                }
                 break;
         }
 
@@ -370,11 +378,9 @@ public class ExpressionArrayAggregate extends Expression {
                 if (even) {
                     Object val1 = array[(array.length / 2) - 1];
                     Object val2 = array[array.length / 2];
-                    Object val3 = ((NumberType) dataType).add(session, val1,
-                        val2, dataType);
+                    Object val3 = dataType.add(session, val1, val2, dataType);
 
-                    return ((NumberType) dataType).divide(session, val3,
-                                                          Integer.valueOf(2));
+                    return dataType.divide(session, val3, Integer.valueOf(2));
                 } else {
                     return dataType.convertToType(session,
                                                   array[array.length / 2],

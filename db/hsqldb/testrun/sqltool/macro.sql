@@ -1,5 +1,5 @@
 /*
- * $Id: macro.sql 610 2008-12-22 15:54:18Z unsaved $
+ * $Id: macro.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests interactive macro commands /...
  *
@@ -21,9 +21,7 @@ COMMIT;
 
 /q WHERE i > 3;
 
-* if (*? != 2)
-    \q Query returned *{?} rows, should have returned 2.
-* end if
+* if (*? != 2) \q Query returned *{?} rows, should have returned 2.
 
 /* Now test with lots of intervening white space */
   /  =   q   SELECT count(*) FROM t WHERE i > *{LIMIT}   
@@ -32,12 +30,8 @@ COMMIT;
 
 * LIMIT = 4
 /q;
-* if (*? != 1)
-    \q Query returned *{?} rows, should have returned 1.
-* end if
+* if (*? != 1) \q Query returned *{?} rows, should have returned 1.
 
 /setlim 3;
 /q;
-* if (*? != 2)
-    \q Query returned *{?} rows, should have returned 2.
-* end if
+* if (*? != 2) \q Query returned *{?} rows, should have returned 2.

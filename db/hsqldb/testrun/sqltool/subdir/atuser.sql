@@ -1,5 +1,5 @@
 /*
- * $Id: atuser.sql 3714 2010-07-22 02:28:38Z unsaved $
+ * $Id: atuser.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Test loading other files with @
  */
@@ -9,6 +9,4 @@
 \m @/tblx.dsv
 
 SELECT COUNT(*) FROM tblx;
-*if (*? != 2)
-    \q Failed to load table deta from @ directory
-*end if
+*if (*? != 2) \q Failed to load table deta from @ directory

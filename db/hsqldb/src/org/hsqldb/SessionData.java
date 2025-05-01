@@ -62,11 +62,11 @@ import org.hsqldb.types.ClobData;
 import org.hsqldb.types.ClobDataID;
 import org.hsqldb.types.LobData;
 
-/*
- * Session semi-persistent data structures
+/**
+ * Session semi-persistent data structures.
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.0
+ * @version 2.3.3
  * @since 1.9.0
  */
 public class SessionData {
@@ -106,8 +106,7 @@ public class SessionData {
             boolean isCached) {
 
         try {
-            PersistentStore store = session.database.logger.newStore(session,
-                persistentStoreCollection, table);
+            PersistentStore store = persistentStoreCollection.getStore(table);
 
             if (!isCached) {
                 store.setMemory(true);
@@ -469,7 +468,7 @@ public class SessionData {
                     byte[] byteArray  = result.getByteArray();
                     Result actionResult = database.lobManager.setBytes(blobId,
                         result.getOffset(), byteArray, (int) dataLength);
-
+                    // FIXME: actionResult not used anymore!?
                     break;
                 }
                 case ResultLob.LobResultTypes.REQUEST_SET_CHARS : {
@@ -480,6 +479,7 @@ public class SessionData {
                     char[] charArray  = result.getCharArray();
                     Result actionResult = database.lobManager.setChars(clobId,
                         result.getOffset(), charArray, (int) dataLength);
+                    // FIXME: actionResult not used anymore!?
 
                     break;
                 }
@@ -512,6 +512,7 @@ public class SessionData {
             Result actionResult =
                 database.lobManager.setBytes(result.getLobID(), currentOffset,
                                              byteArray, byteArrayOS.size());
+            // FIXME: actionResult not used anymore!?
 
             currentOffset += byteArrayOS.size();
 
@@ -545,6 +546,7 @@ public class SessionData {
 
             Result actionResult = database.lobManager.setChars(lobID,
                 currentOffset, charArray, charWriter.size());
+            // FIXME: actionResult not used anymore!?
 
             currentOffset += charWriter.size();
 
@@ -658,7 +660,7 @@ public class SessionData {
         String fileName = database.logger.getSecurePath(name, false, false);
 
         if (fileName == null) {
-            throw (Error.error(ErrorCode.ACCESS_IS_DENIED, name));
+            throw Error.error(ErrorCode.ACCESS_IS_DENIED, name);
         }
 
         File    file   = new File(fileName);

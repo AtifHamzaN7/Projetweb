@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2011, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ import java.io.Reader;
  * precisely on the same class of patterns (larger) for which it is most
  * outperforms Knuth-Morris-Pratt.
  *
- * @author Campbell Boucher-Burnet (boucherb@users dot sourceforge.net)
+ * @author Campbell Burnet (boucherb@users dot sourceforge.net)
  * @version 2.1
  * @since 2.1
  * @see <a href="http://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm">Knuth-Morris-Pratt algorithm</a>
@@ -285,12 +285,12 @@ public class KMPSearchAlgorithm {
             if (source[sourceIndex] == pattern[patternIndex]) {
                 patternIndex++;
             } else {
-                final int tableVaue = table[patternIndex];
+                final int tableValue = table[patternIndex];
 
-                matchStart += (patternIndex - tableVaue);
+                matchStart += (patternIndex - tableValue);
 
                 if (patternIndex > 0) {
-                    patternIndex = tableVaue;
+                    patternIndex = tableValue;
                 }
 
                 patternIndex++;

@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -129,6 +129,8 @@ public interface Index extends SchemaObject {
 
     void setTable(TableBase table);
 
+    TableBase getTable();
+
     void setClustered(boolean clustered);
 
     boolean isClustered();
@@ -186,7 +188,7 @@ public interface Index extends SchemaObject {
 
     /**
      * Return the first node equal to the rowdata object.
-     * The rowdata has the column mapping privided in rowColMap.
+     * The rowdata has the column mapping provided in rowColMap.
      *
      * @param session session object
      * @param store store object
@@ -211,7 +213,7 @@ public interface Index extends SchemaObject {
      * @return Iterator for first row
      */
     RowIterator firstRow(Session session, PersistentStore store,
-                         int distinctCount);
+                         int distinctCount, boolean[] map);
 
     /**
      * Returns the row for the last node of the index
@@ -219,7 +221,7 @@ public interface Index extends SchemaObject {
      * @return last row
      */
     RowIterator lastRow(Session session, PersistentStore store,
-                        int distinctCount);
+                        int distinctCount, boolean[] map);
 
     /**
      * Compares two table rows based on the columns of this index. The rowColMap

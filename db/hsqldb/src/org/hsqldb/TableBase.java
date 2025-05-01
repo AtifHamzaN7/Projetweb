@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,6 +36,7 @@ import org.hsqldb.error.Error;
 import org.hsqldb.error.ErrorCode;
 import org.hsqldb.index.Index;
 import org.hsqldb.lib.ArrayUtil;
+import org.hsqldb.map.ValuePool;
 import org.hsqldb.navigator.RowIterator;
 import org.hsqldb.persist.DataSpaceManager;
 import org.hsqldb.persist.PersistentStore;
@@ -45,10 +46,10 @@ import org.hsqldb.types.Type;
  * The  base of all HSQLDB table implementations.
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.3
  * @since 1.7.2
  */
-public class TableBase {
+public class TableBase implements Cloneable {
 
     // types of table
     public static final int INFO_SCHEMA_TABLE = 1;
@@ -78,12 +79,6 @@ public class TableBase {
     public long            persistenceId;
     int                    tableSpace = DataSpaceManager.tableIdDefault;
 
-    // columns in table
-    int[]  primaryKeyCols;                      // column numbers for primary key
-    Type[] primaryKeyTypes;
-    int[]  primaryKeyColsSequence;              // {0,1,2,...}
-
-    //
     //
     Index[]         indexList;                  // first index is the primary key index
     public Database database;
@@ -124,27 +119,23 @@ public class TableBase {
         this.database    = database;
         this.colTypes    = colTypes;
         columnCount      = colTypes.length;
-        primaryKeyCols   = new int[]{};
-        primaryKeyTypes  = Type.emptyArray;
         indexList        = Index.emptyArray;
 
-        createPrimaryIndex(primaryKeyCols, primaryKeyTypes, null);
+        createPrimaryIndex(ValuePool.emptyIntArray, Type.emptyArray, null);
     }
 
     public TableBase duplicate() {
 
-        TableBase copy = new TableBase();
+        TableBase copy;
 
-        copy.tableType        = tableType;
-        copy.persistenceScope = persistenceScope;
-        copy.isSessionBased   = isSessionBased;
+
+        try {
+            copy = (TableBase) super.clone();
+        } catch (CloneNotSupportedException ex) {
+            throw Error.runtimeError(ErrorCode.U_S0500, "Expression");
+        }
+
         copy.persistenceId    = database.persistentStoreCollection.getNextId();
-        copy.database         = database;
-        copy.colTypes         = colTypes;
-        copy.columnCount      = columnCount;
-        copy.primaryKeyCols   = primaryKeyCols;
-        copy.primaryKeyTypes  = primaryKeyTypes;
-        copy.indexList        = indexList;
 
         return copy;
     }
@@ -177,7 +168,7 @@ public class TableBase {
 
         PersistentStore store = getRowStore(session);
 
-        return getPrimaryIndex().firstRow(session, store, 0);
+        return getPrimaryIndex().firstRow(session, store, 0, null);
     }
 
     public final RowIterator rowIterator(PersistentStore store) {
@@ -194,15 +185,15 @@ public class TableBase {
     }
 
     public final Type[] getPrimaryKeyTypes() {
-        return primaryKeyTypes;
+        return indexList[0].getColumnTypes();
     }
 
     public final boolean hasPrimaryKey() {
-        return !(primaryKeyCols.length == 0);
+        return indexList[0].getColumnCount() > 0;
     }
 
     public final int[] getPrimaryKey() {
-        return primaryKeyCols;
+        return indexList[0].getColumns();
     }
 
     /**
@@ -257,7 +248,7 @@ public class TableBase {
 
     /**
      * This method is called whenever there is a change to table structure and
-     * serves two porposes: (a) to reset the best set of columns that identify
+     * serves two purposes: (a) to reset the best set of columns that identify
      * the rows of the table (b) to reset the best index that can be used
      * to find rows of the table given a column value.
      *
@@ -382,14 +373,18 @@ public class TableBase {
     public final void createPrimaryIndex(int[] pkcols, Type[] pktypes,
                                          HsqlName name) {
 
-        long id = database.persistentStoreCollection.getNextId();
-        Index newIndex = database.logger.newIndex(name, id, this, pkcols,
-            null, null, pktypes, true, pkcols.length > 0, pkcols.length > 0,
-            false);
+        Index newIndex = getNewPrimaryIndex(pkcols, pktypes, name);
 
-        try {
-            addIndex(null, newIndex);
-        } catch (HsqlException e) {}
+        addIndexStructure(newIndex);
+    }
+
+    Index getNewPrimaryIndex(int[] pkcols, Type[] pktypes, HsqlName name) {
+
+        long id = database.persistentStoreCollection.getNextId();
+
+        return database.logger.newIndex(name, id, this, pkcols, null, null,
+                                        pktypes, true, pkcols.length > 0,
+                                        pkcols.length > 0, false);
     }
 
     public final Index createAndAddIndexStructure(Session session,
@@ -410,10 +405,6 @@ public class TableBase {
                                      boolean[] descending,
                                      boolean[] nullsLast, boolean unique,
                                      boolean constraint, boolean forward) {
-
-        if (primaryKeyCols == null) {
-            throw Error.runtimeError(ErrorCode.U_S0500, "createIndex");
-        }
 
         int    s     = columns.length;
         int[]  cols  = new int[s];
@@ -438,25 +429,33 @@ public class TableBase {
      */
     public void dropIndex(Session session, int todrop) {
 
-        Index[] oldIndexList = indexList;
+        Index[] list = (Index[]) ArrayUtil.toAdjustedArray(indexList, null,
+            todrop, -1);
 
-        indexList = (Index[]) ArrayUtil.toAdjustedArray(indexList, null,
-                todrop, -1);
-
-        for (int i = 0; i < indexList.length; i++) {
-            indexList[i].setPosition(i);
+        for (int i = 0; i < list.length; i++) {
+            list[i].setPosition(i);
         }
 
-        resetAccessorKeys(session, indexList, oldIndexList);
+        resetAccessorKeys(session, list);
+
+        indexList = list;
+
         setBestRowIdentifiers();
     }
 
-    final void addIndex(Session session, Index index) {
+    final void addIndexStructure(Index index) {
+
+        indexList = getNewIndexArray(index, indexList);
+
+        setBestRowIdentifiers();
+    }
+
+    static Index[] getNewIndexArray(Index index, Index[] list) {
 
         int i = 0;
 
-        for (; i < indexList.length; i++) {
-            Index current = indexList[i];
+        for (; i < list.length; i++) {
+            Index current = list[i];
             int order = index.getIndexOrderValue()
                         - current.getIndexOrderValue();
 
@@ -465,37 +464,39 @@ public class TableBase {
             }
         }
 
-        Index[] oldIndexList = indexList;
+        list = (Index[]) ArrayUtil.toAdjustedArray(list, index, i, 1);
 
-        indexList = (Index[]) ArrayUtil.toAdjustedArray(indexList, index, i,
-                1);
-
-        for (i = 0; i < indexList.length; i++) {
-            indexList[i].setPosition(i);
+        for (i = 0; i < list.length; i++) {
+            list[i].setPosition(i);
         }
 
-        resetAccessorKeys(session, indexList, oldIndexList);
+        return list;
+    }
+
+    final void addIndex(Session session, Index index) {
+
+        Index[] list = getNewIndexArray(index, indexList);
+
+        try {
+            resetAccessorKeys(session, list);
+        } catch (HsqlException e) {
+            for (int i = 0; i < indexList.length; i++) {
+                indexList[i].setPosition(i);
+            }
+
+            throw e;
+        }
+
+        indexList = list;
+
         setBestRowIdentifiers();
     }
 
-    private void resetAccessorKeys(Session session, Index[] indexList,
-                                   Index[] oldIndexList) {
+    private void resetAccessorKeys(Session session, Index[] indexes) {
 
         if (store != null) {
-            try {
-                store.resetAccessorKeys(session, indexList);
-            } catch (HsqlException e) {
-                indexList = oldIndexList;
+            store.resetAccessorKeys(session, indexes);
 
-                for (int i = 0; i < indexList.length; i++) {
-                    indexList[i].setPosition(i);
-                }
-
-                throw e;
-            }
-        }
-
-        if (session == null) {
             return;
         }
 
@@ -503,25 +504,13 @@ public class TableBase {
 
             case TableBase.INFO_SCHEMA_TABLE :
             case TableBase.TEMP_TABLE : {
-                try {
 
-                    // session may be an unregisterd sys session
-                    session.sessionData.persistentStoreCollection
-                        .registerIndex(session, this);
+                // session may be an unregistered sys session
+                session.sessionData.persistentStoreCollection
+                    .resetAccessorKeys(session, (Table) this, indexes);
 
-                    break;
-                } catch (HsqlException e) {
-                    indexList = oldIndexList;
-
-                    for (int i = 0; i < indexList.length; i++) {
-                        indexList[i].setPosition(i);
-                    }
-
-                    throw e;
-                }
+                break;
             }
-            case TableBase.SYSTEM_SUBQUERY :
-            case TableBase.SYSTEM_TABLE :
         }
     }
 

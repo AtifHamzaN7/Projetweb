@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,12 +44,13 @@ import org.hsqldb.map.ValuePool;
 import org.hsqldb.navigator.RangeIterator;
 import org.hsqldb.navigator.RowSetNavigatorDataChange;
 import org.hsqldb.navigator.RowSetNavigatorDataChangeMemory;
+import org.hsqldb.result.Result;
 
 /*
  * Session execution context and temporary data structures
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.4
  * @since 1.9.0
  */
 public class SessionContext {
@@ -72,6 +73,7 @@ public class SessionContext {
     Object[]              diagnosticsVariables = ValuePool.emptyObjectArray;
     Object[]              routineArguments     = ValuePool.emptyObjectArray;
     Object[]              routineVariables     = ValuePool.emptyObjectArray;
+    Result[]              routineCursors       = Result.emptyArray;
     Object[]              dynamicArguments     = ValuePool.emptyObjectArray;
     Object[][]            triggerArguments     = null;
     public int            depth;
@@ -157,6 +159,7 @@ public class SessionContext {
         stack.add(routineArguments);
         stack.add(triggerArguments);
         stack.add(routineVariables);
+        stack.add(routineCursors);
         stack.add(rangeIterators);
         stack.add(savepoints);
         stack.add(savepointTimestamps);
@@ -198,6 +201,7 @@ public class SessionContext {
         savepointTimestamps  = (LongDeque) stack.remove(stack.size() - 1);
         savepoints           = (HashMappedList) stack.remove(stack.size() - 1);
         rangeIterators = (RangeIterator[]) stack.remove(stack.size() - 1);
+        routineCursors       = (Result[]) stack.remove(stack.size() -1);
         routineVariables     = (Object[]) stack.remove(stack.size() - 1);
         triggerArguments     = ((Object[][]) stack.remove(stack.size() - 1));
         routineArguments     = (Object[]) stack.remove(stack.size() - 1);
@@ -285,6 +289,25 @@ public class SessionContext {
         rangeIterators[position] = iterator;
     }
 
+    public RangeIterator getRangeIterator(int position) {
+
+        RangeIterator[] ranges = rangeIterators;
+
+        if (stack != null) {
+            for (int i = 0; i < stack.size(); i++) {
+                Object o = stack.get(i);
+
+                if (o instanceof RangeIterator[]) {
+                    ranges = (RangeIterator[]) o;
+
+                    break;
+                }
+            }
+        }
+
+        return ranges[position];
+    }
+
     public void unsetRangeIterator(RangeIterator iterator) {
 
         int position = iterator.getRangePosition();
@@ -322,12 +345,15 @@ public class SessionContext {
         routineVariables[index] = variable.getDefaultValue(session);
     }
 
-    public void pushRoutineTables(HashMappedList map) {
+    public void pushRoutineTables() {
         popSessionTables = sessionTables;
-        sessionTables    = map;
+        sessionTables    = new HashMappedList();
     }
 
     public void popRoutineTables() {
+
+        sessionTables.clear();
+
         sessionTables = popSessionTables;
     }
 

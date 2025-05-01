@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,8 +40,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.hsqldb.Database;
-import org.hsqldb.DatabaseURL;
-import org.hsqldb.HsqlException;
+import org.hsqldb.DatabaseType;
 import org.hsqldb.HsqlNameManager;
 import org.hsqldb.HsqlNameManager.HsqlName;
 import org.hsqldb.NumberSequence;
@@ -65,11 +64,9 @@ import org.hsqldb.lib.ArrayUtil;
 import org.hsqldb.lib.FileAccess;
 import org.hsqldb.lib.FileUtil;
 import org.hsqldb.lib.FrameworkLogger;
-import org.hsqldb.lib.HashMap;
 import org.hsqldb.lib.HsqlArrayList;
 import org.hsqldb.lib.InputStreamInterface;
 import org.hsqldb.lib.InputStreamWrapper;
-import org.hsqldb.lib.Iterator;
 import org.hsqldb.lib.SimpleLog;
 import org.hsqldb.lib.StringUtil;
 import org.hsqldb.lib.tar.DbBackup;
@@ -91,10 +88,10 @@ import org.hsqldb.types.Type;
  *  storage.<p>
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.4
  * @since 1.7.0
  */
-public class Logger {
+public class Logger implements EventLogInterface {
 
     public SimpleLog appLog;
     public SimpleLog sqlLog;
@@ -105,39 +102,37 @@ public class Logger {
 
     //
     private Database database;
-    public boolean   checkpointRequired;
-    public boolean   checkpointDue;
-    public boolean   checkpointDisabled;
     private boolean  logsStatements;    // false indicates Log is being opened
     private boolean  loggingEnabled;
     private boolean  syncFile = false;
 
     //
-    boolean propIsFileDatabase;
-    boolean propIncrementBackup;
-    boolean propNioDataFile;
-    long    propNioMaxSize    = 256 * 1024 * 1024L;
-    int     propMaxFreeBlocks = 512;
-    int     propCacheMaxRows;
-    long    propCacheMaxSize;
-    int     propCacheDefragLimit;
-    int     propDataFileScale;
-    String  propTextSourceDefault = "";
-    boolean propTextAllowFullPath;
-    int     propWriteDelay;
-    int     propLogSize;
-    boolean propLogData = true;
-    int     propEventLogLevel;
-    int     propSqlLogLevel;
-    int     propGC;
-    int     propTxMode       = TransactionManager.LOCKS;
-    boolean propRefIntegrity = true;
-    int     propLobBlockSize = 32 * 1024;
-    boolean propCompressLobs;
-    int     propScriptFormat = 0;
-    boolean propLargeData;
-    int     propFileSpaceValue;
-    int     propCheckPersistence;
+    private boolean propIsFileDatabase;
+    boolean         propIncrementBackup;
+    boolean         propNioDataFile;
+    long            propNioMaxSize    = 256 * 1024 * 1024L;
+    int             propMaxFreeBlocks = 512;
+    int             propMinReuse      = 0;
+    private int     propCacheMaxRows;
+    private long    propCacheMaxSize;
+    int             propCacheDefragLimit;
+    private int     propDataFileScale;
+    String          propTextSourceDefault = "";
+    boolean         propTextAllowFullPath;
+    private int     propWriteDelay;
+    private int     propLogSize;
+    private boolean propLogData = true;
+    private int     propEventLogLevel;
+    int             propSqlLogLevel;
+    int             propGC;
+    int             propTxMode       = TransactionManager.LOCKS;
+    boolean         propRefIntegrity = true;
+    int             propLobBlockSize = 32 * 1024;
+    boolean         propCompressLobs;
+    int             propScriptFormat = 0;
+    boolean         propLargeData;
+    int             propFileSpaceValue;
+    long            propFileTimestamp;
 
     //
     Log               log;
@@ -150,7 +145,8 @@ public class Logger {
     String            tempDirectoryPath;
 
     //
-    private HashMap textCacheList = new HashMap();
+    public TextTableStorageManager textTableManager =
+        new TextTableStorageManager();
 
     //
     public boolean isNewDatabase;
@@ -159,7 +155,8 @@ public class Logger {
     public boolean isSingleFile;
 
     //
-    AtomicInteger backupState = new AtomicInteger();
+    AtomicInteger backupState     = new AtomicInteger();
+    AtomicInteger checkpointState = new AtomicInteger();
 
     //
     static final int largeDataFactor = 128;
@@ -168,6 +165,11 @@ public class Logger {
     static final int stateNormal     = 0;
     static final int stateBackup     = 1;
     static final int stateCheckpoint = 2;
+
+    //
+    static final int stateCheckpointNormal   = 0;
+    static final int stateCheckpointRequired = 1;
+    static final int stateCheckpointDue      = 2;
 
     //
     public static final String oldFileExtension        = ".old";
@@ -241,11 +243,11 @@ public class Logger {
                     (FileAccess) constructor.newInstance(new Object[]{
                         storagekey });
                 isStoredFileAccess = true;
-            } catch (java.lang.ClassNotFoundException e) {
+            } catch (ClassNotFoundException e) {
                 System.out.println("ClassNotFoundException");
-            } catch (java.lang.InstantiationException e) {
+            } catch (InstantiationException e) {
                 System.out.println("InstantiationException");
-            } catch (java.lang.IllegalAccessException e) {
+            } catch (IllegalAccessException e) {
                 System.out.println("IllegalAccessException");
             } catch (Exception e) {
                 System.out.println("Exception");
@@ -254,8 +256,7 @@ public class Logger {
             fileAccess = FileUtil.getFileAccess(database.isFilesInJar());
         }
 
-        propIsFileDatabase =
-            DatabaseURL.isFileBasedDatabaseType(database.getType());
+        propIsFileDatabase          = database.getType().isFileBased();
         database.databaseProperties = new HsqlDatabaseProperties(database);
         propTextAllowFullPath = database.databaseProperties.isPropertyTrue(
             HsqlDatabaseProperties.textdb_allow_full_path);
@@ -296,7 +297,7 @@ public class Logger {
         if (isNewDatabase) {
             String name = newUniqueName();
 
-            database.setUniqueName(name);
+            database.setDatabaseName(name);
 
             boolean checkExists = database.isFilesInJar();
 
@@ -360,8 +361,9 @@ public class Logger {
             return;
         }
 
-        checkpointRequired = false;
-        logsStatements     = false;
+        checkpointState.set(stateCheckpointNormal);
+
+        logsStatements = false;
 
         boolean useLock = database.getProperties().isPropertyTrue(
             HsqlDatabaseProperties.hsqldb_lock_file);
@@ -373,7 +375,7 @@ public class Logger {
         boolean version18 = database.databaseProperties.isVersion18();
 
         if (version18) {
-            database.setUniqueName(newUniqueName());
+            database.setDatabaseName(newUniqueName());
             database.schemaManager.createPublicSchema();
 
             HsqlName name = database.schemaManager.findSchemaHsqlName(
@@ -390,11 +392,11 @@ public class Logger {
         loggingEnabled = propLogData && !database.isFilesReadOnly();
 
         if (version18) {
-            checkpoint(false);
+            checkpoint(null, false, false);
         }
 
-        if (database.getUniqueName() == null) {
-            database.setUniqueName(newUniqueName());
+        if (database.getNameString() == null) {
+            database.setDatabaseName(newUniqueName());
         }
 
         // URL database properties that can override .script file settings
@@ -441,7 +443,7 @@ public class Logger {
 
         // handle invalid paths as well as access issues
         if (!database.isFilesReadOnly()) {
-            if (database.getType() == DatabaseURL.S_MEM
+            if (database.getType() == DatabaseType.DB_MEM
                     || isStoredFileAccess) {
                 tempDirectoryPath = database.getProperties().getStringProperty(
                     HsqlDatabaseProperties.hsqldb_temp_directory);
@@ -469,9 +471,6 @@ public class Logger {
             propLargeData = true;
         }
 
-        propCheckPersistence = database.databaseProperties.getIntegerProperty(
-            HsqlDatabaseProperties.hsqldb_files_check);
-
         if (!database.databaseProperties.isPropertyTrue(
                 HsqlDatabaseProperties.sql_pad_space, true)) {
             database.collation.setPadding(false);
@@ -481,7 +480,7 @@ public class Logger {
             database.collation.setPadding(false);
         }
 
-        String temp = database.getProperties().getStringPropertyDefault(
+        String temp = database.getProperties().getStringProperty(
             HsqlDatabaseProperties.hsqldb_digest);
 
         database.granteeManager.setDigestAlgo(temp);
@@ -563,6 +562,10 @@ public class Logger {
             HsqlDatabaseProperties.sql_enforce_tdcu);
         database.sqlTranslateTTI = database.databaseProperties.isPropertyTrue(
             HsqlDatabaseProperties.jdbc_translate_tti_types);
+        database.sqlLiveObject = database.databaseProperties.isPropertyTrue(
+            HsqlDatabaseProperties.sql_live_object);
+        database.sqlCharLiteral = database.databaseProperties.isPropertyTrue(
+            HsqlDatabaseProperties.sql_char_literal);
         database.sqlConcatNulls = database.databaseProperties.isPropertyTrue(
             HsqlDatabaseProperties.sql_concat_nulls);
         database.sqlNullsFirst = database.databaseProperties.isPropertyTrue(
@@ -619,7 +622,7 @@ public class Logger {
             HsqlDatabaseProperties.hsqldb_nio_data_file);
         propNioMaxSize =
             database.databaseProperties.getIntegerProperty(
-                HsqlDatabaseProperties.hsqldb_nio_max_size) * 1024 * 1024L;
+                HsqlDatabaseProperties.hsqldb_nio_max_size) * 1024L * 1024L;
         propCacheMaxRows = database.databaseProperties.getIntegerProperty(
             HsqlDatabaseProperties.hsqldb_cache_rows);
         propCacheMaxSize =
@@ -629,11 +632,14 @@ public class Logger {
         setLobFileScaleNoCheck(
             database.databaseProperties.getIntegerProperty(
                 HsqlDatabaseProperties.hsqldb_lob_file_scale));
+        this.setLobFileCompressedNoCheck(
+            database.databaseProperties.isPropertyTrue(
+                HsqlDatabaseProperties.hsqldb_lob_file_compressed));
         setDataFileScaleNoCheck(
             database.databaseProperties.getIntegerProperty(
                 HsqlDatabaseProperties.hsqldb_cache_file_scale));
 
-        // apply only when larger than 0 - match with FILES SCALE
+        // linked with FILES SCALE
         int fileSpace = database.databaseProperties.getIntegerProperty(
             HsqlDatabaseProperties.hsqldb_files_space, 0);
 
@@ -659,6 +665,10 @@ public class Logger {
             HsqlDatabaseProperties.runtime_gc_interval);
         propRefIntegrity = database.databaseProperties.isPropertyTrue(
             HsqlDatabaseProperties.sql_ref_integrity);
+
+        setCacheMinReuseSize(
+            database.databaseProperties.getIntegerProperty(
+                HsqlDatabaseProperties.hsqldb_min_reuse));
     }
 
 // fredt@users 20020130 - patch 495484 by boucherb@users
@@ -689,7 +699,7 @@ public class Logger {
         boolean result = true;
 
         if (log == null) {
-            closeAllTextCaches(false);
+            textTableManager.closeAllTextCaches(false);
 
             return true;
         }
@@ -753,6 +763,10 @@ public class Logger {
         return propIsFileDatabase && !database.isFilesReadOnly();
     }
 
+    public boolean isCurrentlyLogged() {
+        return loggingEnabled;
+    }
+
     public boolean isAllowedFullPath() {
         return this.propTextAllowFullPath;
     }
@@ -780,7 +794,7 @@ public class Logger {
             return;
         }
 
-        String name = database.getUniqueName();
+        String name = database.getNameString();
 
         if (name == null) {
 
@@ -793,7 +807,7 @@ public class Logger {
 
         fwLogger = FrameworkLogger.getLog(SimpleLog.logTypeNameEngine,
                                           "hsqldb.db."
-                                          + database.getUniqueName());
+                                          + database.getNameString());
         /*
         sqlLogger = FrameworkLogger.getLog(SimpleLog.logTypeNameEngine,
                                            "hsqldb.sql."
@@ -940,7 +954,7 @@ public class Logger {
     /**
      * Returns true if Cache object exists.
      */
-    private boolean hasCache() {
+    public boolean hasCache() {
 
         if (log == null) {
             return false;
@@ -1019,38 +1033,43 @@ public class Logger {
      *  reflect the current state of the database, i.e. only the DDL and
      *  insert DML required to recreate the database in its present state.
      *  Other house-keeping duties are performed w.r.t. other database
-     *  files, in order to ensure as much as possible the ACID properites
+     *  files, in order to ensure as much as possible the ACID properties
      *  of the database.
      *
      * @throws  HsqlException if there is a problem checkpointing the
      *      database
      */
-    public synchronized void checkpoint(boolean mode) {
+    public void checkpoint(Session session, boolean defrag, boolean lobs) {
 
         if (!backupState.compareAndSet(stateNormal, stateCheckpoint)) {
             throw Error.error(ErrorCode.ACCESS_IS_DENIED);
         }
 
+        database.lobManager.lock();
+
         try {
-            checkpointInternal(mode);
+            synchronized (this) {
+                checkpointInternal(session, defrag);
+
+                if (lobs) {
+                    database.lobManager.deleteUnusedLobs();
+                }
+            }
         } finally {
             backupState.set(stateNormal);
+            checkpointState.set(stateCheckpointNormal);
+            database.lobManager.unlock();
         }
     }
 
-    void checkpointInternal(boolean mode) {
+    private void checkpointInternal(Session session, boolean defrag) {
 
         if (logsStatements) {
             logInfoEvent("Checkpoint start");
-            log.checkpoint(mode);
+            log.checkpoint(session, defrag);
             logInfoEvent("Checkpoint end - txts: "
                          + database.txManager.getGlobalChangeTimestamp());
-        } else if (!isFileDatabase()) {
-            database.lobManager.deleteUnusedLobs();
         }
-
-        checkpointRequired = false;
-        checkpointDue      = false;
     }
 
     /**
@@ -1090,8 +1109,10 @@ public class Logger {
             return;
         }
 
-        propScriptFormat   = format;
-        checkpointRequired = true;
+        propScriptFormat = format;
+
+        checkpointState.compareAndSet(stateCheckpointNormal,
+                                      stateCheckpointRequired);
     }
 
     /**
@@ -1144,7 +1165,8 @@ public class Logger {
             log.setIncrementBackup(val);
 
             if (log.hasCache()) {
-                checkpointRequired = true;
+                checkpointState.compareAndSet(stateCheckpointNormal,
+                                              stateCheckpointRequired);
             }
         }
 
@@ -1155,7 +1177,7 @@ public class Logger {
         propCacheMaxRows = value;
     }
 
-    public int getCacheRowsDefault() {
+    public int getCacheMaxRows() {
         return propCacheMaxRows;
     }
 
@@ -1165,6 +1187,10 @@ public class Logger {
 
     public long getCacheSize() {
         return propCacheMaxSize;
+    }
+
+    public void setCacheMinReuseSize(int value) {
+        this.propMinReuse = ArrayUtil.getTwoPowerFloor(value);
     }
 
     public void setDataFileScale(int value) {
@@ -1229,9 +1255,11 @@ public class Logger {
             value = propDataFileScale / 16;
         }
 
+        propFileSpaceValue = value;
+
         if (hasCache()) {
             DataFileCache dataCache = getCache();
-            boolean       result    = dataCache.setTableSpaceManager(value);
+            boolean       result    = dataCache.setDataSpaceManager();
 
             if (!result) {
                 return;
@@ -1239,19 +1267,18 @@ public class Logger {
 
             database.persistentStoreCollection.setNewTableSpaces();
         }
-
-        propFileSpaceValue = value;
     }
 
     public int getDataFileSpaces() {
         return propFileSpaceValue;
     }
 
-    public void setFilesCheck(int value) {
+    public long getFilesTimestamp() {
+        return propFileTimestamp;
+    }
 
-        if (value == 1 || value == 0) {
-            propCheckPersistence = value;
-        }
+    public void setFilesTimestamp(long value) {
+        propFileTimestamp = value;
     }
 
     public void setLobFileScale(int value) {
@@ -1366,20 +1393,14 @@ public class Logger {
         }
     }
 
-    public synchronized void setCheckpointRequired() {
-        checkpointRequired = true;
+    public void setCheckpointRequired() {
+        checkpointState.compareAndSet(stateCheckpointNormal,
+                                      stateCheckpointRequired);
     }
 
-    public synchronized boolean needsCheckpointReset() {
-
-        if (checkpointRequired && !checkpointDue && !checkpointDisabled) {
-            checkpointDue      = true;
-            checkpointRequired = false;
-
-            return true;
-        }
-
-        return false;
+    public boolean needsCheckpointReset() {
+        return checkpointState.compareAndSet(stateCheckpointRequired,
+                                             stateCheckpointDue);
     }
 
     public boolean hasLockFile() {
@@ -1419,22 +1440,20 @@ public class Logger {
                     break;
                 }
 
-                return new RowStoreAVLDisk(collection, cache, (Table) table);
+                return new RowStoreAVLDisk(cache, (Table) table);
 
             case TableBase.MEMORY_TABLE :
             case TableBase.SYSTEM_TABLE :
-                return new RowStoreAVLMemory(collection, (Table) table);
+                return new RowStoreAVLMemory((Table) table);
 
             case TableBase.TEXT_TABLE :
-                return new RowStoreAVLDiskData(collection, (Table) table);
+                return new RowStoreAVLDiskData((Table) table);
 
             case TableBase.INFO_SCHEMA_TABLE :
-                return new RowStoreAVLHybridExtended(session, collection,
-                                                     table, false);
+                return new RowStoreAVLHybridExtended(session, table, false);
 
             case TableBase.TEMP_TABLE :
-                return new RowStoreAVLHybridExtended(session, collection,
-                                                     table, true);
+                return new RowStoreAVLHybridExtended(session, table, true);
 
             case TableBase.CHANGE_SET_TABLE :
                 return new RowStoreDataChange(session, collection, table);
@@ -1448,7 +1467,7 @@ public class Logger {
                     return null;
                 }
 
-                return new RowStoreAVLHybrid(session, collection, table, true);
+                return new RowStoreAVLHybrid(session, table, true);
         }
 
         throw Error.runtimeError(ErrorCode.U_S0500, "Logger");
@@ -1484,18 +1503,6 @@ public class Logger {
         }
 
         throw Error.runtimeError(ErrorCode.U_S0500, "Logger");
-    }
-
-    public Index newIndex(Table table, Index index, int[] columns) {
-
-        boolean[] modeFlags = new boolean[columns.length];
-        Type[]    colTypes  = new Type[columns.length];
-
-        ArrayUtil.projectRow(table.getColumnTypes(), columns, colTypes);
-
-        return newIndex(index.getName(), index.getPersistenceId(), table,
-                        columns, modeFlags, modeFlags, colTypes, false, false,
-                        false, false);
     }
 
     public String getValueStringForProperty(String name) {
@@ -1571,16 +1578,12 @@ public class Logger {
 
         if (HsqlDatabaseProperties.hsqldb_default_table_type.equals(name)) {
             return database.schemaManager.getDefaultTableType()
-                   == TableBase.CACHED_TABLE ? "cached"
-                                             : "memory";
+                   == TableBase.CACHED_TABLE ? Tokens.T_CACHED
+                                             : Tokens.T_MEMORY;
         }
 
         if (HsqlDatabaseProperties.hsqldb_defrag_limit.equals(name)) {
             return String.valueOf(propCacheDefragLimit);
-        }
-
-        if (HsqlDatabaseProperties.hsqldb_files_check.equals(name)) {
-            return String.valueOf(propCheckPersistence);
         }
 
         if (HsqlDatabaseProperties.hsqldb_files_space.equals(name)) {
@@ -1626,7 +1629,8 @@ public class Logger {
         }
 
         if (HsqlDatabaseProperties.hsqldb_script_format.equals(name)) {
-            return ScriptWriterBase.LIST_SCRIPT_FORMATS[0].toLowerCase();
+            return ScriptWriterBase.LIST_SCRIPT_FORMATS[propScriptFormat]
+                .toLowerCase();
         }
 
         if (HsqlDatabaseProperties.hsqldb_temp_directory.equals(name)) {
@@ -1656,6 +1660,10 @@ public class Logger {
 
         if (HsqlDatabaseProperties.sql_avg_scale.equals(name)) {
             return String.valueOf(database.sqlAvgScale);
+        }
+
+        if (HsqlDatabaseProperties.sql_char_literal.equals(name)) {
+            return String.valueOf(database.sqlCharLiteral);
         }
 
         if (HsqlDatabaseProperties.sql_concat_nulls.equals(name)) {
@@ -1742,8 +1750,16 @@ public class Logger {
             return String.valueOf(database.sqlUniqueNulls);
         }
 
+        if (HsqlDatabaseProperties.sql_live_object.equals(name)) {
+            return String.valueOf(database.sqlLiveObject);
+        }
+
         if (HsqlDatabaseProperties.jdbc_translate_tti_types.equals(name)) {
             return String.valueOf(database.sqlTranslateTTI);
+        }
+
+        if (HsqlDatabaseProperties.hsqldb_min_reuse.equals(name)) {
+            return String.valueOf(this.propMinReuse);
         }
 
 /*
@@ -1788,7 +1804,7 @@ public class Logger {
         StringBuffer  sb   = new StringBuffer();
 
         sb.append("SET DATABASE ").append(Tokens.T_UNIQUE).append(' ');
-        sb.append(Tokens.T_NAME).append(' ').append(database.getUniqueName());
+        sb.append(Tokens.T_NAME).append(' ').append(database.getNameString());
         list.add(sb.toString());
         sb.setLength(0);
         sb.append("SET DATABASE ").append(Tokens.T_GC).append(' ');
@@ -1940,6 +1956,17 @@ public class Logger {
         sb.append(' ').append(Tokens.T_TYPES).append(' ');
         sb.append(database.sqlTranslateTTI ? Tokens.T_TRUE
                                            : Tokens.T_FALSE);
+        if (!database.sqlCharLiteral) {
+            list.add(sb.toString());
+            sb.setLength(0);
+            sb.append("SET DATABASE ").append(Tokens.T_SQL).append(' ');
+            sb.append(Tokens.T_CHARACTER).append(' ');
+            sb.append(Tokens.T_LITERAL).append(' ');
+            sb.append(database.sqlCharLiteral ? Tokens.T_TRUE
+                      : Tokens.T_FALSE);
+        }
+
+        list.add(sb.toString());
         list.add(sb.toString());
         sb.setLength(0);
         sb.append("SET DATABASE ").append(Tokens.T_SQL).append(' ');
@@ -2022,7 +2049,7 @@ public class Logger {
             sb.append("SET DATABASE ").append(Tokens.T_SQL).append(' ');
             sb.append(Tokens.T_SYNTAX).append(' ');
             sb.append(Tokens.T_DB2).append(' ');
-            sb.append(database.sqlSyntaxOra ? Tokens.T_TRUE
+            sb.append(database.sqlSyntaxDb2 ? Tokens.T_TRUE
                                             : Tokens.T_FALSE);
             list.add(sb.toString());
             sb.setLength(0);
@@ -2158,9 +2185,9 @@ public class Logger {
         list.add(sb.toString());
         sb.setLength(0);
 
-        if (propCheckPersistence != 0) {
+        if (propFileTimestamp != 0) {
             sb.append("SET FILES ").append(Tokens.T_CHECK).append(' ');
-            sb.append(propCheckPersistence);
+            sb.append(propFileTimestamp);
             list.add(sb.toString());
             sb.setLength(0);
         }
@@ -2188,17 +2215,31 @@ public class Logger {
             throw Error.error(ErrorCode.BACKUP_ERROR, "backup in progress");
         }
 
-        try {
-            backupInternal(destPath, script, blocking, compressed, files);
-        } finally {
-            backupState.set(stateNormal);
+        if (blocking) {
+            database.lobManager.lock();
+
+            try {
+                synchronized (this) {
+                    backupInternal(destPath, script, blocking, compressed,
+                                   files);
+                }
+            } finally {
+                backupState.set(stateNormal);
+                database.lobManager.unlock();
+            }
+        } else {
+            try {
+                backupInternal(destPath, script, blocking, compressed, files);
+            } finally {
+                backupState.set(stateNormal);
+            }
         }
     }
 
-    private SimpleDateFormat backupFileFormat =
+    SimpleDateFormat backupFileFormat =
         new SimpleDateFormat("yyyyMMdd'T'HHmmss");
-    private Character runtimeFileDelim =
-        new Character(System.getProperty("file.separator").charAt(0));
+    private static char runtimeFileDelim =
+        System.getProperty("file.separator").charAt(0);
     DbBackup backup;
 
     void backupInternal(String destPath, boolean script, boolean blocking,
@@ -2212,7 +2253,7 @@ public class Logger {
         String instanceName = new File(dbPath).getName();
         char   lastChar     = destPath.charAt(destPath.length() - 1);
         boolean generateName = (lastChar == '/'
-                                || lastChar == runtimeFileDelim.charValue());
+                                || lastChar == runtimeFileDelim);
         File archiveFile;
 
         if (asFiles) {
@@ -2239,7 +2280,7 @@ public class Logger {
 
             if (files == null || files.length != 0) {
                 throw Error.error(ErrorCode.BACKUP_ERROR,
-                                  "files exists in directory");
+                                  "files exist in directory");
             }
         } else {
             String defaultSuffix = compressed ? ".tar.gz"
@@ -2275,10 +2316,8 @@ public class Logger {
             }
 
             if (archiveFile.exists()) {
-                throw Error.error(null, ErrorCode.BACKUP_ERROR, 0,
-                                  new Object[] {
-                    "file exists", archiveFile.getName()
-                });
+                throw Error.error(ErrorCode.BACKUP_ERROR,
+                                  "file exists :" + archiveFile.getName());
             }
         }
 
@@ -2392,7 +2431,7 @@ public class Logger {
     public String getSecurePath(String path, boolean allowFull,
                                 boolean includeRes) {
 
-        if (database.getType() == DatabaseURL.S_RES) {
+        if (database.getType() == DatabaseType.DB_RES) {
             if (includeRes) {
                 return path;
             } else {
@@ -2400,7 +2439,7 @@ public class Logger {
             }
         }
 
-        if (database.getType() == DatabaseURL.S_MEM) {
+        if (database.getType() == DatabaseType.DB_MEM) {
             if (propTextAllowFullPath) {
                 return path;
             } else {
@@ -2436,73 +2475,6 @@ public class Logger {
         }
 
         return path;
-    }
-
-    // fredt@users 20020221 - patch 513005 by sqlbob@users (RMP) - text tables
-
-    /**
-     *  Opens the TextCache object.
-     */
-    public DataFileCache openTextFilePersistence(Table table, String source,
-            boolean readOnlyData, boolean reversed) {
-
-        closeTextCache(table);
-
-        String sourceName = getSecurePath(source, false, true);
-
-        if (sourceName == null) {
-            throw (Error.error(ErrorCode.ACCESS_IS_DENIED, source));
-        }
-
-        TextCache c = new TextCache(table, sourceName);
-
-        c.open(readOnlyData || database.isFilesReadOnly());
-        textCacheList.put(table.getName(), c);
-
-        return c;
-    }
-
-    /**
-     *  Closes the TextCache object.
-     */
-    public void closeTextCache(Table table) {
-
-        TextCache c = (TextCache) textCacheList.remove(table.getName());
-
-        if (c != null) {
-            try {
-                c.close();
-            } catch (HsqlException e) {}
-        }
-    }
-
-    void closeAllTextCaches(boolean script) {
-
-        Iterator it = textCacheList.values().iterator();
-
-        while (it.hasNext()) {
-            TextCache textCache = ((TextCache) it.next());
-
-            // use textCache.table to cover both cache and table readonly
-            if (script && !textCache.table.isDataReadOnly()) {
-                textCache.purge();
-            } else {
-                textCache.close();
-            }
-        }
-    }
-
-    boolean isAnyTextCacheModified() {
-
-        Iterator it = textCacheList.values().iterator();
-
-        while (it.hasNext()) {
-            if (((TextCache) it.next()).isModified()) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     public boolean isNewDatabase() {

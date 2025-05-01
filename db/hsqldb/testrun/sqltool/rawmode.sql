@@ -1,5 +1,5 @@
 /*
- * $Id: rawmode.sql 4852 2011-12-27 15:55:44Z unsaved $
+ * $Id: rawmode.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests raw mode
  */
@@ -16,9 +16,7 @@ SELECT i FROM t
 
 .;
 
-*if (*? != 42)
-    \q Raw command failed
-*end if
+*if (*? != 42) \q Raw command failed
 
 -- To change results so we can be confident of getting 1 later on.
 INSERT INTO t values (43);

@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@
 
 package org.hsqldb.rights;
 
-import org.hsqldb.HsqlNameManager;
 import org.hsqldb.HsqlNameManager.HsqlName;
 import org.hsqldb.Tokens;
 import org.hsqldb.error.Error;
@@ -42,7 +41,7 @@ import org.hsqldb.lib.StringConverter;
  * A User Object extends Grantee with password for a
  * particular database user.<p>
  *
- * @author Campbell Boucher-Burnet (boucherb@users dot sourceforge.net)
+ * @author Campbell Burnet (boucherb@users dot sourceforge.net)
  * @author Fred Toussi (fredt@users dot sourceforge.net)
  * @author Blaine Simpson (blaine dot simpson at admc dot com)
  *
@@ -97,7 +96,7 @@ public class User extends Grantee {
     }
 
     /**
-     * Checks if this object's password attibute equals
+     * Checks if this object's password attribute equals
      * specified argument, else throws.
      */
     public void checkPassword(String value) {

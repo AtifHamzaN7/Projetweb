@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2015, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -83,7 +83,7 @@ import org.hsqldb.cmdline.sqltool.SqlFileScanner;
 import org.hsqldb.cmdline.sqltool.Calculator;
 import org.hsqldb.cmdline.sqltool.FileRecordReader;
 
-/* $Id: SqlFile.java 5339 2014-01-24 19:39:43Z unsaved $ */
+/* $Id: SqlFile.java 5448 2015-03-24 00:32:35Z fredt $ */
 
 /**
  * Encapsulation of SQL text and the environment under which it will executed
@@ -148,7 +148,7 @@ import org.hsqldb.cmdline.sqltool.FileRecordReader;
  *     The SqlTool chapter of the
  *     HyperSQL Utilities Guide</a>
  * @see org.hsqldb.sample.SqlFileEmbedder
- * @version $Revision: 5339 $, $Date: 2014-01-24 14:39:43 -0500 (Fri, 24 Jan 2014) $
+ * @version $Revision: 5448 $, $Date: 2015-03-23 20:32:35 -0400 (Mon, 23 Mar 2015) $
  * @author Blaine Simpson (blaine dot simpson at admc dot com)
  */
 
@@ -189,8 +189,6 @@ public class SqlFile {
 
     static String            DEFAULT_FILE_ENCODING =
                              System.getProperty("file.encoding");
-    static Set<String>       hiddenVars = new HashSet<String>(
-                             Arrays.asList("?", "*START_TIME", "*VERSION"));
 
     // These settings are never null
     private String nullRepToken;   // May be ""
@@ -318,7 +316,7 @@ public class SqlFile {
      * methods that use the settings call a conditional updater, but that
      * is less reliable since there is no way to guarantee that the vars
      * are not used without checking.
-     * UPDATE:  Could do what is needed by making a Map subclass with
+     * TODO:  Could do what is needed by making a Map subclass with
      * overridden setters which enforce dirtiness.
      * <P/>
      */
@@ -327,7 +325,7 @@ public class SqlFile {
         String varVal;
         if (shared.userVars.containsKey("NULL")
                  || shared.userVars.containsKey("*NULL")) {
-                errprintln(SqltoolRB.null_assignment.getString());
+             errprintln(SqltoolRB.null_assignment.getString());
              shared.userVars.remove("NULL");
              shared.userVars.remove("*NULL");
          }
@@ -449,7 +447,7 @@ public class SqlFile {
         "-----------------------------------------------------------------"
         + "-----------------------------------------------------------------";
     // Needs to be at least as wide as the widest field or header displayed.
-    private static final String revString = "$Revision: 5339 $";
+    private static final String revString = "$Revision: 5448 $";
     private static final int revStringLength = revString.length();
     private static final String  revnum =
             (revStringLength - " $".length() > "$Revision: ".length())
@@ -560,6 +558,7 @@ public class SqlFile {
                     "*START_TIME", (new java.util.Date()).toString());
             shared.userVars.put("*REVISION", revnum);
             shared.userVars.put("?", "");
+            shared.userVars.put("#", "0");
             setEncoding(encoding);
             this.interactive = interactive;
             continueOnError = this.interactive;
@@ -672,7 +671,8 @@ public class SqlFile {
         shared.userVars.putAll(newUserVars);
         List<String> strangeVars = new ArrayList<String>();
         for (String name : newUserVars.keySet())
-            if (!name.equals("?") && !varPattern.matcher(name).matches())
+            if (!name.equals("?") && !name.equals("#")
+                    && !varPattern.matcher(name).matches())
                 strangeVars.add(name);
         if (strangeVars.size() > 0)
             errprintln(SqltoolRB.varname_warning.getString(
@@ -850,7 +850,7 @@ public class SqlFile {
      */
     private void setSqlExpandMode() {
         for (String key : shared.userVars.keySet()) {
-            if (key.charAt(0) != '*' && !key.equals("?")) {
+            if (key.charAt(0) != '*' && !key.equals("?") && !key.equals("#")) {
                 sqlExpandMode = Boolean.TRUE;
                 return;
             }
@@ -2401,7 +2401,7 @@ public class SqlFile {
                 throw new BadSpecial(SqltoolRB.pl_block_fail.getString(), e);
             } finally {
                 // If we haven't instantiated a new SqlTool, then the following
-                // are unncessary.  TODO:  Test this and remove if unnecessary.
+                // are unnecessary.  TODO:  Test this and remove if unnecessary.
                 updateUserSettings();
                 sqlExpandMode = null;
             }
@@ -2439,8 +2439,10 @@ public class SqlFile {
             if (statement == null)
                 // TODO: Define message
                 throw new BadSpecial("Failed to prepare SQL for loop");
+            shared.userVars.put("#", "0");
             try {
                 rs = statement.getResultSet();
+                shared.userVars.put("#", Integer.toString(rowData.size()));
                 ResultSetMetaData rsmd = rs.getMetaData();
                 colCount = rsmd.getColumnCount();
                 if (vars != null && vars.length > colCount)
@@ -2475,6 +2477,7 @@ public class SqlFile {
             }
             lastSqlStatement = null;
             // Done with SQL
+            shared.userVars.put("#", Integer.toString(rowData.size()));
 
             if (rowData.size() > 0) {
                 String firstVal = rowData.get(0)[0];
@@ -3787,6 +3790,7 @@ public class SqlFile {
 
                     break;
                 }
+                shared.userVars.put("#", "0");
 
                 ResultSetMetaData m        = r.getMetaData();
                 int               cols     = m.getColumnCount();
@@ -4016,6 +4020,8 @@ public class SqlFile {
                         }
 
                         if (silent) {
+                            // N.b. we ignore rows after first row returned
+                            shared.userVars.put("#", "1");
                             lastSqlStatement = null;
                             return;
                         }
@@ -4058,6 +4064,7 @@ public class SqlFile {
 
                     fetchingVar = null;
                 }
+                shared.userVars.put("#", Integer.toString(rows.size()));
 
                 // STEP 2: DISPLAY DATA  (= 2a OR 2b)
                 // STEP 2a (Non-DSV)

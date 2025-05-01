@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -46,7 +46,7 @@ import org.hsqldb.lib.OrderedHashSet;
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
  *
- * @version 2.0.1
+ * @version 2.3.3
  * @since 1.9.0
  */
 public final class Right {
@@ -229,6 +229,7 @@ public final class Right {
         }
 
         if (!isFullSelect && selectColumnSet == null) {
+
             //
         } else if (right.isFullSelect) {
             isFullSelect    = false;
@@ -247,6 +248,7 @@ public final class Right {
         }
 
         if (!isFullInsert && insertColumnSet == null) {
+
             //
         } else if (right.isFullInsert) {
             isFullInsert    = false;
@@ -265,6 +267,7 @@ public final class Right {
         }
 
         if (!isFullUpdate && updateColumnSet == null) {
+
             //
         } else if (right.isFullUpdate) {
             isFullUpdate    = false;
@@ -283,6 +286,7 @@ public final class Right {
         }
 
         if (!isFullReferences && referencesColumnSet == null) {
+
             //
         } else if (right.isFullReferences) {
             isFullReferences    = false;
@@ -301,6 +305,7 @@ public final class Right {
         }
 
         if (!isFullTrigger && triggerColumnSet == null) {
+
             //
         } else if (right.isFullTrigger) {
             isFullTrigger    = false;
@@ -628,7 +633,7 @@ public final class Right {
         }
     }
 
-    public boolean canAcesssNonSelect() {
+    public boolean canAccesssNonSelect() {
 
         if (isFull) {
             return true;
@@ -851,6 +856,29 @@ public final class Right {
         buf.append(')');
     }
 
+    public void addNewColumn(HsqlName name) {
+
+        if (selectColumnSet != null) {
+            selectColumnSet.add(name);
+        }
+
+        if (insertColumnSet != null) {
+            insertColumnSet.add(name);
+        }
+
+        if (updateColumnSet != null) {
+            updateColumnSet.add(name);
+        }
+
+        if (referencesColumnSet != null) {
+            referencesColumnSet.add(name);
+        }
+
+        if (triggerColumnSet != null) {
+            triggerColumnSet.add(name);
+        }
+    }
+
     public void setColumns(Table table) {
 
         if (selectColumnSet != null) {
@@ -954,6 +982,8 @@ public final class Right {
 
                 triggerColumnSet = set;
                 break;
+
+            default:
         }
     }
 

@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import org.hsqldb.map.ValuePool;
  * allow saving and loading.<p>
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.2.9
+ * @version 2.3.4
  * @since 1.7.0
  */
 public class HsqlProperties {
@@ -260,6 +260,7 @@ public class HsqlProperties {
 
 // oj@openoffice.org
         fa.createParentDirs(fileString);
+        fa.removeElement(fileString);
 
         OutputStream        fos = fa.openOutputStreamElement(fileString);
         FileAccess.FileSync outDescriptor = fa.getFileSync(fos);
@@ -414,6 +415,18 @@ public class HsqlProperties {
     public static final int indexValues       = 7;
     public static final int indexLimit        = 9;
 
+    public static Object[] getMeta(String name, int type) {
+
+        Object[] row = new Object[indexLimit];
+
+        row[indexName]         = name;
+        row[indexType]         = ValuePool.getInt(type);
+        row[indexClass]        = "Long";
+        row[indexDefaultValue] = Long.valueOf(0);
+
+        return row;
+    }
+
     public static Object[] getMeta(String name, int type,
                                    String defaultValue) {
 
@@ -472,7 +485,7 @@ public class HsqlProperties {
     }
 
     /**
-     * Perfoms any range checking for property and return an error message
+     * Performs any range checking for property and return an error message
      */
     public static String validateProperty(String key, String value,
                                           Object[] meta) {
@@ -491,15 +504,57 @@ public class HsqlProperties {
             return null;
         }
 
-        if (meta[indexClass].equals("Integer")) {
-            int number = Integer.parseInt(value);
+        if (meta[indexClass].equals("Long")) {
+            return null;
+        }
 
+        if (meta[indexClass].equals("Integer")) {
+            try {
+                int number = Integer.parseInt(value);
+
+                if (Boolean.TRUE.equals(meta[indexIsRange])) {
+                    int low  = ((Integer) meta[indexRangeLow]).intValue();
+                    int high = ((Integer) meta[indexRangeHigh]).intValue();
+
+                    if (number < low || high < number) {
+                        return "value outside range for property: " + key;
+                    }
+                }
+
+                if (meta[indexValues] != null) {
+                    int[] values = (int[]) meta[indexValues];
+
+                    if (ArrayUtil.find(values, number) == -1) {
+                        return "value not supported for property: " + key;
+                    }
+                }
+            } catch (NumberFormatException e) {
+                return "invalid integer value for property: " + key;
+            }
+
+            return null;
+        }
+
+        return null;
+    }
+
+    public int getPropertyWithinRange(String name, int number) {
+
+        Object[] meta = (Object[]) metaData.get(name);
+
+        if (meta == null) {
+            return number;
+        }
+
+        if (meta[indexClass].equals("Integer")) {
             if (Boolean.TRUE.equals(meta[indexIsRange])) {
                 int low  = ((Integer) meta[indexRangeLow]).intValue();
                 int high = ((Integer) meta[indexRangeHigh]).intValue();
 
-                if (number < low || high < number) {
-                    return "value outside range for property: " + key;
+                if (number < low) {
+                    return low;
+                } else if (high < number) {
+                    return high;
                 }
             }
 
@@ -507,14 +562,12 @@ public class HsqlProperties {
                 int[] values = (int[]) meta[indexValues];
 
                 if (ArrayUtil.find(values, number) == -1) {
-                    return "value not supported for property: " + key;
+                    return values[0];
                 }
             }
-
-            return null;
         }
 
-        return null;
+        return number;
     }
 
     public boolean validateProperty(String name, int number) {

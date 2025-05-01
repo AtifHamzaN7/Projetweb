@@ -44,12 +44,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5212 $</p>
+<p class="releaseinfo">$Revision: 5630 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N1093E"></a>
-<p>Copyright 2010-2012 Fred Toussi. Permission is granted to
+<a name="N1095C"></a>
+<p>Copyright 2010-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -140,15 +140,18 @@
     according to database settings.</p>
 <p>SQL Statements are generally transactional statements. When a
     transactional statement is executed, it starts a transaction if no
-    transaction is in progress. If SQL Data is modified during a transaction,
-    the change can be undone with a ROLLBACK statement. When a COMMIT
-    statement is executed, the transaction is ended. If a single statement
-    fails, the transaction is not normally terminated. However, some failures
-    are caused by execution of statements that are in conflict with statements
-    executed in other concurrent sessions. Such failures result in an implicit
-    ROLLBACK, in addition to the exception that is raised.</p>
+    transaction is in progress. If SQL Data (data stored in tables) is
+    modified during a transaction, the change can be undone with a ROLLBACK
+    statement. When a COMMIT or ROLLBACK statement is executed, the
+    transaction is ended. Each SQL statement works atomically: it either
+    succeeds or fails without changing any data. If a single statement fails,
+    an error is raised but the transaction is not normally terminated.
+    However, some failures are caused by execution of statements that are in
+    conflict with statements executed in other concurrent sessions. Such
+    failures result in an implicit ROLLBACK, in addition to the exception that
+    is raised.</p>
 <p>Schema definition and manipulation statements are also transactional
-    according to the SQL Standard. HyperSQL 2.0 performs automatic commits
+    according to the SQL Standard. HyperSQL 2.3 performs automatic commits
     before and after the execution of such transactions. Therefore,
     schema-related statements cannot be rolled back. This is likely to change
     in future versions.</p>
@@ -167,13 +170,13 @@
 <p>The isolation level and / or the readonly mode of a transaction
     can also be modified using an SQL statement. You can use the statement to
     change only the isolation mode, only the read-only mode, or both at the
-    same time. This command can be issued only after a commit or
-    rollback.</p>
+    same time. This statement can be issued only before a transaction starts
+    or after a commit or rollback.</p>
 <p>
 <code class="literal">SET TRANSACTION &lt;transaction characteristic&gt; [
     &lt;comma&gt; &lt;transaction characteristic&gt; ]</code>
 </p>
-<p>Details of the statement is described later in this chapter.</p>
+<p>This statement is described in detail later in this chapter.</p>
 </div>
 <div class="section" title="Session Attributes and Variables">
 <div class="titlepage">
@@ -222,7 +225,7 @@
       useful for development and debugging. See the example in the <a class="link" href="sqlroutines-chapt.html" title="Chapter&nbsp;8.&nbsp;SQL-Invoked Routines">SQL-Invoked Routines</a>
       chapter, under Formal Parameters.</p>
 <div class="example">
-<a name="N10980"></a>
+<a name="N1099E"></a>
 <p class="title">
 <b>Example&nbsp;3.1.&nbsp;User-defined Session Variables</b>
 </p>
@@ -269,7 +272,7 @@
       session table from schema tables, the pseudo schema names, MODULE or
       SESSION can be used. An example is given below:</p>
 <div class="example">
-<a name="N10995"></a>
+<a name="N109B3"></a>
 <p class="title">
 <b>Example&nbsp;3.2.&nbsp;User-defined Temporary Session Tables</b>
 </p>
@@ -308,10 +311,10 @@
     select the transaction isolation model while the engine is running. It
     also allows you to choose different isolation levels for different
     simultaneous sessions.</p>
-<p>HyperSQL 2 supports three concurrency control models,
+<p>HyperSQL 2 supports three concurrency control models:
     two-phase-locking (2PL), which is the default, multiversion concurrency
-    control (MVCC) and a hybrid model, which is 2PL plus multiversion rows.
-    Within each model, it supports some of the 4 standard levels of
+    control (MVCC) and a hybrid model, which is 2PL plus multiversion rows
+    (MVLOCKS). Within each model, it supports some of the 4 standard levels of
     transaction isolation: READ UNCOMMITTED, READ COMMITTED, REPEATABLE READ
     and SERIALIZABLE. The concurrency control model is a strategy that governs
     all the sessions and is set for the database, as opposed for individual
@@ -322,7 +325,7 @@
 <p>HyperSQL is fully multi threaded in all transaction models. Sessions
     continue to work simultaneously and can fully utilise multi-core
     processors.</p>
-<p>To concurrency control model of a live database can be changed. The
+<p>The concurrency control model of a live database can be changed. The
     <code class="literal">SET DATABASE TRANSACTION CONTROL { LOCKS | MVLOCKS | MVCC
     }</code> can be used by a user with the DBA role.</p>
 <div class="section" title="Two Phase Locking">
@@ -343,8 +346,8 @@
       locked by the other, if both locks are shared locks, it will go ahead.
       If either of the locks is an exclusive lock, the engine will put the
       session in wait until the other session commits or rolls back its
-      transaction. In some cases the engine will invalidate the transaction of
-      the current session, if the action would result in deadlock.</p>
+      transaction. The engine will throw an error if the action would result
+      in deadlock.</p>
 <p>HyperSQL also supports explicit locking of a group of tables for
       the duration of the current transaction. Use of this command blocks
       access to the locked tables by other sessions and ensures the current
@@ -403,9 +406,9 @@
       transaction manager controls their activities. When each transaction
       performs only reads or writes on a single table, there is no contention.
       Each transaction waits until it can obtain a lock then performs the
-      operation and commits. All contentions occur when transactions perform
-      reads and writes on more than one table, or perform a read, followed by
-      a write, on the same table.</p>
+      operation and commits. Contentions occur when transactions perform reads
+      and writes on more than one table, or perform a read, followed by a
+      write, on the same table.</p>
 <p>For example, when sessions are working at the SERIALIZABLE level,
       when multiple sessions first read from a table in order to check if a
       row exists, then insert a row into the same table when it doesn't exist,
@@ -468,19 +471,22 @@
       then the engine puts the transaction in wait, until the other
       transaction has committed. The transaction then continues automatically.
       This isolation level is called READ CONSISTENCY.</p>
-<p>Deadlock is completely avoided. In theory conflict is possible if
-      each transaction is waiting for a different row modified by the other
+<p>Deadlock is completely avoided by the engine. The database
+      setting, SET DATABASE TRANSACTION ROLLBACK ON CONFLICT, determines what
+      happens in case of deadlock. In theory, conflict (deadlock) is possible
+      if each transaction is waiting for a different row modified by the other
       transaction. In this case, one of the transactions is immediately
-      terminated (rolled back) unless the setting has been changed with the
-      <code class="literal">&lt;set database transaction rollback on conflict
-      statement&gt;</code>. When this setting is changed to FALSE, the
-      session that avoided executing the deadlock-causing statement returns an
-      error, but without rolling back the previous actions. This will cause
-      the other transaction to wait for the current transaction. The property
-      should not be changed unless the application can quickly perform an
-      alternative statement to continue or roll back the transaction. This
-      allows maximum flexibility and compatibility with other database engines
-      which do not roll back the transaction upon deadlock.</p>
+      terminated by rolling back all the previous statements in the
+      transaction in order to allow the other transaction to continue. If the
+      setting has been changed to FALSE with the <code class="literal">&lt;set database
+      transaction rollback on conflict statement&gt;</code>, the session
+      that avoided executing the deadlock-causing statement returns an error,
+      but without rolling back the previous statements in the current
+      transaction. This session should perform an alternative statement to
+      continue and commit or roll back the transaction. Once the session has
+      committed or rolled back, the other session can continue. This allows
+      maximum flexibility and compatibility with other database engines which
+      do not roll back the transaction upon deadlock.</p>
 <p>When transactions are running in REPEATABLE READ or SERIALIZABLE
       isolation levels, conflict is more likely to happen. There is no
       difference in operation between these two isolation levels. This
@@ -488,12 +494,13 @@
 <p>In this mode, when the duration of two transactions overlaps, if
       one of the transactions has modified a row and the second transaction
       wants to modify the same row, the action of the second transaction will
-      fail. The engine will invalidate the second transaction and roll back
-      all its changes. If the setting is changed to false with the
-      <code class="literal">&lt;set database transaction rollback on conflict
-      statement&gt;</code>, then the second transaction will just return an
-      error without rolling back. The application must perform an alternative
-      statement to continue or roll back the transaction.</p>
+      fail. This happens even if the first transaction has already committed.
+      The engine will invalidate the second transaction and roll back all its
+      changes. If the setting is changed to false with the <code class="literal">&lt;set
+      database transaction rollback on conflict statement&gt;</code>, then
+      the second transaction will just return an error without rolling back.
+      The application must perform an alternative statement to continue or
+      roll back the transaction.</p>
 <p>In the MVCC model, READ UNCOMMITTED is promoted to READ COMMITTED,
       as the new architecture is based on multi-version rows for uncommitted
       data and more than one version may exist for some rows.</p>
@@ -513,14 +520,15 @@
 </div>
 <p>The SQL Standard defines the isolation levels as modes of
       operation that avoid the three unwanted phenomena, "dirty read", "fuzzy
-      read" and "phantom row". The "dirty read" phenomenon occurs when a
-      session can read a row that has been changed by another session. The
-      "fuzzy read" phenomenon occurs when a row that was read by a session is
-      modified by another session, then the first session reads the row again.
-      The "phantom row" phenomenon occurs when a session performs an operation
-      that affects several rows, for example, counts the rows or modifies them
-      using a search condition, then another session adds one or more rows
-      that fulfil the same search condition, then the first session performs
+      read" and "phantom row" during a transaction. The "dirty read"
+      phenomenon occurs when a session can read changes to a row made by
+      another uncommitted session. The "fuzzy read" phenomenon occurs when a
+      session reads a row and the row is modified by another session which
+      commits, then the first session reads the row again. The "phantom row"
+      phenomenon occurs when a session performs an operation that affects
+      several rows, for example, counts the rows or modifies them using a
+      search condition, then another session adds one or more rows that fulfil
+      the same search condition and commits, then the first session performs
       an operation that relies on the results of its last operation. According
       to the Standard, the SERIALIZABLE isolation level avoids all three
       phenomena and also ensures that all the changes performed during a
@@ -554,7 +562,7 @@
       can be used. It is possible to switch the concurrency model while the
       database is operational. Therefore, the model can be changed for the
       duration of some special operations, such as synchronization with
-      another data source.</p>
+      another data source or performing bulk changes to table contents.</p>
 <p>All concurrency models are very fast in operation. When data
       change operations are mainly on the same tables, the MVCC model may be
       faster, especially with multi-core processors.</p>
@@ -646,7 +654,7 @@
 </div>
 </div>
 </div>
-<a name="N10A26" class="indexterm"></a>
+<a name="N10A44" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ALTER SESSION</strong></span>
 </p>
@@ -655,31 +663,35 @@
 </p>
 <p>
 <code class="literal">&lt;alter session statement&gt; ::= ALTER SESSION
-    &lt;numeric literal&gt; { CLOSE | RELEASE }</code>
+    &lt;numeric literal&gt; { CLOSE | RELEASE | END
+    STATEMENT}</code>
 </p>
-<p>
-<code class="literal">&lt;alter current session statement&gt; ::= ALTER
-    SESSION RESET { ALL | RESULT SETS | TABLE DATA }</code>
-</p>
-<p>The &lt;alter session statement&gt; is used by an administrator
-    to close another session or to release the transaction in another session.
-    When a session is released, its current transaction is terminated with a
-    failure. The session remains open. This statement is different from the
-    other statements discussed in this chapter as it is not used for changing
-    the settings of the current session.</p>
+<p>The <code class="literal">&lt;alter session statement&gt;</code> is used by
+    an administrator to close another session or to rollback the transaction
+    in another session. This statement is different from the other statements
+    discussed in this chapter as it is not used for changing the settings of
+    the current session. When END STATEMENT is used, the current statement
+    that is waiting to run or being executed is aborted. When RELEASE is used,
+    the current transaction is terminated with a rollback. The session remains
+    open. CLOSE should be used after RELEASE has completed.</p>
 <p>The session ID is used as a <code class="literal">&lt;numeric
     literal&gt;</code> in this statement. The administrator can use the
     <code class="literal">INFORMATION_SCHEMA.SYSTEM_SESSIONS</code> table to find the
     session IDs of other sessions.</p>
-<p>The &lt;alter current session statement&gt; is used to clear and
-    reset different states of the current session. When ALL is specified, the
-    current transaction is rolled back, the session settings such as time
-    zone, current schema etc. are restored to their original state at the time
-    the session was opened and all open result sets are closed and temporary
-    tables cleared. When RESULT SETS is specified, all currently open result
-    sets are closed and the resources are released. When TABLE DATA is
-    specified, the data in all temporary tables is cleared.</p>
-<a name="N10A44" class="indexterm"></a>
+<p>
+<code class="literal">&lt;alter current session statement&gt; ::= ALTER
+    SESSION RESET { ALL | RESULT SETS | TABLE DATA }</code>
+</p>
+<p>The <code class="literal">&lt;alter current session statement&gt;</code> is
+    used to clear and reset different states of the current session. When ALL
+    is specified, the current transaction is rolled back, the session settings
+    such as time zone, current schema etc. are restored to their original
+    state at the time the session was opened and all open result sets are
+    closed and temporary tables cleared. When RESULT SETS is specified, all
+    currently open result sets are closed and the resources are released. When
+    TABLE DATA is specified, the data in all temporary tables is
+    cleared.</p>
+<a name="N10A68" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET AUTOCOMMIT</strong></span>
 </p>
@@ -695,7 +707,7 @@
     performed automatically. This statement changes the mode. It is equivalent
     to using the <code class="methodname">setAutoCommit( boolean autoCommit)</code>
     method of the JDBC <code class="classname">Connection</code> object.</p>
-<a name="N10A5B" class="indexterm"></a>
+<a name="N10A7F" class="indexterm"></a>
 <p>
 <span class="bold"><strong>START TRANSACTION</strong></span>
 </p>
@@ -710,7 +722,7 @@
     transactional SQL statements start a transaction automatically, therefore
     using this statement is not necessary. If the statement is called in the
     middle of a transaction, an exception is thrown.</p>
-<a name="N10A6C" class="indexterm"></a>
+<a name="N10A90" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TRANSACTION</strong></span>
 </p>
@@ -725,7 +737,7 @@
 <p>Set the characteristics of the next transaction in the current
     session. This statement has an effect only on the next transactions and
     has no effect on the future transactions after the next.</p>
-<a name="N10A7D" class="indexterm"></a>
+<a name="N10AA1" class="indexterm"></a>
 <p>
 <span class="bold"><strong>transaction
     characteristics</strong></span>
@@ -765,7 +777,7 @@
 </p>
 <p>Specify transaction characteristics.</p>
 <div class="example">
-<a name="N10AA0"></a>
+<a name="N10AC4"></a>
 <p class="title">
 <b>Example&nbsp;3.3.&nbsp;Setting Transaction Characteristics</b>
 </p>
@@ -777,7 +789,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10AA5" class="indexterm"></a>
+<a name="N10AC9" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET CONSTRAINTS</strong></span>
 </p>
@@ -798,7 +810,7 @@
     the rest of the current transaction. If the statement is issued when a
     transaction is not active then it applies only to the next transaction in
     the current session. HyperSQL does not yet support this feature.</p>
-<a name="N10AB9" class="indexterm"></a>
+<a name="N10ADD" class="indexterm"></a>
 <p>
 <span class="bold"><strong>LOCK TABLE</strong></span>
 </p>
@@ -830,7 +842,7 @@
 <p>Currently, this command does not have any effect when the
     database transaction control model is MVCC.</p>
 <div class="example">
-<a name="N10ACE"></a>
+<a name="N10AF2"></a>
 <p class="title">
 <b>Example&nbsp;3.4.&nbsp;Locking Tables</b>
 </p>
@@ -839,7 +851,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10AD3" class="indexterm"></a>
+<a name="N10AF7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SAVEPOINT</strong></span>
 </p>
@@ -858,7 +870,7 @@
     transaction. It establishes a milestone for the current transaction. The
     SAVEPOINT can be used at a later point in the transaction to rollback the
     transaction to the milestone.</p>
-<a name="N10AE7" class="indexterm"></a>
+<a name="N10B0B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>RELEASE SAVEPOINT</strong></span>
 </p>
@@ -872,7 +884,7 @@
 <p>Destroy a savepoint. This command is rarely used as it is not
     very useful. It removes a SAVEPOINT that has already been
     defined.</p>
-<a name="N10AF8" class="indexterm"></a>
+<a name="N10B1C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>COMMIT</strong></span>
 </p>
@@ -885,7 +897,7 @@
 </p>
 <p>Terminate the current SQL-transaction with commit. This make all
     the changes to the database permanent.</p>
-<a name="N10B09" class="indexterm"></a>
+<a name="N10B2D" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ROLLBACK</strong></span>
 </p>
@@ -901,7 +913,7 @@
     NO CHAIN is specified, a new SQL transaction is started just after the
     rollback. The new transaction inherits the properties of the old
     transaction.</p>
-<a name="N10B1A" class="indexterm"></a>
+<a name="N10B3E" class="indexterm"></a>
 <p>
 <span class="bold"><strong>ROLLBACK TO SAVEPOINT</strong></span>
 </p>
@@ -918,7 +930,7 @@
     <code class="literal">rollback( Savepoint savepoint)</code> method of the JDBC
     <code class="classname">Connection</code> object.</p>
 <div class="example">
-<a name="N10B31"></a>
+<a name="N10B55"></a>
 <p class="title">
 <b>Example&nbsp;3.5.&nbsp;Rollback</b>
 </p>
@@ -932,7 +944,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10B37" class="indexterm"></a>
+<a name="N10B5B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DISCONNECT</strong></span>
 </p>
@@ -945,7 +957,7 @@
 </p>
 <p>Terminate the current SQL session. Closing a JDBC connection has
     the same effect as this command.</p>
-<a name="N10B49" class="indexterm"></a>
+<a name="N10B6D" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET SESSION
     CHARACTERISTICS</strong></span>
@@ -979,7 +991,7 @@
     command. The current read-only mode can be accessed with the ISREADONLY()
     function.</p>
 <div class="example">
-<a name="N10B63"></a>
+<a name="N10B87"></a>
 <p class="title">
 <b>Example&nbsp;3.6.&nbsp;Setting Session Characteristics</b>
 </p>
@@ -991,7 +1003,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10B68" class="indexterm"></a>
+<a name="N10B8C" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET SESSION
     AUTHORIZATION</strong></span>
@@ -1011,7 +1023,7 @@
     user. The current authorisation can be accessed with the CURRENT_USER and
     SESSION_USER functions.</p>
 <div class="example">
-<a name="N10B79"></a>
+<a name="N10B9D"></a>
 <p class="title">
 <b>Example&nbsp;3.7.&nbsp;Setting Session Authorization</b>
 </p>
@@ -1022,7 +1034,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10B7E" class="indexterm"></a>
+<a name="N10BA2" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET ROLE</strong></span>
 </p>
@@ -1042,7 +1054,7 @@
     the specified role. If NONE is specified, then the previous CURRENT_ROLE
     is eliminated. The effect of this lasts for the lifetime of the session.
     The current role can be accessed with the CURRENT_ROLE function.</p>
-<a name="N10B92" class="indexterm"></a>
+<a name="N10BB6" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET TIME ZONE</strong></span>
 </p>
@@ -1064,7 +1076,7 @@
     LOCAL is specified, the time zone displacement reverts to the local time
     zone of the session.</p>
 <div class="example">
-<a name="N10BA6"></a>
+<a name="N10BCA"></a>
 <p class="title">
 <b>Example&nbsp;3.8.&nbsp;Setting Session Time Zone</b>
 </p>
@@ -1075,7 +1087,7 @@
 </div>
 </div>
 <br class="example-break">
-<a name="N10BAB" class="indexterm"></a>
+<a name="N10BCF" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET CATALOG</strong></span>
 </p>
@@ -1095,7 +1107,7 @@
     As there is only one catalog in the database, only the name of this
     catalog can be used. The current catalog can be accessed with the
     CURRENT_CATALOG function.</p>
-<a name="N10BBF" class="indexterm"></a>
+<a name="N10BE3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET SCHEMA</strong></span>
 </p>
@@ -1116,7 +1128,7 @@
     form requires the schema name as a single-quoted string. HyperSQL also
     allows the use of the identifier for the schema. The current schema can be
     accessed with the CURRENT_SCHEMA function.</p>
-<a name="N10BD3" class="indexterm"></a>
+<a name="N10BF7" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET PATH</strong></span>
 </p>
@@ -1135,7 +1147,7 @@
     invocations with unqualified routine names used in SQL statements that are
     prepared or executed directly in the current sessions. The effect of this
     lasts for the lifetime of the session.</p>
-<a name="N10BE7" class="indexterm"></a>
+<a name="N10C0B" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET MAXROWS</strong></span>
 </p>
@@ -1163,7 +1175,7 @@
     &lt;n&gt;. Therefore this command is not recommended for general use. The
     only legitimate use of this command is for checking and testing queries
     that may return very large numbers of rows.</p>
-<a name="N10C0A" class="indexterm"></a>
+<a name="N10C2E" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET SESSION RESULT MEMORY
     ROWS</strong></span>
@@ -1189,7 +1201,7 @@
 <code class="literal">SET DATABASE DEFAULT RESULT MEMORY ROWS &lt;unsigned
     integer literal&gt;</code>
 </p>
-<a name="N10C20" class="indexterm"></a>
+<a name="N10C44" class="indexterm"></a>
 <p>
 <span class="bold"><strong>SET IGNORECASE</strong></span>
 </p>
@@ -1215,7 +1227,7 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">

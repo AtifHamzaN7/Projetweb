@@ -1,5 +1,5 @@
 /*
- * $Id: dsv-rejects.sql 3340 2009-12-14 00:00:49Z unsaved $
+ * $Id: dsv-rejects.sql 5406 2014-10-13 20:53:18Z unsaved $
  *
  * Tests proper rejection of bad DSV input records
  */
@@ -11,6 +11,4 @@ CREATE TABLE t (i INT, r REAL, d DATE, t TIMESTAMP, v VARCHAR(80), b BOOLEAN);
 
 SELECT COUNT(*) FROM t;
 
-*if (*? != 2)
-    \q Should have imported 2 good DSV records, but imported *{?}
-*end if
+*if (*? != 2) \q Should have imported 2 good DSV records, but imported *{?}

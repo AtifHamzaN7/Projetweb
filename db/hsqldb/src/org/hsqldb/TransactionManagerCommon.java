@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -50,7 +50,7 @@ import org.hsqldb.lib.OrderedHashSet;
  * Shared code for TransactionManager classes
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.2
+ * @version 2.3.4
  * @since 2.0.0
  */
 class TransactionManagerCommon {
@@ -137,8 +137,6 @@ class TransactionManagerCommon {
 
             manager.transactionCount = transactionCount;
             database.txManager       = (TransactionManager) manager;
-
-            return;
         } finally {
             writeLock.unlock();
         }
@@ -231,11 +229,13 @@ class TransactionManagerCommon {
         }
 
         try {
+            session.logSequences();
+
             if (limit > 0 && writeCommit) {
                 database.logger.writeCommitStatement(session);
             }
         } catch (HsqlException e) {
-            database.logger.logWarningEvent("data commit failed", e);
+            database.logger.logWarningEvent("data commit logging failed", e);
         }
     }
 
@@ -244,36 +244,7 @@ class TransactionManagerCommon {
         for (int i = start; i < limit; i++) {
             RowAction action = (RowAction) list[i];
 
-            postCommitAction(session, action);
-        }
-    }
-
-    void postCommitAction(Session session, RowAction action) {
-
-        if (action.type == RowActionBase.ACTION_NONE) {
             action.store.postCommitAction(session, action);
-        }
-
-        if (action.type == RowActionBase.ACTION_DELETE_FINAL
-                && !action.deleteComplete) {
-            try {
-                action.deleteComplete = true;
-
-                if (action.table.getTableType() == TableBase.TEMP_TABLE) {
-                    return;
-                }
-
-                Row row = action.memoryRow;
-
-                if (row == null) {
-                    row = (Row) action.store.get(action.getPos(), false);
-                }
-
-                action.store.commitRow(session, row, action.type, txModel);
-            } catch (Exception e) {
-
-//                    throw unexpectedException(e.getMessage());
-            }
         }
     }
 
@@ -333,6 +304,40 @@ class TransactionManagerCommon {
         }
 
         return true;
+    }
+
+    void getTransactionSessions(Session session) {
+
+        OrderedHashSet set      = session.tempSet;
+        Session[]      sessions = database.sessionManager.getAllSessions();
+
+        for (int i = 0; i < sessions.length; i++) {
+            long timestamp = sessions[i].transactionTimestamp;
+
+            if (session != sessions[i] && sessions[i].isTransaction) {
+                set.add(sessions[i]);
+            }
+        }
+    }
+
+    void getTransactionAndPreSessions(Session session) {
+
+        OrderedHashSet set      = session.tempSet;
+        Session[]      sessions = database.sessionManager.getAllSessions();
+
+        for (int i = 0; i < sessions.length; i++) {
+            long timestamp = sessions[i].transactionTimestamp;
+
+            if (session == sessions[i]) {
+                continue;
+            }
+
+            if (sessions[i].isPreTransaction) {
+                set.add(sessions[i]);
+            } else if (sessions[i].isTransaction) {
+                set.add(sessions[i]);
+            }
+        }
     }
 
     void endActionTPL(Session session) {
@@ -550,6 +555,10 @@ class TransactionManagerCommon {
             return false;
         }
 
+        if (cs.isCatalogLock()) {
+            getTransactionSessions(session);
+        }
+
         HsqlName[] nameList = cs.getTableNamesForWrite();
 
         for (int i = 0; i < nameList.length; i++) {
@@ -579,7 +588,9 @@ class TransactionManagerCommon {
         nameList = cs.getTableNamesForRead();
 
         if (txModel == TransactionManager.MVLOCKS && session.isReadOnly()) {
-            nameList = catalogNameList;
+            if (nameList.length > 0) {
+                nameList = catalogNameList;
+            }
         }
 
         for (int i = 0; i < nameList.length; i++) {
@@ -646,6 +657,12 @@ class TransactionManagerCommon {
         }
 
         nameList = cs.getTableNamesForRead();
+
+        if (txModel == TransactionManager.MVLOCKS && session.isReadOnly()) {
+            if (nameList.length > 0) {
+                nameList = catalogNameList;
+            }
+        }
 
         for (int i = 0; i < nameList.length; i++) {
             HsqlName name = nameList[i];
@@ -828,10 +845,6 @@ class TransactionManagerCommon {
 
     void resetSession(Session session, Session targetSession, int mode) {
 
-        if (session == targetSession) {
-            return;
-        }
-
         writeLock.lock();
 
         try {
@@ -857,17 +870,47 @@ class TransactionManagerCommon {
                     break;
 
                 case TransactionManager.resetSessionRollback :
-                    if (targetSession.latch.getCount() > 0) {
-                        targetSession.abortTransaction = true;
+                    if (session == targetSession) {
+                        return;
+                    }
 
-                        targetSession.latch.setCount(0);
-                    } else {
-                        targetSession.rollbackNoCheck(true);
+                    if (targetSession.isInMidTransaction()) {
+                        prepareReset(targetSession);
+
+                        if (targetSession.latch.getCount() > 0) {
+                            targetSession.abortTransaction = true;
+
+                            targetSession.latch.setCount(0);
+                        } else {
+                            targetSession.abortTransaction = true;
+                        }
+                    }
+                    break;
+
+                case TransactionManager.resetSessionAbort :
+                    if (session == targetSession) {
+                        return;
+                    }
+
+                    if (targetSession.isInMidTransaction()) {
+                        prepareReset(targetSession);
+
+                        if (targetSession.latch.getCount() > 0) {
+                            targetSession.abortAction = true;
+
+                            targetSession.latch.setCount(0);
+                        } else {
+                            targetSession.abortAction = true;
+                        }
                     }
                     break;
 
                 case TransactionManager.resetSessionClose :
-                    if (targetSession.latch.getCount() == 0) {
+                    if (session == targetSession) {
+                        return;
+                    }
+
+                    if (!targetSession.isInMidTransaction()) {
                         targetSession.rollbackNoCheck(true);
                         targetSession.close();
                     }
@@ -877,4 +920,19 @@ class TransactionManagerCommon {
             writeLock.unlock();
         }
     }
+
+    void prepareReset(Session session) {
+
+        OrderedHashSet waitedSessions = session.waitedSessions;
+
+        for (int i = 0; i < waitedSessions.size(); i++) {
+            Session current = (Session) waitedSessions.get(i);
+
+            current.waitingSessions.remove(session);
+        }
+
+        waitedSessions.clear();
+    }
+
+    public void abortAction(Session session) {}
 }

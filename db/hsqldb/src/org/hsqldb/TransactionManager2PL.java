@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,12 +57,20 @@ implements TransactionManager {
         return globalChangeTimestamp.get();
     }
 
+    public void setGlobalChangeTimestamp(long ts) {
+        globalChangeTimestamp.set(ts);
+    }
+
     public boolean isMVRows() {
         return false;
     }
 
     public boolean isMVCC() {
         return false;
+    }
+
+    public boolean is2PL() {
+        return true;
     }
 
     public int getTransactionControl() {
@@ -109,6 +117,9 @@ implements TransactionManager {
 
             adjustLobUsage(session);
             persistCommit(session);
+
+            session.isTransaction = false;
+
             endTransactionTPL(session);
         } finally {
             writeLock.unlock();
@@ -121,15 +132,19 @@ implements TransactionManager {
 
     public void rollback(Session session) {
 
-        session.abortTransaction        = false;
-        session.actionTimestamp         = getNextGlobalChangeTimestamp();
-        session.transactionEndTimestamp = session.actionTimestamp;
-
-        rollbackPartial(session, 0, session.transactionTimestamp);
-        endTransaction(session);
         writeLock.lock();
 
         try {
+            session.abortTransaction        = false;
+            session.actionTimestamp         = getNextGlobalChangeTimestamp();
+            session.transactionEndTimestamp = session.actionTimestamp;
+
+            rollbackPartial(session, 0, session.transactionTimestamp);
+            endTransaction(session);
+            session.logSequences();
+
+            session.isTransaction = false;
+
             endTransactionTPL(session);
         } finally {
             writeLock.unlock();
@@ -232,6 +247,13 @@ implements TransactionManager {
         }
 
         store.indexRow(session, row);
+
+        if (table.persistenceScope == Table.SCOPE_ROUTINE) {
+            row.rowAction = null;
+
+            return;
+        }
+
         session.rowActionList.add(action);
 
         row.rowAction = null;
@@ -264,6 +286,7 @@ implements TransactionManager {
         if (!session.isTransaction) {
             session.actionTimestamp      = getNextGlobalChangeTimestamp();
             session.transactionTimestamp = session.actionTimestamp;
+            session.isPreTransaction     = false;
             session.isTransaction        = true;
 
             transactionCount++;
@@ -275,10 +298,6 @@ implements TransactionManager {
      * (depending on isolation mode)
      */
     public void beginAction(Session session, Statement cs) {
-
-        if (session.hasLocks(cs)) {
-            return;
-        }
 
         writeLock.lock();
 
@@ -317,6 +336,7 @@ implements TransactionManager {
 
         if (!session.isTransaction) {
             session.transactionTimestamp = session.actionTimestamp;
+            session.isPreTransaction     = false;
             session.isTransaction        = true;
 
             transactionCount++;
@@ -330,11 +350,9 @@ implements TransactionManager {
         super.resetSession(session, targetSession, mode);
     }
 
-    void endTransaction(Session session) {
+    private void endTransaction(Session session) {
 
         if (session.isTransaction) {
-            session.isTransaction = false;
-
             transactionCount--;
         }
     }

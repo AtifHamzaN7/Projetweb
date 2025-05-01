@@ -48,8 +48,8 @@
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N13438"></a>
-<p>Copyright 2010-2012 Fred Toussi. Permission is granted to
+<a name="N1356A"></a>
+<p>Copyright 2010-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -57,7 +57,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -142,9 +142,9 @@
     if the same condition is false.</p>
 <p>Usage constraints cannot always be expressed by SQL&rsquo;s integrity
     constraint statements. Triggers can enforce these constraints. For
-    example, it is not possible to use a check constraint to prevent inserts
-    or deletes on weekends. A trigger can be used to enforce the time when
-    each operation is allowed.</p>
+    example, it is not possible to use a check constraint to prevent data
+    inserts or deletes on weekends. A trigger can be used to enforce the time
+    when each operation is allowed.</p>
 <p>A trigger is declared to activate when an UPDATE, INSERT or
     DELETE action is performed on a table. These actions may be direct or
     indirect. Indirect actions may arise from CASCADE actions of FOREIGN KEY
@@ -191,9 +191,9 @@
 </div>
 </div>
 </div>
-<p>AFTER triggers can also perform additional data changes, for
-      example inserting an additional row into a different table for data
-      audits. These triggers cannot modify the rows that have been modified by
+<p>AFTER triggers can perform additional data changes, for example
+      inserting an additional row into a different table for data audits or
+      logs. These triggers cannot modify the rows that have been modified by
       the INSERT or UPDATE action.</p>
 </div>
 <div class="section" title="INSTEAD OF Triggers">
@@ -214,6 +214,9 @@
       tables, such as audit tables. With the use of INSTEAD OF triggers a
       read-only view can effectively become updatable or
       insertable-into.</p>
+<p>An example of INSTEAD OF TRIGGERS is one that performs an
+      INSERT, UPDATE or DELETE on multiple tables that are used in the
+      view.</p>
 </div>
 </div>
 <div class="section" title="Trigger Properties">
@@ -273,7 +276,8 @@
 <p>The granularity dictates whether the REFERENCING clause can
       specify OLD ROW, NEW ROW, or OLD TABLE, NEW TABLE.</p>
 <p>A trigger declared as FOR EACH STATEMENT can only be an AFTER
-      trigger.</p>
+      trigger. These triggers are useful for logging the event that was
+      triggered.</p>
 </div>
 <div class="section" title="Trigger Action Time">
 <div class="titlepage">
@@ -468,7 +472,7 @@
 </div>
 </div>
 </div>
-<a name="N134F2" class="indexterm"></a>
+<a name="N13626" class="indexterm"></a>
 <p>
 <span class="bold"><strong>CREATE TRIGGER</strong></span>
 </p>
@@ -576,7 +580,7 @@
     interface.</p>
 <p>Early releases of HyperSQL version 2.0 do not allow the use of
     OLD TABLE or NEW TABLE in statement level triggers.</p>
-<a name="N1355D" class="indexterm"></a>
+<a name="N13691" class="indexterm"></a>
 <p>
 <span class="bold"><strong>TRIGGERED SQL
     STATEMENT</strong></span>
@@ -625,7 +629,7 @@
    END
 </pre>
 <p></p>
-<a name="N1357F" class="indexterm"></a>
+<a name="N136B3" class="indexterm"></a>
 <p>
 <span class="bold"><strong>TRIGGER EXECUTION
     ORDER</strong></span>
@@ -642,8 +646,8 @@
     in the definition. The newly defined trigger will be executed before the
     specified other trigger. If this clause is not used, the new trigger is
     executed after all the previously defined triggers of the same scope
-    (BEFORE, AFTER, EACH ROW, EACH STATEMENT).</p>
-<a name="N13590" class="indexterm"></a>
+    (BEFORE / AFTER, EACH ROW / EACH STATEMENT).</p>
+<a name="N136C4" class="indexterm"></a>
 <p>
 <span class="bold"><strong>DROP TRIGGER</strong></span>
 </p>
@@ -658,7 +662,7 @@
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">

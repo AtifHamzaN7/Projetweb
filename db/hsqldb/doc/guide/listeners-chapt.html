@@ -1,35 +1,35 @@
 <html>
 <head>
 <META http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners (Servers)</title>
+<title>Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners (Servers)</title>
 <link href="../docbook.css" type="text/css" rel="stylesheet">
 <meta content="DocBook XSL-NS Stylesheets V1.76.1" name="generator">
 <meta name="keywords" content="Hsqldb, HyperSQL, Server, Listener">
 <meta name="keywords" content="Hsqldb, HyperSQL, Database, JDBC, Java">
 <link rel="home" href="index.html" title="HyperSQL User Guide">
 <link rel="up" href="index.html" title="HyperSQL User Guide">
-<link rel="prev" href="dbproperties-chapt.html" title="Chapter&nbsp;12.&nbsp;Properties">
-<link rel="next" href="unix-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL on UNIX">
+<link rel="prev" href="dbproperties-chapt.html" title="Chapter&nbsp;13.&nbsp;Properties">
+<link rel="next" href="unix-chapt.html" title="Chapter&nbsp;15.&nbsp;HyperSQL on UNIX">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <div class="navheader">
 <table summary="Navigation header" width="100%">
 <tr>
-<td align="left" width="30%"><a accesskey="p" href="dbproperties-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners
+<td align="left" width="30%"><a accesskey="p" href="dbproperties-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="40%" style="font-weight:bold;">Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners
     (Servers)</td><td align="right" width="30%">&nbsp;<a accesskey="n" href="unix-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="30%">Chapter&nbsp;12.&nbsp;Properties&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;14.&nbsp;HyperSQL on UNIX</td>
+<td valign="top" align="left" width="30%">Chapter&nbsp;13.&nbsp;Properties&nbsp;</td><td align="center" width="40%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="30%">&nbsp;Chapter&nbsp;15.&nbsp;HyperSQL on UNIX</td>
 </tr>
 </table>
 </div>
 <HR>
-<div class="chapter" title="Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners (Servers)">
+<div class="chapter" title="Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners (Servers)">
 <div class="titlepage">
 <div>
 <div>
 <h2 class="title">
-<a name="listeners-chapt"></a>Chapter&nbsp;13.&nbsp;HyperSQL Network Listeners
+<a name="listeners-chapt"></a>Chapter&nbsp;14.&nbsp;HyperSQL Network Listeners
     (Servers)</h2>
 </div>
 <div>
@@ -51,12 +51,12 @@
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5292 $</p>
+<p class="releaseinfo">$Revision: 5639 $</p>
 </div>
 <div>
 <div class="legalnotice" title="Legal Notice">
-<a name="N15C88"></a>
-<p>Copyright 2002-2012 Fred Toussi. Permission is granted to
+<a name="N15F60"></a>
+<p>Copyright 2002-2016 Fred Toussi. Permission is granted to
       distribute this document without any alteration under the terms of the
       HSQLDB license. Additional permission is granted to the HSQL Development
       Group to distribute this document with or without alterations under the
@@ -64,7 +64,7 @@
 </div>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
@@ -94,6 +94,9 @@
 </dt>
 <dt>
 <span class="section"><a href="listeners-chapt.html#lsc_app_start">Starting a Server from your Application</a></span>
+</dt>
+<dt>
+<span class="section"><a href="listeners-chapt.html#lsc_app_stop">Shutting down a Server from your Application</a></span>
 </dt>
 <dt>
 <span class="section"><a href="listeners-chapt.html#lsc_remote_open">Allowing a Connection to Open or Create a Database</a></span>
@@ -151,9 +154,11 @@
       fastest one. This mode uses the proprietary <em class="glossterm">hsql:</em>
       communications protocol. The following example of the command for
       starting the server starts the server with one (default) database with
-      files named "mydb.*" and the public name (alias) of "xdb".</p>
+      files named "mydb.*" and the public name (alias) of "xdb". Note the
+      database property to set the transaction mode to MVCC is appended to the
+      database file path.</p>
 <div class="informalexample">
-<pre class="screen"> java -cp ../lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb --dbname.0 xdb</pre>
+<pre class="screen"> java -cp ../lib/hsqldb.jar org.hsqldb.server.Server --database.0 file:mydb;hsqldb.tx=mvcc --dbname.0 xdb</pre>
 </div>
 <p>Alternatively, a server.properties file can be used for passing
       the arguments to the server. This file must be located in the directory
@@ -244,9 +249,9 @@
     will work). Supported properties and their default values (if any) are as
     follows:</p>
 <div class="table">
-<a name="N15CF3"></a>
+<a name="N15FCB"></a>
 <p class="title">
-<b>Table&nbsp;13.1.&nbsp;common server and webserver properties</b>
+<b>Table&nbsp;14.1.&nbsp;common server and webserver properties</b>
 </p>
 <div class="table-contents">
 <table summary="common server and webserver properties" cellspacing="0" width="100%" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; ">
@@ -322,9 +327,9 @@
 <p>Properties or default values specific to
     <code class="filename">server.properties</code> are:</p>
 <div class="table">
-<a name="N15D90"></a>
+<a name="N16068"></a>
 <p class="title">
-<b>Table&nbsp;13.2.&nbsp;server properties</b>
+<b>Table&nbsp;14.2.&nbsp;server properties</b>
 </p>
 <div class="table-contents">
 <table summary="server properties" cellspacing="0" width="100%" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; ">
@@ -356,9 +361,9 @@
 <p>Properties or default values specific to
     <code class="filename">webserver.properties</code> are:</p>
 <div class="table">
-<a name="N15DC2"></a>
+<a name="N1609A"></a>
 <p class="title">
-<b>Table&nbsp;13.3.&nbsp;webserver properties</b>
+<b>Table&nbsp;14.3.&nbsp;webserver properties</b>
 </p>
 <div class="table-contents">
 <table summary="webserver properties" cellspacing="0" width="100%" style="border-collapse: collapse;border-top: 0.5pt solid ; border-bottom: 0.5pt solid ; border-left: 0.5pt solid ; border-right: 0.5pt solid ; ">
@@ -460,6 +465,29 @@
  server.setErrWriter(null); // can use custom writer
  server.start();
 </pre>
+</div>
+<div class="section" title="Shutting down a Server from your Application">
+<div class="titlepage">
+<div>
+<div>
+<h2 class="title" style="clear: both">
+<a name="lsc_app_stop"></a>Shutting down a Server from your Application</h2>
+</div>
+</div>
+</div>
+<p>To shut down the server, you can execute the SQL "SHUTDOWN"
+    statement on the server databases. When you start the server from your
+    application and keep a reference to the java Server object, you can also
+    shut it down programatically. Calling the <code class="literal">shutdownCatalogs(int
+    shutdownMode)</code> method of
+    <code class="classname">org.hsqldb.server.Server</code> closes all the open
+    databases, which results in server shtudown. The parameter value is
+    normally 1, which indicates normal shutdown. Other modes of shutdown, such
+    as SHUTDOWN IMMEDIATELY are also supported. See the javadoc for
+    <code class="classname">org.hsqldb.server.Server</code>. See the example
+    below:</p>
+<pre class="programlisting"> server.shutdownCatalogs(1);
+</pre>
 <p>The Server object has several alternative methods for setting
     databases and their public names. The server should be shutdown using the
     shutdown() method.</p>
@@ -523,7 +551,7 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
 </pre>
 <p>The specified properties apply only to a new database. They have no
     effect on an existing database apart from a few properties such as
-    <code class="literal">readonly</code> listed in the <a class="link" href="dbproperties-chapt.html" title="Chapter&nbsp;12.&nbsp;Properties">Properties</a>
+    <code class="literal">readonly</code> listed in the <a class="link" href="dbproperties-chapt.html" title="Chapter&nbsp;13.&nbsp;Properties">Properties</a>
     chapter.</p>
 </div>
 <div class="section" title="TLS Encryption">
@@ -550,14 +578,14 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
 </div>
 </div>
 <div>
-<p class="releaseinfo">$Revision: 5292 $</p>
+<p class="releaseinfo">$Revision: 5639 $</p>
 </div>
 <div>
-<p class="pubdate">2014-02-13 18:22:10-0500</p>
+<p class="pubdate">2016-05-15 15:56:47-0400</p>
 </div>
 </div>
 </div>
-<a name="N15E93" class="indexterm"></a>
+<a name="N1617C" class="indexterm"></a>
 <p>This section explains how to encrypt the stream between JDBC network
     clients and HyperSQL Listeners. If you are running an
     <em class="glossterm">in-process</em> (non-Listener) setup, this chapter does
@@ -656,9 +684,9 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
 <p>You may already have an X509 cert for your server. If you have a
         server keystore, then you can generate a X509 cert like this. </p>
 <div class="example">
-<a name="N15ED4"></a>
+<a name="N161BD"></a>
 <p class="title">
-<b>Example&nbsp;13.1.&nbsp;Exporting certificate from the server's keystore</b>
+<b>Example&nbsp;14.1.&nbsp;Exporting certificate from the server's keystore</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> keytool -export -keystore server.store -alias existing_alias -file server.cer</pre>
@@ -675,9 +703,9 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
         existing keystore, or create a new keystore if
         <code class="filename">client.store</code> doesn't exist.</p>
 <div class="example">
-<a name="N15EE6"></a>
+<a name="N161CF"></a>
 <p class="title">
-<b>Example&nbsp;13.2.&nbsp;Adding a certificate to the client keystore</b>
+<b>Example&nbsp;14.2.&nbsp;Adding a certificate to the client keystore</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> keytool -import -trustcacerts -keystore trust.store -alias new_alias -file server.cer</pre>
@@ -699,16 +727,16 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
         <code class="classname">javax.net.ssl.trustStore</code> every time that you
         run your client program. For example </p>
 <div class="example">
-<a name="N15EFA"></a>
+<a name="N161E3"></a>
 <p class="title">
-<b>Example&nbsp;13.3.&nbsp;Specifying your own trust store to a JDBC client</b>
+<b>Example&nbsp;14.3.&nbsp;Specifying your own trust store to a JDBC client</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> java -Djavax.net.ssl.trustStore=/home/blaine/trust.store -jar /path/to/hsqldb.jar dest-urlid</pre>
 </div>
 </div>
 <p>
-<br class="example-break"> This example runs the program <a class="link" href="unix-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL on UNIX">SqlTool</a>. SqlTool has built-in TLS
+<br class="example-break"> This example runs the program <a class="link" href="unix-chapt.html" title="Chapter&nbsp;15.&nbsp;HyperSQL on UNIX">SqlTool</a>. SqlTool has built-in TLS
         support however, so, for SqlTool you can set
         <code class="varname">truststore</code> on a per-urlid basis in the SqlTool
         configuration file.</p>
@@ -817,9 +845,9 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
 <p>Because I have spent a lot of time on this document already, I
         am just giving you an example.</p>
 <div class="example">
-<a name="N15F75"></a>
+<a name="N1625E"></a>
 <p class="title">
-<b>Example&nbsp;13.4.&nbsp;Getting a pem-style private key into a JKS keystore</b>
+<b>Example&nbsp;14.4.&nbsp;Getting a pem-style private key into a JKS keystore</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> openssl pkcs8 -topk8 -outform DER -in Xpvk.pem -inform PEM -out Xpvk.pk8 -nocrypt
@@ -876,7 +904,7 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
       Server or WebServer running with encryption, set the
       <code class="varname">system.javax.net.ssl.keyStore</code> and
       <code class="varname">system.javax.net.ssl.keyStorePassword</code> properties as
-      instructed above, and follow the instructions in the <a class="link" href="unix-chapt.html" title="Chapter&nbsp;14.&nbsp;HyperSQL on UNIX">HyperSQL on UNIX</a> chapter, paying
+      instructed above, and follow the instructions in the <a class="link" href="unix-chapt.html" title="Chapter&nbsp;15.&nbsp;HyperSQL on UNIX">HyperSQL on UNIX</a> chapter, paying
       close attention to the TLS-related comments in the template config
       file.</p>
 <p>If you are using a private server certificate, make sure to also
@@ -897,7 +925,7 @@ Connection c = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/xdb;fil
 </div>
 </div>
 </div>
-<a name="N15FB4" class="indexterm"></a><a name="N15FB7" class="indexterm"></a>
+<a name="N1629D" class="indexterm"></a><a name="N162A0" class="indexterm"></a>
 <p>JDBC connections will always be denied if the supplied user and
     password are not found in the target catalog. But an HyperSQL listener can
     also restrict access at the listener level, even protecting private
@@ -993,9 +1021,9 @@ allow 192.168.101.0/24
     copy it to a temporary file and edit the temporary file). Then use the
     <code class="classname">ServerAcl</code> class to test it. </p>
 <div class="example">
-<a name="N15FFE"></a>
+<a name="N162E7"></a>
 <p class="title">
-<b>Example&nbsp;13.5.&nbsp;Validating and Testing an ACL file</b>
+<b>Example&nbsp;14.5.&nbsp;Validating and Testing an ACL file</b>
 </p>
 <div class="example-contents">
 <pre class="screen"> java -cp path/to/hsqldb.jar org.hsqldb.server.ServerAcl path/to/acl.txt</pre>
@@ -1023,7 +1051,7 @@ allow 192.168.101.0/24
 </div>
 </div>
 <HR xmlns:xi="http://www.w3.org/2001/XInclude">
-<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5206 $</P>
+<P xmlns:xi="http://www.w3.org/2001/XInclude" class="svnrev">$Revision: 5631 $</P>
 <div class="navfooter">
 <hr>
 <table summary="Navigation footer" width="100%">
@@ -1031,7 +1059,7 @@ allow 192.168.101.0/24
 <td align="left" width="40%"><a accesskey="p" href="dbproperties-chapt.html"><img src="../images/db/prev.png" alt="Prev"></a>&nbsp;</td><td align="center" width="20%">&nbsp;</td><td align="right" width="40%">&nbsp;<a accesskey="n" href="unix-chapt.html"><img src="../images/db/next.png" alt="Next"></a></td>
 </tr>
 <tr>
-<td valign="top" align="left" width="40%">Chapter&nbsp;12.&nbsp;Properties&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;14.&nbsp;HyperSQL on UNIX</td>
+<td valign="top" align="left" width="40%">Chapter&nbsp;13.&nbsp;Properties&nbsp;</td><td align="center" width="20%"><a accesskey="h" href="index.html"><img src="../images/db/home.png" alt="Home"></a></td><td valign="top" align="right" width="40%">&nbsp;Chapter&nbsp;15.&nbsp;HyperSQL on UNIX</td>
 </tr>
 </table>
 </div>

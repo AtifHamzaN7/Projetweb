@@ -1,4 +1,4 @@
-/* Copyright (c) 2001-2014, The HSQL Development Group
+/* Copyright (c) 2001-2016, The HSQL Development Group
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,17 +37,18 @@ import org.hsqldb.Table;
 import org.hsqldb.TableBase;
 import org.hsqldb.error.Error;
 import org.hsqldb.error.ErrorCode;
+import org.hsqldb.index.Index;
 import org.hsqldb.lib.HsqlDeque;
 import org.hsqldb.lib.Iterator;
 import org.hsqldb.lib.LongKeyHashMap;
 
 /**
- * Collection of PersistenceStore itmes currently used by a session.
+ * Collection of PersistenceStore items currently used by a session.
  * An item is retrieved based on key returned by
  * TableBase.getPersistenceId().
  *
  * @author Fred Toussi (fredt@users dot sourceforge.net)
- * @version 2.3.0
+ * @version 2.3.3
  * @since 1.9.0
  */
 public class PersistentStoreCollectionSession
@@ -64,45 +65,26 @@ implements PersistentStoreCollection {
         this.session = session;
     }
 
-    synchronized public void setStore(Object key, PersistentStore store) {
-
-        TableBase table = (TableBase) key;
+    synchronized public void removeStore(TableBase table) {
 
         switch (table.persistenceScope) {
 
             case TableBase.SCOPE_ROUTINE :
-                if (store == null) {
-                    rowStoreMapRoutine.remove(table.getPersistenceId());
-                } else {
-                    rowStoreMapRoutine.put(table.getPersistenceId(), store);
-                }
+                rowStoreMapRoutine.remove(table.getPersistenceId());
                 break;
 
             case TableBase.SCOPE_STATEMENT :
-                if (store == null) {
-                    rowStoreMapStatement.remove(table.getPersistenceId());
-                } else {
-                    rowStoreMapStatement.put(table.getPersistenceId(), store);
-                }
+                rowStoreMapStatement.remove(table.getPersistenceId());
                 break;
 
             // TEMP TABLE default, SYSTEM_TABLE + INFO_SCHEMA_TABLE
             case TableBase.SCOPE_FULL :
             case TableBase.SCOPE_TRANSACTION :
-                if (store == null) {
-                    rowStoreMapTransaction.remove(table.getPersistenceId());
-                } else {
-                    rowStoreMapTransaction.put(table.getPersistenceId(),
-                                               store);
-                }
+                rowStoreMapTransaction.remove(table.getPersistenceId());
                 break;
 
             case TableBase.SCOPE_SESSION :
-                if (store == null) {
-                    rowStoreMapSession.remove(table.getPersistenceId());
-                } else {
-                    rowStoreMapSession.put(table.getPersistenceId(), store);
-                }
+                rowStoreMapSession.remove(table.getPersistenceId());
                 break;
 
             default :
@@ -115,9 +97,8 @@ implements PersistentStoreCollection {
         return (PersistentStore) rowStoreMapStatement.get(persistenceId);
     }
 
-    synchronized public PersistentStore getStore(Object key) {
+    synchronized public PersistentStore getStore(TableBase table) {
 
-        TableBase       table = (TableBase) key;
         PersistentStore store;
 
         switch (table.persistenceScope) {
@@ -129,6 +110,8 @@ implements PersistentStoreCollection {
                 if (store == null) {
                     store = session.database.logger.newStore(session, this,
                             table);
+
+                    rowStoreMapRoutine.put(table.getPersistenceId(), store);
                 }
 
                 return store;
@@ -140,6 +123,8 @@ implements PersistentStoreCollection {
                 if (store == null) {
                     store = session.database.logger.newStore(session, this,
                             table);
+
+                    rowStoreMapStatement.put(table.getPersistenceId(), store);
                 }
 
                 return store;
@@ -153,6 +138,9 @@ implements PersistentStoreCollection {
                 if (store == null) {
                     store = session.database.logger.newStore(session, this,
                             table);
+
+                    rowStoreMapTransaction.put(table.getPersistenceId(),
+                                               store);
                 }
 
                 if (table.getTableType() == TableBase.INFO_SCHEMA_TABLE) {
@@ -169,6 +157,8 @@ implements PersistentStoreCollection {
                 if (store == null) {
                     store = session.database.logger.newStore(session, this,
                             table);
+
+                    rowStoreMapSession.put(table.getPersistenceId(), store);
                 }
 
                 return store;
@@ -274,17 +264,6 @@ implements PersistentStoreCollection {
         rowStoreMapRoutine.clear();
     }
 
-    synchronized public void registerIndex(Session session, TableBase table) {
-
-        PersistentStore store = findStore(table);
-
-        if (store == null) {
-            return;
-        }
-
-        store.resetAccessorKeys(session, table.getIndexList());
-    }
-
     synchronized public PersistentStore findStore(TableBase table) {
 
         PersistentStore store = null;
@@ -317,27 +296,39 @@ implements PersistentStoreCollection {
         return store;
     }
 
+    synchronized public void resetAccessorKeys(Session session, Table table,
+            Index[] indexes) {
+
+        PersistentStore store = findStore(table);
+
+        if (store == null) {
+            return;
+        }
+
+        store.resetAccessorKeys(session, indexes);
+    }
+
     synchronized public void moveData(Table oldTable, Table newTable,
                                       int colIndex, int adjust) {
 
-        PersistentStore oldStore = findStore(oldTable);
+        PersistentStore store = findStore(oldTable);
 
-        if (oldStore == null) {
+        if (store == null) {
             return;
         }
 
         PersistentStore newStore = getStore(newTable);
 
         try {
-            newStore.moveData(session, oldStore, colIndex, adjust);
+            newStore.moveData(session, store, colIndex, adjust);
         } catch (HsqlException e) {
             newStore.release();
-            setStore(newTable, null);
+            removeStore(newTable);
 
             throw e;
         }
 
-        setStore(oldTable, null);
+        removeStore(oldTable);
     }
 
     synchronized public void push(boolean isRoutine) {
