@@ -13,9 +13,7 @@ public class Ingredient {
 
     private String nom;
     private int calories;
-
-    @ElementCollection
-    private List<Integer> valNut = new ArrayList<>();
+    private String quantite;
 
     @ManyToMany(mappedBy = "ingredients")
     private List<Recette> recettes = new ArrayList<>();
@@ -25,11 +23,10 @@ public class Ingredient {
     public Ingredient() {
     }
 
-    public Ingredient(int idIng, String nom, int calories, List<Integer> valNut) {
+    public Ingredient(int idIng, String nom, int calories) {
         this.idIng = idIng;
         this.nom = nom;
         this.calories = calories;
-        this.valNut = valNut;
     }
 
     // Constructeur simplifié (nom uniquement)
@@ -37,10 +34,21 @@ public class Ingredient {
         this.idIng = 0; // Valeur par défaut
         this.nom = nom;
         this.calories = 0; // Valeur par défaut
-        this.valNut = null; // Valeur par défaut
     }
 
     // Getters et setters
+
+    public int getId() {
+        return idIng;
+    }
+
+    public void setQuantite(String quantite) {
+        this.quantite = quantite;
+    }
+
+    public String getQuantite() {
+        return quantite;
+    }
     public int getIdIng() {
         return idIng;
     }
@@ -65,14 +73,6 @@ public class Ingredient {
         this.calories = calories;
     }
 
-    public List<Integer> getValNut() {
-        return valNut;
-    }
-
-    public void setValNut(List<Integer> valNut) {
-        this.valNut = valNut;
-    }
-
     public void setRecettes(List<Recette> recettes) {
         this.recettes = recettes;
         for (Recette recette : recettes) {
@@ -82,12 +82,7 @@ public class Ingredient {
         }
     }
 
-    public void addValNut(int val) {
-        if (valNut == null) {
-            valNut = new ArrayList<>();
-        }
-        valNut.add(val);
-    }
+  
 
     
 }

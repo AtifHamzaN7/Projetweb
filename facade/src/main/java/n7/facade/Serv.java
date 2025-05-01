@@ -129,7 +129,7 @@ public class Serv extends HttpServlet {
         List<String> ingredientNames = ingredientList.stream()
                 .map(Ingredient::getNom) // Extraire les noms des ingrédients
                 .toList();
-        facade.ajoutRecette(nom, String.join(",", ingredientNames), List.of(etapes.split(",")), photo, auteur.getIdAdh());
+        //facade.ajoutRecette(nom, String.join(",", ingredientNames), List.of(etapes.split(",")), photo, auteur.getIdAdh());
     
         response.getWriter().println("Recette ajoutée avec succès : " + nom);
     }

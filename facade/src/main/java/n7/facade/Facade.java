@@ -83,42 +83,58 @@ public class Facade {
 
     // Ajouter une recette
     @PostMapping("/recettes/ajout")
-    public void ajoutRecette(
-            @RequestParam("nom") String nom,
-            @RequestParam("ingredients") String ingredientsStr,
-            @RequestParam("etapes") List<String> etapes,
-            @RequestParam("photo") String photo,
-            @RequestParam("auteurId") int auteurId) {
-        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
-        if (auteur == null) {
-            throw new IllegalArgumentException("Auteur introuvable !");
-        }
-
-        // Convertir les chaînes en objets Ingredient et les sauvegarder
-        List<Ingredient> ingredientList = List.of(ingredientsStr.split(",")).stream()
-                .map(Ingredient::new)
-                .map(ingredientRepository::save) // Sauvegarder chaque ingrédient
-                .toList();
-
-        // Créer la recette
-        Recette recette = new Recette();
-        recette.setNom(nom);
-        recette.setIngredients(ingredientList);
-        recette.setEtapes(etapes);
-        recette.setPhoto(photo);
-        recette.setAuteur(auteur);
-        auteur.addRecette(recette);
-        recetteRepository.save(recette);
+public void ajoutRecette(
+        @RequestParam("nom") String nom,
+        @RequestParam("ingredients") String ingredientsStr, // Format attendu : "(nom,calories,quantite)"
+        @RequestParam("etapes") List<String> etapes,
+        @RequestParam("photo") String photo,
+        @RequestParam("auteurId") int auteurId,
+        @RequestParam("categories") List<String> categories // Liste des catégories
+) {
+    Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+    if (auteur == null) {
+        throw new IllegalArgumentException("Auteur introuvable !");
     }
+
+    // Convertir les chaînes en objets Ingredient et les sauvegarder
+    List<Ingredient> ingredientList = List.of(ingredientsStr.split("\\),\\(")).stream()
+            .map(ingredientStr -> {
+                // Supprimer les parenthèses si présentes
+                ingredientStr = ingredientStr.replace("(", "").replace(")", "");
+                String[] parts = ingredientStr.split(","); // Séparer nom, calories et quantité
+                if (parts.length < 3) {
+                    throw new IllegalArgumentException("Format d'ingrédient invalide : " + ingredientStr);
+                }
+                String nomIngredient = parts[0].trim();
+                int calories = Integer.parseInt(parts[1].trim());
+                String quantite = parts[2].trim();
+                Ingredient ingredient = new Ingredient(nomIngredient);
+                ingredient.setCalories(calories);
+                ingredient.setQuantite(quantite);
+                return ingredientRepository.save(ingredient); // Sauvegarder chaque ingrédient
+            })
+            .toList();
+
+    // Créer la recette
+    Recette recette = new Recette();
+    recette.setNom(nom);
+    recette.setIngredients(ingredientList);
+    recette.setEtapes(etapes);
+    recette.setPhoto(photo);
+    recette.setAuteur(auteur);
+    recette.setCategories(categories); // Ajouter les catégories
+    auteur.addRecette(recette);
+    recetteRepository.save(recette);
+}
 
     @GetMapping("/adherents/{idAdh}/recettes")
     public List<Recette> getRecettesByAdherent(@PathVariable("idAdh") int idAdh) {
-    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
-    if (adherent == null) {
-        throw new IllegalArgumentException("Adhérent introuvable !");
+        Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+        if (adherent == null) {
+            throw new IllegalArgumentException("Adhérent introuvable !");
+        }
+        return recetteRepository.findByAuteur_IdAdh(idAdh);
     }
-    return recetteRepository.findByAuteur_IdAdh(idAdh);
-}
 
     // Récupérer toutes les recettes
     @GetMapping("/recettes")
@@ -158,12 +174,12 @@ public class Facade {
 
     @GetMapping("/adherents/{idAdh}/evenements")
     public List<Event> getEvenementsByAdherent(@PathVariable("idAdh") int idAdh) {
-    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
-    if (adherent == null) {
-        throw new IllegalArgumentException("Adhérent introuvable !");
+        Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+        if (adherent == null) {
+            throw new IllegalArgumentException("Adhérent introuvable !");
+        }
+        return eventRepository.findByAuteur_IdAdh(idAdh);
     }
-    return eventRepository.findByAuteur_IdAdh(idAdh);
-}
 
     // Récupérer tous les événements
     @GetMapping("/evenements")
