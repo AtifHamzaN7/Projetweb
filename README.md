@@ -21,9 +21,9 @@ FrontEnd Structure
 
 src/app/
 ├── auth/         <->
-├── home/         <->
-├── dashboard/    <->
-├── recipes/      <->
+├── home/         <->   
+├── user/         <->   imane
+├── recipes/      <->   oussama
 ├── events/
 ├── forum/ 
 ├── admin/         *

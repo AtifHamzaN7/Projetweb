@@ -1,49 +1,30 @@
-package pack;
-import java.util.List;
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
-public class Ingredient {
-    int idIng;
-    String nom;
-    int Calories;
-    List<Integer> ValNut;
+export interface Ingredient {
+  nom: string;
+  quantite: string;
+}
 
-    public Ingredient(int idIng, String nom, int Calories, List<Integer> ValNut) {
-        this.idIng = idIng;
-        this.nom = nom;
-        this.Calories = Calories;
-        this.ValNut = ValNut;
-    }
+export interface Recette {
+  idRec: number;
+  nom: string;
+  ingredients: Ingredient[];
+  etapes: string[];
+  photo: string;     // URL de l'image
+  auteur: string;
+}
 
-    public int getidIng() {
-        return idIng;
-    }
+@Injectable({
+  providedIn: 'root'
+})
+export class RecetteService {
+  private apiUrl = 'http://localhost:8080/api/recettes'; // adapte cette URL à ton backend
 
-    public String getNom() {
-        return nom;
-    }
+  constructor(private http: HttpClient) {}
 
-    public int getCalories() {
-        return Calories;
-    }
-
-    public List<Integer> getValNut() {
-        return ValNut;
-    }
-
-    public void setidIng(int idIng) {
-        this.idIng = idIng;
-    }
-
-    public void setNom(String nom) {
-        this.nom = nom;
-    }
-
-    public void setCalories(int Calories) {
-        this.Calories = Calories;
-    }
-
-    public void setValNut(List<Integer> ValNut) {
-        this.ValNut = ValNut;
-    }
-
+  getRecettes(): Observable<Recette[]> {
+    return this.http.get<Recette[]>(this.apiUrl);
+  }
 }

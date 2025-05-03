@@ -1,0 +1,34 @@
+<div class="flex">
+  
+    <div class="flex-1 p-6">
+      <!-- Barre de recherche -->
+      <div class="mb-6">
+        <input type="text" placeholder="Recherche..." class="w-full border p-2 rounded">
+      </div>
+  
+      
+    <!-- Section recettes -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <a
+        *ngFor="let recette of recettes"
+        [routerLink]="['/recette', recette.idRec]"
+        class="recipe-card"
+      >
+        <img [src]="recette?.photo" alt="{{ recette?.nom }}" />
+        <h3 class="text-lg font-bold mb-1">{{ recette?.nom }}</h3>
+        <p class="text-sm text-gray-600">Par : {{ recette?.auteur }}</p>
+      </a>
+      
+    </div>
+  
+  
+      <!-- Membres suggérés -->
+      <h2 class="text-xl font-bold mb-4">Membres suggérés</h2>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="border p-4 rounded shadow">Membre 1</div>
+        <div class="border p-4 rounded shadow">Membre 2</div>
+        <div class="border p-4 rounded shadow">Membre 3</div>
+      </div>
+    </div>
+  </div>
+  
