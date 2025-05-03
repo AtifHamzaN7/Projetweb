@@ -1,0 +1,64 @@
+Etapes lancement back :
+Dans db - Terminal 1 :
+--> source start.sh
+Dans facade - Terminal 2 (attendre le message " Started FacadeApplication in 28.777 seconds " :
+--> ./mvnw spring-boot:run
+Dans db - Terminal 3 :
+--> source console.sh
+La base de donnée est déjà remplie normalement avec quelques adhérents, recette et évenement.
+
+L'application est lancée, pour tester le back voici quelques curl à faire dans un terminal 4 (pour POST), sinon directement en navigateur pour les GET.
+
+
+
+Inscription :
+curl -X POST http://localhost:8080/adherents/inscription \
+     -d "nom=zerouali" \
+     -d "prenom=imane" \
+     -d "email=zerouali.Imane@example.com" \
+     -d "password=1598"
+
+Récuperer les adhérents :
+http://localhost:8080/adherents
+
+Mise à jour adhérent :
+curl -X POST http://localhost:8080/adherents/mise-a-jour \
+     -d "idAdh=1" \
+     -d "nom=Jane" \
+     -d "prenom=Doe" \
+     -d "email=jane.doe@example.com" \
+     -d "password=5678"
+
+Suppression d'un adhérent
+curl -X DELETE http://localhost:8080/adherents/suppression/1
+
+Récupérer un adhérent par son ID
+curl -X GET http://localhost:8080/adherents/1
+
+Connexion d'un adhérent:
+http://localhost:8080/adherents/connexion?email=jane.doe@example.com&password=5678
+
+
+Ajout d'une recette : 
+curl -X POST http://localhost:8080/recettes/ajout \
+     -d "nom=Pizza" \
+     -d "ingredients=(Tomates,50,1/2kg),(Fromage,100,300g),(Pâte,200,500g)" \
+     -d "etapes=Préparer la pâte,Ajouter les ingrédients,Cuire" \
+     -d "photo=pizza.jpg" \
+     -d "auteurId=1" \
+     -d "categories=Italien,Végétarien"
+      
+
+Récuperer les recettes :
+curl -X GET http://localhost:8080/recettes
+
+Ajouter un evenement :
+curl -X POST http://localhost:8080/evenements/ajout \
+     -d "titre=ENSEEIHT" \
+     -d "date=2025-05-03" \
+     -d "lieu=Paris" \
+     -d "description=Conférence " \
+     -d "auteurId=1"
+
+Récuperer les evenements :
+http://localhost:8080/evenements
