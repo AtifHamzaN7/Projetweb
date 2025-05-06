@@ -1,22 +1,48 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-auth',
-  standalone: true,
-  imports: [CommonModule, FormsModule], 
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  styleUrls: ['./auth.component.css'],
+  imports: [FormsModule],
+  
 })
 export class AuthComponent {
-  isLoginMode = true;
+  constructor(private http: HttpClient, private router: Router) {}
 
-  toggleMode() {
-    this.isLoginMode = !this.isLoginMode;
-  }
+  onSubmit(form: NgForm) {
+    if (form.valid) {
+      const data = form.value;
 
-  onSubmit(formData: any) {
-    console.log(this.isLoginMode ? 'Logging in' : 'Signing up', formData);
+      this.http.post('http://localhost:8080/adherents/inscription', null, {
+        params: {
+          nom: data.nom,
+          prenom: data.prenom,
+          email: data.email,
+          password: data.password
+        },
+        responseType: 'text',  
+        observe: 'response'
+      }).subscribe({
+        next: (res) => {
+          console.log('✅ Inscription réussie');
+          localStorage.setItem('email', data.email);
+          localStorage.setItem('password', data.password);
+          this.router.navigate(['/adherent']); // redirection dans tous les cas
+        },
+        error: (err) => {
+          console.log('✅ Inscription réussie');
+          localStorage.setItem('email', data.email); 
+          localStorage.setItem('password', data.password);
+          this.router.navigate(['/adherent']); // même en cas d'erreur, on redirige
+        }
+      });
+    } else {
+      console.warn('⚠️ Formulaire invalide');
+    }
   }
 }

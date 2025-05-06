@@ -1,0 +1,107 @@
+/* Connexion - arrière-plan */
+.conn-background {
+  background-image: url('/assets/img/auth-background.jpg'); /* Change si besoin */
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Boîte principale */
+.connh-box {
+  background-color: rgba(0, 0, 0, 0.85);
+  color: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 450px;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Titre */
+.connh-box h2 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+/* Sous-titre */
+.connh-box p {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Boutons sociaux */
+.social-btn {
+  background-color: white;
+  color: black;
+  border: none;
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.social-btn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Séparateur */
+.divider {
+  margin: 1.2rem 0;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+/* Formulaire */
+form input {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  border-radius: 6px;
+  border: none;
+  font-size: 1rem;
+}
+
+/* Bouton Submit */
+form button {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #ec6c1a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 0.75rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+form button:hover {
+  background-color: #d85c0a;
+}
+
+/* Footer */
+.footer-text {
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+  color: #ccc;
+}
+
+.footer-text a {
+  color: #ffffff;
+  text-decoration: underline;
+}
