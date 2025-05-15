@@ -1,0 +1,66 @@
+<main class="adherent-container">
+    <div class="adherent-page">
+  
+      <!-- Profil à gauche -->
+      <aside class="profile-info">
+        <h2>Mon profil</h2>
+        <p><strong>Nom :</strong> {{ nom }}</p>
+        <p><strong>Prénom :</strong> {{ prenom }}</p>
+        <p><strong>Email :</strong> {{ email }}</p>
+        <button class="edit-button" (click)="openDialog()">Modifier</button>
+        <button class="logout-button">Déconnexion</button>
+      </aside>
+  
+      <!-- Centre : Mes recettes + commentaires -->
+      <main class="recettes-section">
+        <h2>Mes Recettes</h2>
+        <div class="recette-card-list">
+          <div class="recette-card">
+            <img src="assets/img/tajine.jpg" alt="Tajine" />
+            <p>Tajine aux légumes</p>
+          </div>
+          <div class="recette-card">
+            <img src="assets/img/paella.jpeg" alt="Paella" />
+            <p>Paella</p>
+          </div>
+        </div>
+  
+        <!-- Mes commentaires -->
+        <section class="forum-comments">
+          <h2>Mes commentaires dans le forum</h2>
+          <div class="comment">
+            <p><strong>Tarte citron :</strong> Super idée de meringue légère, merci !</p>
+          </div>
+          <div class="comment">
+            <p><strong>Risotto :</strong> Je recommande d’ajouter un peu de parmesan à la fin.</p>
+          </div>
+        </section>
+      </main>
+  
+      <!-- Calendrier à droite -->
+      <aside class="calendar-box">
+        <h2>Mon calendrier</h2>
+        <p>📅 15 mai : Atelier tajine</p>
+        <p>📅 22 mai : Concours de desserts</p>
+      </aside>
+  
+      <!-- Boîte de dialogue -->
+      <div class="modal-backdrop" *ngIf="showDialog">
+        <div class="modal">
+          <h3>Modifier mon profil</h3>
+          <label>Nom :
+            <input [(ngModel)]="nom" />
+          </label>
+          <label>Email :
+            <input [(ngModel)]="email" />
+          </label>
+          <div class="modal-buttons">
+            <button (click)="closeDialog()">Enregistrer</button>
+            <button (click)="closeDialog()">Annuler</button>
+          </div>
+        </div>
+      </div>
+  
+    </div>
+  </main>
+  

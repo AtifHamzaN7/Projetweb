@@ -1,0 +1,57 @@
+<div class="conn-background">
+  <div class="connh-box">
+    <h2>Sign in</h2>
+    <p>Suivez vos progrès et sublimez vos talents. Rejoignez des milliers de passionnés de cuisine !</p>
+
+    <!-- Bouton Google -->
+    <button class="social-btn" type="button">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="Google" />
+      Sign In With Google
+    </button>
+
+    <!-- Bouton Apple -->
+    <button class="social-btn" type="button">
+      <img src="assets/img/apple.png" width="20" height="20" alt="Apple" />
+      Sign In With Apple
+    </button>
+
+    <div class="divider">or</div>
+
+    <!-- Formulaire de connexion -->
+    <form (ngSubmit)="onSubmit(connForm)" #connForm="ngForm" novalidate>
+
+      
+      <input
+        name="email"
+        ngModel
+        type="email"
+        required
+        placeholder="Enter Email"
+        aria-label="Email"
+      />
+      <input
+        name="password"
+        ngModel
+        type="password"
+        required
+        placeholder="Enter Password"
+        aria-label="Mot de passe"
+      />
+
+      <!-- Message d’erreur si formulaire invalide -->
+      <div *ngIf="connForm.invalid && connForm.touched" class="error-message">
+        Veuillez remplir tous les champs correctement.
+      </div>
+
+      <button type="submit" [disabled]="connForm.invalid">Sign In</button>
+    </form>
+
+    <p class="footer-text">
+      En continuant, vous acceptez nos <a href="#">Conditions d'utilisation</a> et notre <a href="#">Politique de confidentialité</a>.
+    </p>
+
+    <p class="footer-text">
+      Pas encore membre ? <a routerLink="/auth" class="hero-button">Créer un compte</a>
+    </p>
+  </div>
+</div>

@@ -1,32 +1,38 @@
 <div class="auth-background">
-    <div class="auth-box">
-      <h2>Sign Up for Free</h2>
-      <p>Track your progress and reach goals. Join 100 million active people on Strava.</p>
-  
-      <button class="social-btn">
-        <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="Google" />
-        Sign Up With Google
-      </button>
-  
-      <button class="social-btn">
-        <span style="font-size: 20px;"></span>
-        Sign Up With Apple
-      </button>
-  
-      <div class="divider">or</div>
-  
-      <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm">
-        <input name="email" ngModel type="email" required placeholder="Enter Email" />
-        <input name="password" ngModel type="password" required placeholder="Enter Password" />
-        <button type="submit">Sign Up</button>
-      </form>
-  
-      <p class="footer-text">
-        By continuing, you are agreeing to our <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
-      </p>
-      <p class="footer-text">
-        Already a Member? <a href="#">Log in</a>
-      </p>
-    </div>
+  <div class="auth-box">
+    <h2>Sign Up for Free</h2>
+    <p>Suivez vos progrès et sublimez vos talents. Rejoignez des milliers de passionnés de cuisine !</p>
+
+    <!-- Bouton Google -->
+    <button class="social-btn">
+      <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="Google" />
+      Sign Up With Google
+    </button>
+
+    <!-- Bouton Apple -->
+    <button class="social-btn">
+      <img src="assets/img/apple.png" width="20" height="20" alt="Apple" />
+      Sign Up With Apple
+    </button>
+
+    <div class="divider">or</div>
+
+    <!-- Formulaire d'inscription -->
+    <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm">
+
+
+      <input name="nom" ngModel type="text" required placeholder="Nom" />
+      <input name="prenom" ngModel type="text" required placeholder="Prénom" />
+      <input name="email" ngModel type="email" required placeholder="Email" />
+      <input name="password" ngModel type="password" required placeholder="Mot de passe" />
+      <button type="submit">Sign Up</button>    
+    </form>
+
+    <p class="footer-text">
+      En continuant, vous acceptez nos <a href="#">Conditions d'utilisation</a> et notre <a href="#">Politique de confidentialité</a>.
+    </p>
+    <p class="footer-text">
+      Déjà membre ? <a routerLink="/conn" class="hero-button">Se connecter</a>
+    </p>
   </div>
-  
+</div>
