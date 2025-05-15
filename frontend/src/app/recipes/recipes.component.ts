@@ -3,12 +3,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { RecetteService, Recette } from '../services/recipe.service';
 
-
-
 @Component({
   selector: 'app-recipes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [
+    CommonModule,
+    RouterModule
+  ],
   templateUrl: './recipes.component.html',
   styleUrls: ['./recipes.component.css']
 })
@@ -18,9 +19,18 @@ export class RecipesComponent implements OnInit {
   constructor(private recetteService: RecetteService) {}
 
   ngOnInit(): void {
+    this.chargerRecettes();
+  }
+
+  private chargerRecettes(): void {
     this.recetteService.getRecettes().subscribe({
-      next: (data) => this.recettes = data,
-      error: (err) => console.error('Erreur lors du chargement des recettes', err)
+      next: (data: Recette[]) => {
+        this.recettes = data;
+        console.log(this.recettes); // pour debug
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des recettes :', err);
+      }
     });
   }
 }

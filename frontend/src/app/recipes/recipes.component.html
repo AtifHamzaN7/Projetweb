@@ -9,26 +9,33 @@
       
     <!-- Section recettes -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-        <a
+      <a
         *ngFor="let recette of recettes"
         [routerLink]="['/recette', recette.idRec]"
         class="recipe-card"
       >
-        <img [src]="recette?.photo" alt="{{ recette?.nom }}" />
+        <img
+            [src]="'http://localhost:8080/images/' + recette.photo"   
+            alt="{{ recette.nom }}"
+            class="w-full h-60 object-cover rounded mb-4"
+        />
+
         <h3 class="text-lg font-bold mb-1">{{ recette?.nom }}</h3>
-        <p class="text-sm text-gray-600">Par : {{ recette?.auteur }}</p>
+        <p class="text-sm text-gray-600">
+          Par : {{ recette?.auteur?.prenom }} {{ recette?.auteur?.nom }}
+        </p>
       </a>
-      
     </div>
+    
   
   
-      <!-- Membres suggérés -->
+      <!-- Membres suggérés 
       <h2 class="text-xl font-bold mb-4">Membres suggérés</h2>
       <div class="grid grid-cols-3 gap-4">
         <div class="border p-4 rounded shadow">Membre 1</div>
         <div class="border p-4 rounded shadow">Membre 2</div>
         <div class="border p-4 rounded shadow">Membre 3</div>
-      </div>
+      </div>-->
     </div>
   </div>
   

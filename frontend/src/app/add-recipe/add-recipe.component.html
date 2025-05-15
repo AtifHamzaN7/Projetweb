@@ -1,0 +1,30 @@
+<div class="container">
+    <h2>Ajouter une recette</h2>
+  
+    <form (ngSubmit)="submitForm()" #formRecipe="ngForm">
+      <label>Nom de la recette</label>
+      <input type="text" [(ngModel)]="recipe.nom" name="nom" required />
+  
+      <label>Image</label>
+      <input type="file" (change)="onFileSelected($event)" />
+  
+      <label>Ingrédients</label>
+      <div *ngFor="let ing of recipe.ingredients; let i = index" class="ingredient-group">
+        <input [(ngModel)]="ing.nom" name="nomIng{{i}}" placeholder="Nom" />
+        <input [(ngModel)]="ing.quantite" name="quantite{{i}}" placeholder="Quantité" />
+      </div>
+      <button type="button" (click)="addIngredient()">+ Ajouter un ingrédient</button>
+  
+      <label>Étapes</label>
+      <div *ngFor="let etape of recipe.etapes; let i = index">
+        <input [(ngModel)]="recipe.etapes[i]" name="etape{{i}}" />
+      </div>
+      <button type="button" (click)="addStep()">+ Ajouter une étape</button>
+  
+      <label>Catégories</label>
+      <input [(ngModel)]="recipe.categoriesString" name="categories" placeholder="ex: Vegan, Dessert" />
+  
+      <button type="submit">Enregistrer</button>
+    </form>
+  </div>
+  
