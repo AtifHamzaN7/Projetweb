@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdherentService, Adherent } from '../services/adherent.service'; // adapte le chemin si nécessaire
+import { Router } from '@angular/router';
 import { RecetteService, Recette } from '../services/recipe.service';
 
 
@@ -24,26 +25,20 @@ export class AdherentComponent implements OnInit {
   recettesAdherent: Recette[] = [];
   adherentId!: number;
 
-  constructor(private adherentService: AdherentService, private recetteService: RecetteService) {}
+  constructor(private router: Router, private adherentService: AdherentService, private recetteService: RecetteService) {}
+
 
   ngOnInit(): void {
-    const email = localStorage.getItem('email');
-    const password = localStorage.getItem('password');
-
-    if (email && password) {
-      this.adherentService.getByEmailAndPassword(email, password).subscribe({
-        next: (adherent: Adherent) => {
-          this.nom = adherent.nom;
-          this.prenom = adherent.prenom;
-          this.email = adherent.email;
-        },
-        error: (err) => {
-          console.error('❌ Erreur lors du chargement de l’adhérent :', err);
-        }
-      });
-    } else {
-      console.warn('⚠️ Aucune information de connexion trouvée dans le localStorage');
-    }
+   const adherentStr = localStorage.getItem('adherentConnecte');
+  if (adherentStr) {
+    const adherent = JSON.parse(adherentStr);
+    this.nom = adherent.nom;
+    this.prenom = adherent.prenom;
+    this.email = adherent.email;
+  } else {
+    console.warn('Aucun adhérent connecté trouvé.');
+    this.router.navigate(['/conn']);
+  }
 
     const adherentConnecte = JSON.parse(localStorage.getItem('adherent') || '{}');
     const idAdh = adherentConnecte.idAdh;
@@ -60,4 +55,9 @@ export class AdherentComponent implements OnInit {
   closeDialog(): void {
     this.showDialog = false;
   }
+  
+  logout(): void {
+  localStorage.removeItem('adherentConnecte');
+  this.router.navigate(['/conn']);
+}
 }
