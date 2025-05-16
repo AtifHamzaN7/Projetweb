@@ -1,11 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { AdherentService, Adherent } from '../services/adherent.service'; // adapte le chemin si nécessaire
 import { Router } from '@angular/router';
+import { AdherentService } from '../services/adherent.service';
 import { RecetteService, Recette } from '../services/recipe.service';
-
 
 @Component({
   selector: 'app-adherent',
@@ -13,38 +11,50 @@ import { RecetteService, Recette } from '../services/recipe.service';
   templateUrl: './adherent.component.html',
   styleUrls: ['./adherent.component.css'],
   imports: [CommonModule, FormsModule],
-  providers: [AdherentService] 
+  providers: [AdherentService]
 })
 export class AdherentComponent implements OnInit {
   nom: string = '';
   prenom: string = '';
   email: string = '';
-
   showDialog: boolean = false;
 
   recettesAdherent: Recette[] = [];
-  adherentId!: number;
 
-  constructor(private router: Router, private adherentService: AdherentService, private recetteService: RecetteService) {}
-
+  constructor(
+    private router: Router,
+    private adherentService: AdherentService,
+    private recetteService: RecetteService
+  ) {}
 
   ngOnInit(): void {
-   const adherentStr = localStorage.getItem('adherentConnecte');
-  if (adherentStr) {
+    // ✅ On lit l’adhérent connecté depuis le localStorage
+    const adherentStr = localStorage.getItem('adherent');
+    if (!adherentStr) {
+      console.warn('Aucun adhérent connecté trouvé.');
+      this.router.navigate(['/conn']);
+      return;
+    }
+
     const adherent = JSON.parse(adherentStr);
+    const idAdh = adherent.idAdh;
+
+    if (!idAdh) {
+      console.error('ID de l’adhérent invalide.');
+      this.router.navigate(['/conn']);
+      return;
+    }
+
     this.nom = adherent.nom;
     this.prenom = adherent.prenom;
     this.email = adherent.email;
-  } else {
-    console.warn('Aucun adhérent connecté trouvé.');
-    this.router.navigate(['/conn']);
-  }
 
-    const adherentConnecte = JSON.parse(localStorage.getItem('adherent') || '{}');
-    const idAdh = adherentConnecte.idAdh;
+    console.log('ID adhérent connecté :', idAdh);
 
     this.recetteService.getRecettes().subscribe((recettes: Recette[]) => {
-      this.recettesAdherent = recettes.filter(recette => recette.auteur.idAdh === idAdh);
+      console.log('Toutes les recettes :', recettes);
+      this.recettesAdherent = recettes.filter(r => r.auteur?.idAdh === idAdh);
+      console.log('Recettes de cet adhérent :', this.recettesAdherent);
     });
   }
 
@@ -55,9 +65,9 @@ export class AdherentComponent implements OnInit {
   closeDialog(): void {
     this.showDialog = false;
   }
-  
+
   logout(): void {
-  localStorage.removeItem('adherentConnecte');
-  this.router.navigate(['/conn']);
-}
+    localStorage.removeItem('adherent');
+    this.router.navigate(['/conn']);
+  }
 }
