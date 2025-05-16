@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { AdherentService, Adherent } from '../services/adherent.service'; // adapte le chemin si nécessaire
+import { RecetteService, Recette } from '../services/recipe.service';
+
 
 @Component({
   selector: 'app-adherent',
@@ -19,7 +21,10 @@ export class AdherentComponent implements OnInit {
 
   showDialog: boolean = false;
 
-  constructor(private adherentService: AdherentService) {}
+  recettesAdherent: Recette[] = [];
+  adherentId!: number;
+
+  constructor(private adherentService: AdherentService, private recetteService: RecetteService) {}
 
   ngOnInit(): void {
     const email = localStorage.getItem('email');
@@ -39,6 +44,13 @@ export class AdherentComponent implements OnInit {
     } else {
       console.warn('⚠️ Aucune information de connexion trouvée dans le localStorage');
     }
+
+    const adherentConnecte = JSON.parse(localStorage.getItem('adherent') || '{}');
+    const idAdh = adherentConnecte.idAdh;
+
+    this.recetteService.getRecettes().subscribe((recettes: Recette[]) => {
+      this.recettesAdherent = recettes.filter(recette => recette.auteur.idAdh === idAdh);
+    });
   }
 
   openDialog(): void {

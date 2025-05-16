@@ -14,16 +14,18 @@
       <!-- Centre : Mes recettes + commentaires -->
       <main class="recettes-section">
         <h2>Mes Recettes</h2>
-        <div class="recette-card-list">
-          <div class="recette-card">
-            <img src="assets/img/tajine.jpg" alt="Tajine" />
-            <p>Tajine aux légumes</p>
-          </div>
-          <div class="recette-card">
-            <img src="assets/img/paella.jpeg" alt="Paella" />
-            <p>Paella</p>
+        
+        <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
+          <div class="recette-card" *ngFor="let recette of recettesAdherent">
+            <img [src]="'assets/img/' + recette.photo" [alt]="recette.nom" />
+            <p>{{ recette.nom }}</p>
           </div>
         </div>
+
+        <ng-template #aucuneRecette>
+          <p>Aucune recette trouvée pour cet adhérent.</p>
+        </ng-template>
+
   
         <!-- Mes commentaires -->
         <section class="forum-comments">
