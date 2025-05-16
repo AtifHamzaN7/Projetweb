@@ -25,8 +25,11 @@ export class ConnComponent {
       this.adherentService.getByEmailAndPassword(email, password).subscribe({
         next: (adherent: Adherent) => {
           console.log('✅ Connexion réussie :', adherent);
+console.log('nom =', adherent.nom);
+console.log('email =', adherent.email);
           // Enregistrer l'utilisateur connecté si besoin :
           localStorage.setItem('adherentConnecte', JSON.stringify(adherent));
+
 
           // Redirection vers la page adhérent
           this.router.navigate(['/adherent']);
