@@ -38,6 +38,6 @@ export class RecetteService {
   }
 
   addRecipe(recipeData: FormData): Observable<any> {
-    return this.http.post(`${this.apiUrl}`, recipeData);
+    return this.http.post(`${this.apiUrl}/ajout`, recipeData);
   }
 }

@@ -70,4 +70,8 @@ export class AdherentComponent implements OnInit {
     localStorage.removeItem('adherent');
     this.router.navigate(['/conn']);
   }
+
+  goToAddRecipe() {
+    this.router.navigate(['/add-recipe']);
+  }
 }

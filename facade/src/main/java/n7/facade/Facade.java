@@ -88,7 +88,7 @@ public void ajoutRecette(
         @RequestParam("nom") String nom,
         @RequestParam("ingredients") String ingredientsStr, // Format attendu : "(nom,calories,quantite)"
         @RequestParam("etapes") List<String> etapes,
-        @RequestParam("photo") String photo,
+        @RequestParam(value = "photo", required = false) String photo,
         @RequestParam("auteurId") int auteurId,
         @RequestParam("categories") List<String> categories // Liste des catégories
 ) {

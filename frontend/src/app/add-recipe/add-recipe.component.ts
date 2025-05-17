@@ -17,7 +17,7 @@ export class AddRecipeComponent {
     ingredients: [] as Ingredient[],
     etapes: [''],
     photo: '',
-    auteur: null,
+    auteur: null as number | null,
     categoriesString: '',
     categories: [] as string[]
   };
@@ -42,6 +42,20 @@ export class AddRecipeComponent {
     }
   }
 
+ngOnInit(): void {
+  const stored = localStorage.getItem('adherent');
+  if (!stored) {
+    this.router.navigate(['/sign-in']);
+    return;
+  }
+
+  const adherent = JSON.parse(stored);
+  console.log('Adhérent connecté :', adherent); // ✅ Ajoute ce log
+
+  this.recipe.auteur = adherent.idAdh; // Assure-toi que c'est bien 'id' et pas 'adherentId'
+}
+
+
   submitForm(): void {
     this.recipe.categories = this.recipe.categoriesString
       .split(',')
@@ -49,16 +63,38 @@ export class AddRecipeComponent {
       .filter(c => c !== '');
 
     const formData = new FormData();
-    formData.append('recette', new Blob([JSON.stringify(this.recipe)], { type: 'application/json' }));
+    formData.append('nom', this.recipe.nom);
+    formData.append('photo', this.recipe.photo);
+    formData.append('auteurId', (this.recipe.auteur ?? '').toString());
+
+    this.recipe.etapes.forEach(etape => {
+      formData.append('etapes', etape);
+    });
+
+    this.recipe.categories.forEach(cat => {
+      formData.append('categories', cat);
+    });
+
+    const ingredientsStr = this.recipe.ingredients
+      .map(i => `(${i.nom},0,${i.quantite})`)
+      .join(';');
+    formData.append('ingredients', ingredientsStr);
 
     if (this.selectedFile) {
       formData.append('image', this.selectedFile);
     }
 
+    // ✅ Ajoute ce bloc juste ici :
+    console.log('FormData contents:');
+    formData.forEach((value, key) => {
+      console.log(`${key}:`, value);
+    });
+
+    // ✅ Puis envoie la requête :
     this.recetteService.addRecipe(formData).subscribe({
       next: () => {
         alert('Recipe added successfully!');
-        this.router.navigate(['/']);
+        this.router.navigate(['/recettes']);
       },
       error: err => {
         console.error('Error adding recipe:', err);
@@ -66,4 +102,6 @@ export class AddRecipeComponent {
       }
     });
   }
+
+
 }
