@@ -1,0 +1,39 @@
+<div class="add-event-container">
+  <h2>Proposer un événement</h2>
+
+<form #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)">
+    <input
+      type="text"
+      name="titre"
+      [(ngModel)]="titre"
+      placeholder="Titre de l'événement"
+      required
+    />
+
+    <textarea
+      name="description"
+      [(ngModel)]="description"
+      placeholder="Description"
+      required
+    ></textarea>
+
+    <input
+      type="date"
+      name="date"
+      [(ngModel)]="date"
+      required
+    />
+
+    <input
+      type="text"
+      name="lieu"
+      [(ngModel)]="lieu"
+      placeholder="Lieu"
+      required
+    />
+
+    <button type="submit" [disabled]="!eventForm.form.valid">
+      Créer l'événement
+    </button>
+  </form>
+</div>

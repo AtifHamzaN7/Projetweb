@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 
-@RestController
 @CrossOrigin(origins = "http://localhost:4200")
+@RestController
 public class Facade {
 
     @Autowired
@@ -188,9 +188,28 @@ public void ajoutRecette(
         return eventRepository.findAll();
     }
 
+// Récupérer un événement par son ID
+    @GetMapping("/evenements/{id}")
+public Event getEventById(@PathVariable("id") int id) {
+    return eventRepository.findById(id).orElse(null);
+}
+
     // Suppression d'un événement
     @DeleteMapping("/evenements/suppression/{idEvent}")
     public void suppressionEvenement(@PathVariable("idEvent") int idEvent) {
         eventRepository.deleteById(idEvent);
     }
+    @PostMapping("/evenements/{eventId}/participer")
+public void participer(@PathVariable int eventId, @RequestParam int adherentId) {
+    Event event = eventRepository.findById(eventId).orElse(null);
+    Adherent adherent = adherentRepository.findById(adherentId).orElse(null);
+
+    if (event == null || adherent == null) {
+        throw new IllegalArgumentException("Événement ou adhérent introuvable");
+    }
+
+    event.addParticipant(adherent);
+    adherent.addEvenement(event);
+    eventRepository.save(event);
+}
 }

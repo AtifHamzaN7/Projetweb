@@ -32,13 +32,15 @@ export class AuthComponent {
           console.log('✅ Inscription réussie');
           localStorage.setItem('email', data.email);
           localStorage.setItem('password', data.password);
-          this.router.navigate(['/adherent']); // redirection dans tous les cas
+          this.router.navigate(['/conn']);
+ // redirection dans tous les cas
         },
         error: (err) => {
           console.log('✅ Inscription réussie');
           localStorage.setItem('email', data.email); 
           localStorage.setItem('password', data.password);
-          this.router.navigate(['/adherent']); // même en cas d'erreur, on redirige
+          this.router.navigate(['/conn']);
+ // même en cas d'erreur, on redirige
         }
       });
     } else {

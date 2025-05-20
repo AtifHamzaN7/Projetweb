@@ -9,7 +9,11 @@
         <p><strong>Email :</strong> {{ email }}</p>
         <button class="edit-button" (click)="openDialog()">Modifier</button>
         <button class="logout-button" (click)="logout()">Déconnexion</button>
+<<<<<<< HEAD
         <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
+=======
+        <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
+>>>>>>> 3a046ff (+evenements+recettes)
 
       </aside>
   
@@ -43,9 +47,18 @@
   
       <!-- Calendrier à droite -->
       <aside class="calendar-box">
-        <h2>Mon calendrier</h2>
-        <p>📅 15 mai : Atelier tajine</p>
-        <p>📅 22 mai : Concours de desserts</p>
+        <h2>Mon calendrier d'événements</h2>
+    
+  <ul *ngIf="evenements.length > 0; else aucunEvt">
+    <li *ngFor="let evt of evenements">
+      {{ evt.titre }} – le {{ evt.date | date:'longDate' }} à {{ evt.lieu }}
+    </li>
+  </ul>
+  <ng-template #aucunEvt>
+    <p>Vous ne participez à aucun événement.</p>
+  </ng-template>
+
+
       </aside>
   
       <!-- Boîte de dialogue -->

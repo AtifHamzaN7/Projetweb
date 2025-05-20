@@ -1,0 +1,22 @@
+<div class="events-section">
+  <h2>Événements à venir</h2>
+
+  <div *ngIf="evenements.length > 0; else aucunEvenement">
+    <div *ngFor="let evt of evenements" class="event-card">
+      <h3>{{ evt.titre }}</h3>
+      <p><strong>Date :</strong> {{ evt.date | date:'longDate' }}</p>
+      <p><strong>Lieu :</strong> {{ evt.lieu }}</p>
+      <p>{{ evt.description }}</p>
+      <small>Organisé par {{ evt.auteur.prenom || 'Anonyme' }} {{ evt.auteur.nom || 'Auteur inconnu' }}</small>
+
+      <!-- 🔗 Lien vers les détails -->
+      <div class="event-actions">
+        <a [routerLink]="['/evenements', evt.id]">Voir détails</a>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #aucunEvenement>
+    <p>Aucun événement à venir pour l’instant.</p>
+  </ng-template>
+</div>

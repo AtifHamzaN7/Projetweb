@@ -1,0 +1,28 @@
+<div class="event-detail-container" *ngIf="event">
+  <h2 class="event-title">{{ event.titre }}</h2>
+  <div class="event-info">
+    <p><strong>Date :</strong> {{ event.date | date: 'longDate' }}</p>
+    <p><strong>Lieu :</strong> {{ event.lieu }}</p>
+    <p><strong>Description :</strong></p>
+    <p class="event-description">{{ event.description }}</p>
+
+    <div class="event-organizer" *ngIf="event.auteur">
+      <p><strong>Organisé par :</strong> {{ event.auteur.prenom }} {{ event.auteur.nom }}</p>
+    </div>
+
+    <div class="event-participants" *ngIf="event.participants?.length">
+      <p><strong>Participants :</strong></p>
+      <ul>
+        <li *ngFor="let p of event.participants">{{ p.prenom }} {{ p.nom }}</li>
+      </ul>
+    </div>
+  </div>
+    <button (click)="participer()">Participer à cet événement</button>
+
+  <button class="back-button" (click)="retour()">← Retour à la liste</button>
+
+</div>
+
+<div *ngIf="!event">
+  <p>Chargement de l'événement...</p>
+</div>
