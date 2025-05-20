@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AdherentService, Adherent } from '../services/adherent.service';
-import { CommonModule } from '@angular/common'
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-conn',
