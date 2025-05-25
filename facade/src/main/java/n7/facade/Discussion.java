@@ -3,6 +3,7 @@ package n7.facade;
 import java.util.List;
 import java.util.ArrayList;
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Discussion {
@@ -19,6 +20,7 @@ public class Discussion {
     private Adherent auteur;
 
     @OneToMany(mappedBy = "discussion", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Message> messages = new ArrayList<>();
 
     public Discussion() {

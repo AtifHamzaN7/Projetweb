@@ -23,6 +23,15 @@ public class Facade {
     @Autowired
     IngredientRepository ingredientRepository;
 
+    @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
+    DiscussionRepository discussionRepository;
+
+    @Autowired
+    MessageRepository messageRepository;
+
     // Inscription d'un adhérent
     @PostMapping("/adherents/inscription")
     public void inscriptionAdherent(
@@ -212,4 +221,89 @@ public void participer(@PathVariable int eventId, @RequestParam int adherentId) 
     adherent.addEvenement(event);
     eventRepository.save(event);
 }
+    // Ajouter un commentaire à une recette
+    @PostMapping("/recettes/{idRec}/commentaires/ajout")
+    public void ajouterCommentaire(
+            @PathVariable("idRec") int idRec,
+            @RequestParam("auteurId") int auteurId,
+            @RequestParam("content") String content) {
+        Recette recette = recetteRepository.findById(idRec).orElse(null);
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (recette == null || auteur == null) {
+            throw new IllegalArgumentException("Recette ou auteur introuvable !");
+        }
+
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setAuteur(auteur);
+        comment.setRecette(recette);
+        commentRepository.save(comment);
+    }
+
+    // Récupérer les commentaires d'une recette
+    @GetMapping("/recettes/{idRec}/commentaires")
+    public List<Comment> getCommentairesByRecette(@PathVariable("idRec") int idRec) {
+        return commentRepository.findByRecette_IdRec(idRec);
+    }
+
+    // Ajouter une discussion
+    @PostMapping("/discussions/ajout")
+    public void ajouterDiscussion(
+        @RequestParam("titre") String titre,
+        @RequestParam("question") String question,
+        @RequestParam("auteurId") int auteurId
+    ) {
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (auteur == null) {
+            throw new IllegalArgumentException("Auteur introuvable !");
+        }
+        Discussion discussion = new Discussion();
+        discussion.setTitre(titre);
+        discussion.setQuestion(question);
+        discussion.setAuteur(auteur);
+        discussionRepository.save(discussion);
+    }
+
+    // Récupérer toutes les discussions
+    @GetMapping("/discussions")
+    public List<Discussion> listeDiscussions() {
+        return discussionRepository.findAll();
+    }
+
+    // Récupérer une discussion par son ID
+    @GetMapping("/discussions/{idDisc}")
+    public Discussion getDiscussionById(@PathVariable("idDisc") int idDisc) {
+        return discussionRepository.findById(idDisc).orElse(null);
+    }
+
+    // Ajouter un message à une discussion
+    @PostMapping("/discussions/{idDisc}/messages/ajout")
+    public void ajouterMessage(
+        @PathVariable("idDisc") int idDisc,
+        @RequestParam("auteurId") int auteurId,
+        @RequestParam("content") String content
+    ) {
+        Discussion discussion = discussionRepository.findById(idDisc).orElse(null);
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (discussion == null || auteur == null) {
+            throw new IllegalArgumentException("Discussion ou auteur introuvable !");
+        }
+        Message message = new Message();
+        message.setContent(content);
+        message.setAuteur(auteur);
+        message.setDiscussion(discussion);
+        messageRepository.save(message);
+    }
+
+    // Récupérer les messages d'une discussion
+    @GetMapping("/discussions/{idDisc}/messages")
+    public List<Message> getMessagesByDiscussion(@PathVariable("idDisc") int idDisc) {
+        Discussion discussion = discussionRepository.findById(idDisc).orElse(null);
+        if (discussion == null) {
+            throw new IllegalArgumentException("Discussion introuvable !");
+        }
+        return discussion.getMessages();
+    }
+    
+    
 }
