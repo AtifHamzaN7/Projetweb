@@ -27,17 +27,18 @@ export class RecipesComponent implements OnInit {
     this.chargerRecettes();
   }
 
-  private chargerRecettes(): void {
-    this.recetteService.getRecettes().subscribe({
-      next: (data: Recette[]) => {
-        this.recettes = data;
-        this.filteredRecettes = data;
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des recettes :', err);
-      }
-    });
-  }
+private chargerRecettes(): void {
+  this.recetteService.getRecettes().subscribe({
+    next: (data: Recette[]) => {
+      console.log('Received recipes:', data); // Add this log
+      this.recettes = data;
+      this.filteredRecettes = data;
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des recettes :', err);
+    }
+  });
+}
 
   onSearch(event: Event): void {
     const searchValue = (event.target as HTMLInputElement).value.toLowerCase();
@@ -77,4 +78,17 @@ export class RecipesComponent implements OnInit {
       this.showSuggestions = false;
     }, 200);
   }
+
+// ...existing code...
+
+getImageUrl(filename: string): string {
+  if (!filename || filename === "") {
+    console.log('Missing filename, using default name l7em_barqoq.png');
+    filename = 'l7em_barqoq.png'; // Since we know this image exists
+  }
+  const url = `http://localhost:8080/images/${filename}`;
+  console.log('Loading image from:', url);
+  return url;
+}
+// ...existing code...
 }

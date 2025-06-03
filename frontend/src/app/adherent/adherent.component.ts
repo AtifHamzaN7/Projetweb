@@ -33,6 +33,12 @@ export class AdherentComponent implements OnInit {
     private eventService: EventService
   ) {}
 
+    // Add this method
+  getImageUrl(filename: string): string {
+    if (!filename) return '';
+    return `http://localhost:8080/images/${filename}`;
+  }
+  
   ngOnInit(): void {
     const adherentStr = localStorage.getItem('adherent');
     if (!adherentStr) {

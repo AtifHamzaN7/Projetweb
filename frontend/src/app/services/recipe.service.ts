@@ -30,6 +30,7 @@ export interface Recette {
 })
 export class RecetteService {
   private apiUrl = 'http://localhost:8080/recettes'; // Waiting for the backend
+  private baseUrl = 'http://localhost:8080'; // Add this
 
   constructor(private http: HttpClient) {}
 
@@ -39,5 +40,15 @@ export class RecetteService {
 
   addRecipe(recipeData: FormData): Observable<any> {
     return this.http.post(`${this.apiUrl}/ajout`, recipeData);
+  }
+
+  // Add this to your recipe.service.ts
+  uploadImage(formData: FormData): Observable<string> {
+    return this.http.post<string>(`${this.apiUrl}/upload`, formData);
+  }
+
+  getImageUrl(filename: string): string {
+    if (!filename) return '';
+    return `${this.baseUrl}/images/${filename}`;
   }
 }
