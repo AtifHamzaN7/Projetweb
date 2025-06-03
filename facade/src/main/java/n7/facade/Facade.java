@@ -320,4 +320,24 @@ public ResponseEntity<Resource> getImage(@PathVariable String filename) throws I
             .contentType(MediaType.parseMediaType(contentType))
             .body(image);
 }
+
+@GetMapping("/adherents/{idAdh}/participations")
+public List<Event> getParticipationsByAdherent(@PathVariable("idAdh") int idAdh) {
+    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+    if (adherent == null) {
+        throw new IllegalArgumentException("Adhérent introuvable !");
+    }
+    return eventRepository.findByParticipantId(idAdh);
+}
+@GetMapping("/adherents/{idAdh}/messages")
+public List<Message> getMessagesByAdherent(@PathVariable("idAdh") int idAdh) {
+    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+    if (adherent == null) {
+        throw new IllegalArgumentException("Adhérent introuvable !");
+    }
+    return messageRepository.findByAuteur_IdAdh(idAdh);
+}
+
+
+
 }

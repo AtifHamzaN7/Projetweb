@@ -54,14 +54,14 @@ export class ForumService {
 
   // 🔹 Poster un message dans une discussion
   postMessage(discussionId: number, adherentId: number, content: string): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/messages/ajout`, null, {
-      params: {
-        content,
-        discussionId: discussionId.toString(),
-        auteurId: adherentId.toString()
-      }
-    });
-  }
+  return this.http.post<void>(`${this.apiUrl}/discussions/${discussionId}/messages/ajout`, null, {
+    params: {
+      auteurId: adherentId.toString(),
+      content: content
+    }
+  });
+}
+
 
   // 🔹 Obtenir tous les messages d’un adhérent
   getMessagesByAdherent(id: number): Observable<Message[]> {
