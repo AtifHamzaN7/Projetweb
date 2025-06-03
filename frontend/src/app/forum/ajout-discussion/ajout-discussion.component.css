@@ -1,0 +1,45 @@
+.ajout-discussion-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.ajout-discussion-container h2 {
+  margin-bottom: 1.5rem;
+}
+
+.ajout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ajout-form label {
+  font-weight: bold;
+}
+
+.ajout-form input,
+.ajout-form textarea {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.ajout-form textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.ajout-form button {
+  align-self: flex-start;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+}

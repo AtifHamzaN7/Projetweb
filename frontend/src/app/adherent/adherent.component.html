@@ -7,11 +7,9 @@
       <p><strong>Nom :</strong> {{ nom }}</p>
       <p><strong>Prénom :</strong> {{ prenom }}</p>
       <p><strong>Email :</strong> {{ email }}</p>
-      <button class="edit-button" (click)="openDialog()">Modifier</button>
       <button class="logout-button" (click)="logout()">Déconnexion</button>
-      <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
-      <button class="edit-button" routerLink="/evenements/ajouter">Créer un événement</button>
-      <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
+     
+
     </aside>
 
     <!-- Centre : Mes recettes + commentaires -->
@@ -28,17 +26,12 @@
       <ng-template #aucuneRecette>
         <p>Aucune recette trouvée pour cet adhérent.</p>
       </ng-template>
-
-      <!-- Mes commentaires -->
-      <section class="forum-comments">
-        <h2>Mes commentaires dans le forum</h2>
-        <div class="comment">
-          <p><strong>Tarte citron :</strong> Super idée de meringue légère, merci !</p>
-        </div>
-        <div class="comment">
-          <p><strong>Risotto :</strong> Je recommande d’ajouter un peu de parmesan à la fin.</p>
-        </div>
-      </section>
+ <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
+      <button class="edit-button" routerLink="/evenements/ajouter">Créer un événement</button>
+      <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
+      <button class="edit-button" routerLink="/forum">Accéder au forum</button>
+      <button class="edit-button" routerLink="/mes-messages">Mes commentaires forum</button>
+     
     </main>
 
     <!-- Calendrier à droite -->
@@ -70,23 +63,6 @@
         <p>Vous ne participez ni n'organisez encore d'événements.</p>
       </ng-container>
     </aside>
-
-    <!-- Boîte de dialogue -->
-    <div class="modal-backdrop" *ngIf="showDialog">
-      <div class="modal">
-        <h3>Modifier mon profil</h3>
-        <label>Nom :
-          <input [(ngModel)]="nom" />
-        </label>
-        <label>Email :
-          <input [(ngModel)]="email" />
-        </label>
-        <div class="modal-buttons">
-          <button (click)="closeDialog()">Enregistrer</button>
-          <button (click)="closeDialog()">Annuler</button>
-        </div>
-      </div>
-    </div>
 
   </div>
 </main>

@@ -1,0 +1,13 @@
+<div class="ajout-discussion-container">
+  <h2>📝 Nouvelle discussion</h2>
+
+  <form (ngSubmit)="onSubmit()" class="ajout-form">
+    <label for="titre">Titre :</label>
+    <input type="text" id="titre" [(ngModel)]="titre" name="titre" required />
+
+    <label for="question">Question :</label>
+    <textarea id="question" [(ngModel)]="question" name="question" required></textarea>
+
+    <button type="submit" [disabled]="!titre.trim() || !question.trim()">Publier</button>
+  </form>
+</div>

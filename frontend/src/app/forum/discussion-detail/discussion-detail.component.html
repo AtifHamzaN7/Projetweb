@@ -1,0 +1,24 @@
+<div class="discussion-detail-container" *ngIf="discussion">
+  <h2>{{ discussion.titre }}</h2>
+  <p class="question"><strong>Question :</strong> {{ discussion.question }}</p>
+
+  <h3>💬 Réponses</h3>
+
+  <div *ngIf="messages.length === 0">
+    <p>Aucune réponse pour le moment.</p>
+  </div>
+
+  <div *ngFor="let msg of messages" class="message-block">
+    <p class="content">« {{ msg.content }} »</p>
+   <p class="auteur" *ngIf="msg.auteur">
+  — {{ msg.auteur.prenom }} {{ msg.auteur.nom }}
+</p>
+
+  </div>
+
+  <div class="form-reponse">
+    <h4>Répondre à la discussion :</h4>
+    <textarea [(ngModel)]="newMessage" rows="3" placeholder="Votre message..."></textarea>
+    <button (click)="envoyer()" [disabled]="!newMessage.trim()">Envoyer</button>
+  </div>
+</div>

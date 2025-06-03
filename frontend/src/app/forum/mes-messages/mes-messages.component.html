@@ -1,0 +1,17 @@
+<div class="mes-messages-container">
+  <h2>🗨️ Mes commentaires dans le forum</h2>
+
+  <div *ngIf="messages.length === 0">
+    <p>Vous n'avez pas encore posté de messages.</p>
+  </div>
+
+  <ul *ngIf="messages.length > 0" class="message-list">
+    <li *ngFor="let m of messages" class="message-item">
+      <p class="message-content">« {{ m.content }} »</p>
+      <p class="message-info" *ngIf="m.discussion">
+  Discussion : <strong>{{ m.discussion.titre }}</strong>
+</p>
+
+    </li>
+  </ul>
+</div>

@@ -1,0 +1,19 @@
+<div class="forum-container">
+  <h2>💬 Forum des discussions</h2>
+  <p>Partagez vos idées, posez vos questions, échangez avec la communauté.</p>
+
+  <button (click)="ajouterDiscussion()" class="new-discussion-button">
+    + Nouvelle discussion
+  </button>
+
+  <ul class="discussion-list" *ngIf="discussions.length > 0; else aucune">
+    <li *ngFor="let d of discussions" (click)="voirDiscussion(d.idDisc)" class="discussion-item">
+      <h3>{{ d.titre }}</h3>
+      <p><strong>{{ d.auteur.prenom }} {{ d.auteur.nom }}</strong> : {{ d.question }}</p>
+    </li>
+  </ul>
+
+  <ng-template #aucune>
+    <p>Aucune discussion pour le moment.</p>
+  </ng-template>
+</div>
