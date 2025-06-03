@@ -76,7 +76,7 @@ export class AdherentComponent implements OnInit {
     // 👥 Récupération des événements participés (hors organisés)
     this.eventService.getEvenementsParParticipant(idAdh).subscribe({
       next: (data) => {
-        this.evenementsParticipes = data.filter(e => e.auteur.email !== this.email);
+    this.evenementsParticipes = data.filter(e => e.auteur?.idAdh !== idAdh);
       },
       error: (err) => {
         console.error("Erreur chargement participations :", err);

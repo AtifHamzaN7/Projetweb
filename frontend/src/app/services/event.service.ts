@@ -2,7 +2,7 @@ import { Auteur } from './recipe.service';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Adherent } from './adherent.service';
+import { Adherent } from './adherent.service' ;
 
 export interface Event {
   id: number;
@@ -10,11 +10,7 @@ export interface Event {
   description: string;
   date: string;
   lieu: string;
-  auteur: {
-    nom: string;
-    prenom: string;
-    email: string;
-  };
+  auteur: Adherent;
   participants: Adherent[];
 }
 

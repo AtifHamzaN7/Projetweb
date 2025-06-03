@@ -351,6 +351,7 @@ public ResponseEntity<Resource> getImage(@PathVariable String filename) throws I
             .body(image);
 }
 
+<<<<<<< HEAD
 @PostMapping("recettes/upload")
 public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
     try {
@@ -372,3 +373,25 @@ public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile fi
     }
 }
     }
+=======
+@GetMapping("/adherents/{idAdh}/participations")
+public List<Event> getParticipationsByAdherent(@PathVariable("idAdh") int idAdh) {
+    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+    if (adherent == null) {
+        throw new IllegalArgumentException("Adhérent introuvable !");
+    }
+    return eventRepository.findByParticipantId(idAdh);
+}
+@GetMapping("/adherents/{idAdh}/messages")
+public List<Message> getMessagesByAdherent(@PathVariable("idAdh") int idAdh) {
+    Adherent adherent = adherentRepository.findById(idAdh).orElse(null);
+    if (adherent == null) {
+        throw new IllegalArgumentException("Adhérent introuvable !");
+    }
+    return messageRepository.findByAuteur_IdAdh(idAdh);
+}
+
+
+
+}
+>>>>>>> f6d633d8818d324bdf36e66aee3ea0d758e14089
