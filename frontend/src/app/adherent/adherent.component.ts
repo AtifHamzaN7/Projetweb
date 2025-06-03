@@ -6,8 +6,8 @@ import { AdherentService } from '../services/adherent.service';
 import { RecetteService, Recette } from '../services/recipe.service';
 import { Event } from '../services/event.service';
 import { EventService } from '../services/event.service';
-import { CalendarModule } from 'angular-calendar';
-import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
+//import { CalendarModule } from 'angular-calendar';
+//import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 
 @Component({
   selector: 'app-adherent',

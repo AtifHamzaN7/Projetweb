@@ -44,30 +44,60 @@
     background-color: #c0392b;
   }
   
-  /* Recettes */
-  .recette-card-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-  }
+/* Recettes */
+.recette-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.recette-card {
+  width: 140px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
+
+.recette-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.recette-card img {
+  width: 100%;
+  border-radius: 8px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.recette-card h3 {
+  margin: 0.5rem 0;
+  color: #333;
+  font-size: 1rem;
+}
+
+.recette-card p {
+  margin-top: 0.5rem;
+  font-weight: 500;
+  color: #666;
+}
   
-  .recette-card {
-    width: 140px;
-    text-align: center;
+  .add-recette-button {
+    margin-top: 1rem;
+    background-color: #d97745;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    display: inline-block;
+    margin-right: 0.5rem;
   }
-  
-  .recette-card img {
-    width: 100%;
-    border-radius: 8px;
-    height: 100px;
-    object-fit: cover;
-  }
-  
-  .recette-card p {
-    margin-top: 0.5rem;
-    font-weight: 500;
-  }
-  
   /* Forum */
   .forum-comments {
     margin-top: 3rem;

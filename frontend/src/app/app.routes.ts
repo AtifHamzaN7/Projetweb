@@ -9,11 +9,15 @@ import { AddRecipeComponent } from './add-recipe/add-recipe.component';
 import { EventsComponent } from './events/events.component';
 import { AddEventComponent } from './add-event/add-event.component';
 import { EventDetailComponent } from './event-detail/event-detail.component';
+import { AProposComponent } from './a-propos/a-propos.component';
+import { ContactComponent } from './contact/contact.component';
 
 
 export const routes: Routes = [
+  { path: 'about', component: AProposComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'home', component: HomeComponent },
- { path: 'evenements', component: EventsComponent },
+  { path: 'evenements', component: EventsComponent },
   { path: 'evenements/:id', loadComponent: () => import('./event-detail/event-detail.component').then(m => m.EventDetailComponent) },
    {path: 'auth',
     loadComponent: () => import('./auth/auth.component').then(m => m.AuthComponent)

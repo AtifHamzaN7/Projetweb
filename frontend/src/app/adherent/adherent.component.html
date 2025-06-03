@@ -9,11 +9,8 @@
         <p><strong>Email :</strong> {{ email }}</p>
         <button class="edit-button" (click)="openDialog()">Modifier</button>
         <button class="logout-button" (click)="logout()">Déconnexion</button>
-<<<<<<< HEAD
-        <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
-=======
+        <button class="add-recette-button" (click)="goToAddRecipe()">Ajouter Recette</button>
         <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
->>>>>>> 3a046ff (+evenements+recettes)
 
       </aside>
   
@@ -22,10 +19,14 @@
         <h2>Mes Recettes</h2>
         
         <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
-          <div class="recette-card" *ngFor="let recette of recettesAdherent">
-            <img [src]="'assets/img/' + recette.photo" [alt]="recette.nom" />
-            <p>{{ recette.nom }}</p>
-          </div>
+          <a class="recette-card" *ngFor="let recette of recettesAdherent" 
+            [routerLink]="['/recette', recette.idRec]">
+            <div class="recette-content">
+              <h3>{{recette.nom}}</h3>
+              <img *ngIf="recette.photo" [src]="recette.photo" [alt]="recette.nom">
+              <!-- Add any other recipe information you want to display -->
+            </div>
+          </a>
         </div>
 
         <ng-template #aucuneRecette>
