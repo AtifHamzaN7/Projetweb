@@ -1,26 +1,10 @@
-<div class="auth-background">
+<div class="auth-background"> 
   <div class="auth-box">
     <h2>Sign Up for Free</h2>
     <p>Suivez vos progrès et sublimez vos talents. Rejoignez des milliers de passionnés de cuisine !</p>
 
-    <!-- Bouton Google -->
-    <button class="social-btn">
-      <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="Google" />
-      Sign Up With Google
-    </button>
-
-    <!-- Bouton Apple -->
-    <button class="social-btn">
-      <img src="assets/img/apple.png" width="20" height="20" alt="Apple" />
-      Sign Up With Apple
-    </button>
-
-    <div class="divider">or</div>
-
     <!-- Formulaire d'inscription -->
     <form (ngSubmit)="onSubmit(authForm)" #authForm="ngForm">
-
-
       <input name="nom" ngModel type="text" required placeholder="Nom" />
       <input name="prenom" ngModel type="text" required placeholder="Prénom" />
       <input name="email" ngModel type="email" required placeholder="Email" />

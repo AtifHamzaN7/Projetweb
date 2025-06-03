@@ -3,24 +3,8 @@
     <h2>Sign in</h2>
     <p>Suivez vos progrès et sublimez vos talents. Rejoignez des milliers de passionnés de cuisine !</p>
 
-    <!-- Bouton Google -->
-    <button class="social-btn" type="button">
-      <img src="https://www.svgrepo.com/show/475656/google-color.svg" width="20" height="20" alt="Google" />
-      Sign In With Google
-    </button>
-
-    <!-- Bouton Apple -->
-    <button class="social-btn" type="button">
-      <img src="assets/img/apple.png" width="20" height="20" alt="Apple" />
-      Sign In With Apple
-    </button>
-
-    <div class="divider">or</div>
-
     <!-- Formulaire de connexion -->
     <form (ngSubmit)="onSubmit(connForm)" #connForm="ngForm" novalidate>
-
-      
       <input
         name="email"
         ngModel

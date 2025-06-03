@@ -54,6 +54,8 @@ getEvenementsParAdherent(idAdh: number): Observable<Event[]> {
   return this.http.get<Event[]>(`http://localhost:8080/adherents/${idAdh}/evenements`);
 }
 getEvenementsParParticipant(adherentId: number): Observable<Event[]> {
-  return this.http.get<Event[]>(`http://localhost:8080/adherents/${adherentId}/evenements`);
+  return this.http.get<Event[]>(`http://localhost:8080/adherents/${adherentId}/participations`);
 }
 }
+
+

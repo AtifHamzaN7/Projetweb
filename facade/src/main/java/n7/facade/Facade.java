@@ -23,6 +23,13 @@ public class Facade {
     @Autowired
     IngredientRepository ingredientRepository;
 
+    @Autowired
+    DiscussionRepository discussionRepository;
+
+    @Autowired
+    MessageRepository messageRepository;
+
+
     // Inscription d'un adhérent
     @PostMapping("/adherents/inscription")
     public void inscriptionAdherent(
@@ -199,17 +206,65 @@ public Event getEventById(@PathVariable("id") int id) {
     public void suppressionEvenement(@PathVariable("idEvent") int idEvent) {
         eventRepository.deleteById(idEvent);
     }
+
     @PostMapping("/evenements/{eventId}/participer")
 public void participer(@PathVariable int eventId, @RequestParam int adherentId) {
-    Event event = eventRepository.findById(eventId).orElse(null);
-    Adherent adherent = adherentRepository.findById(adherentId).orElse(null);
+    Event event = eventRepository.findById(eventId).orElseThrow();
+    Adherent adherent = adherentRepository.findById(adherentId).orElseThrow();
 
-    if (event == null || adherent == null) {
-        throw new IllegalArgumentException("Événement ou adhérent introuvable");
-    }
-
-    event.addParticipant(adherent);
-    adherent.addEvenement(event);
-    eventRepository.save(event);
+    event.addParticipant(adherent);     
+    eventRepository.save(event);        
 }
+    @GetMapping("/adherents/{idAdh}/participations")
+public List<Event> getParticipations(@PathVariable("idAdh") int idAdh) {
+    return eventRepository.findByParticipantId(idAdh);
+}
+
+@PostMapping("/discussions/ajout")
+public void ajouterDiscussion(
+    @RequestParam String titre,
+    @RequestParam String question,
+    @RequestParam int auteurId) {
+
+    Adherent auteur = adherentRepository.findById(auteurId).orElseThrow();
+    Discussion discussion = new Discussion();
+    discussion.setTitre(titre);
+    discussion.setQuestion(question);
+    discussion.setAuteur(auteur);
+    discussionRepository.save(discussion);
+}
+
+
+@GetMapping("/discussions")
+public List<Discussion> listerDiscussions() {
+    return discussionRepository.findAll();
+}
+
+@GetMapping("/discussions/{id}/messages")
+public List<Message> listerMessages(@PathVariable int id) {
+    Discussion d = discussionRepository.findById(id).orElseThrow();
+    return d.getMessages();
+}
+
+@PostMapping("/messages/ajout")
+public void ajouterMessage(
+    @RequestParam String content,
+    @RequestParam int discussionId,
+    @RequestParam int auteurId) {
+
+    Adherent auteur = adherentRepository.findById(auteurId).orElseThrow();
+    Discussion discussion = discussionRepository.findById(discussionId).orElseThrow();
+
+    Message message = new Message();
+    message.setAuteur(auteur);
+    message.setDiscussion(discussion);
+    message.setContent(content);
+    messageRepository.save(message);
+}
+@GetMapping("/adherents/{idAdh}/messages")
+public List<Message> getMessagesByAdherent(@PathVariable int idAdh) {
+    Adherent adherent = adherentRepository.findById(idAdh).orElseThrow();
+    return adherent.getMessages();
+}
+
 }

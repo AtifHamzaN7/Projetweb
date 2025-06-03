@@ -130,4 +130,38 @@
     justify-content: space-between;
     margin-top: 1.5rem;
   }
+  .create-event-button {
+  background-color: #4caf50;
+  color: white;
+  margin-top: 10px;
+}
+/* Événements : distinctions organisateur / participant */
+
+.section-title {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  padding-left: 0.5rem;
+  border-left: 4px solid;
+}
+
+.organisateur {
+  background-color: #fff3e0; /* orange clair */
+  border-color: #ff9800;
+}
+
+.participant {
+  background-color: #e0f7fa; /* bleu clair */
+  border-color: #00acc1;
+}
+
+.event-item {
+  padding: 0.5rem;
+  margin-bottom: 0.4rem;
+  border-radius: 6px;
+  font-weight: 500;
+  list-style: none;
+}
+
+
   

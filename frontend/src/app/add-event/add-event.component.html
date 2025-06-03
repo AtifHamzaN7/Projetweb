@@ -1,39 +1,16 @@
-<div class="add-event-container">
-  <h2>Proposer un événement</h2>
+<div class="auth-container">
+  <div class="auth-box">
+    <h1>Créer un événement</h1>
+    <p class="subtitle">
+      Partagez vos idées et organisez vos moments culinaires avec la communauté !
+    </p>
 
-<form #eventForm="ngForm" (ngSubmit)="onSubmit(eventForm)">
-    <input
-      type="text"
-      name="titre"
-      [(ngModel)]="titre"
-      placeholder="Titre de l'événement"
-      required
-    />
-
-    <textarea
-      name="description"
-      [(ngModel)]="description"
-      placeholder="Description"
-      required
-    ></textarea>
-
-    <input
-      type="date"
-      name="date"
-      [(ngModel)]="date"
-      required
-    />
-
-    <input
-      type="text"
-      name="lieu"
-      [(ngModel)]="lieu"
-      placeholder="Lieu"
-      required
-    />
-
-    <button type="submit" [disabled]="!eventForm.form.valid">
-      Créer l'événement
-    </button>
-  </form>
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()" class="auth-form">
+      <input type="text" placeholder="Titre" formControlName="titre" required />
+      <textarea placeholder="Description" formControlName="description" required></textarea>
+      <input type="date" formControlName="date" required />
+      <input type="text" placeholder="Lieu" formControlName="lieu" required />
+      <button type="submit" [disabled]="eventForm.invalid">Créer l'événement</button>
+    </form>
+  </div>
 </div>

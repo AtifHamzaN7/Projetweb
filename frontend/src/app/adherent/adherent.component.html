@@ -1,83 +1,92 @@
 <main class="adherent-container">
-    <div class="adherent-page">
-  
-      <!-- Profil à gauche -->
-      <aside class="profile-info">
-        <h2>Mon profil</h2>
-        <p><strong>Nom :</strong> {{ nom }}</p>
-        <p><strong>Prénom :</strong> {{ prenom }}</p>
-        <p><strong>Email :</strong> {{ email }}</p>
-        <button class="edit-button" (click)="openDialog()">Modifier</button>
-        <button class="logout-button" (click)="logout()">Déconnexion</button>
-<<<<<<< HEAD
-        <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
-=======
-        <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
->>>>>>> 3a046ff (+evenements+recettes)
+  <div class="adherent-page">
 
-      </aside>
-  
-      <!-- Centre : Mes recettes + commentaires -->
-      <main class="recettes-section">
-        <h2>Mes Recettes</h2>
-        
-        <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
-          <div class="recette-card" *ngFor="let recette of recettesAdherent">
-            <img [src]="'assets/img/' + recette.photo" [alt]="recette.nom" />
-            <p>{{ recette.nom }}</p>
-          </div>
-        </div>
+    <!-- Profil à gauche -->
+    <aside class="profile-info">
+      <h2>Mon profil</h2>
+      <p><strong>Nom :</strong> {{ nom }}</p>
+      <p><strong>Prénom :</strong> {{ prenom }}</p>
+      <p><strong>Email :</strong> {{ email }}</p>
+      <button class="edit-button" (click)="openDialog()">Modifier</button>
+      <button class="logout-button" (click)="logout()">Déconnexion</button>
+      <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
+      <button class="edit-button" routerLink="/evenements/ajouter">Créer un événement</button>
+      <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
+    </aside>
 
-        <ng-template #aucuneRecette>
-          <p>Aucune recette trouvée pour cet adhérent.</p>
-        </ng-template>
+    <!-- Centre : Mes recettes + commentaires -->
+    <main class="recettes-section">
+      <h2>Mes Recettes</h2>
 
-  
-        <!-- Mes commentaires -->
-        <section class="forum-comments">
-          <h2>Mes commentaires dans le forum</h2>
-          <div class="comment">
-            <p><strong>Tarte citron :</strong> Super idée de meringue légère, merci !</p>
-          </div>
-          <div class="comment">
-            <p><strong>Risotto :</strong> Je recommande d’ajouter un peu de parmesan à la fin.</p>
-          </div>
-        </section>
-      </main>
-  
-      <!-- Calendrier à droite -->
-      <aside class="calendar-box">
-        <h2>Mon calendrier d'événements</h2>
-    
-  <ul *ngIf="evenements.length > 0; else aucunEvt">
-    <li *ngFor="let evt of evenements">
-      {{ evt.titre }} – le {{ evt.date | date:'longDate' }} à {{ evt.lieu }}
-    </li>
-  </ul>
-  <ng-template #aucunEvt>
-    <p>Vous ne participez à aucun événement.</p>
-  </ng-template>
-
-
-      </aside>
-  
-      <!-- Boîte de dialogue -->
-      <div class="modal-backdrop" *ngIf="showDialog">
-        <div class="modal">
-          <h3>Modifier mon profil</h3>
-          <label>Nom :
-            <input [(ngModel)]="nom" />
-          </label>
-          <label>Email :
-            <input [(ngModel)]="email" />
-          </label>
-          <div class="modal-buttons">
-            <button (click)="closeDialog()">Enregistrer</button>
-            <button (click)="closeDialog()">Annuler</button>
-          </div>
+      <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
+        <div class="recette-card" *ngFor="let recette of recettesAdherent">
+          <img [src]="'assets/img/' + recette.photo" [alt]="recette.nom" />
+          <p>{{ recette.nom }}</p>
         </div>
       </div>
-  
+
+      <ng-template #aucuneRecette>
+        <p>Aucune recette trouvée pour cet adhérent.</p>
+      </ng-template>
+
+      <!-- Mes commentaires -->
+      <section class="forum-comments">
+        <h2>Mes commentaires dans le forum</h2>
+        <div class="comment">
+          <p><strong>Tarte citron :</strong> Super idée de meringue légère, merci !</p>
+        </div>
+        <div class="comment">
+          <p><strong>Risotto :</strong> Je recommande d’ajouter un peu de parmesan à la fin.</p>
+        </div>
+      </section>
+    </main>
+
+    <!-- Calendrier à droite -->
+    <aside class="calendar-box">
+      <h2>Mon calendrier d'événements</h2>
+
+      <!-- 🎯 Événements organisés -->
+      <section *ngIf="evenementsOrganises.length > 0">
+        <h3 class="section-title organisateur">🎯 Événements organisés</h3>
+        <ul>
+          <li *ngFor="let evt of evenementsOrganises" class="event-item organisateur">
+            {{ evt.titre }} – le {{ evt.date | date:'longDate' }} à {{ evt.lieu }}
+          </li>
+        </ul>
+      </section>
+
+      <!-- 👥 Événements participés -->
+      <section *ngIf="evenementsParticipes.length > 0">
+        <h3 class="section-title participant">👥 Événements participés</h3>
+        <ul>
+          <li *ngFor="let evt of evenementsParticipes" class="event-item participant">
+            {{ evt.titre }} – le {{ evt.date | date:'longDate' }} à {{ evt.lieu }}
+          </li>
+        </ul>
+      </section>
+
+      <!-- Aucun événement -->
+      <ng-container *ngIf="evenementsOrganises.length === 0 && evenementsParticipes.length === 0">
+        <p>Vous ne participez ni n'organisez encore d'événements.</p>
+      </ng-container>
+    </aside>
+
+    <!-- Boîte de dialogue -->
+    <div class="modal-backdrop" *ngIf="showDialog">
+      <div class="modal">
+        <h3>Modifier mon profil</h3>
+        <label>Nom :
+          <input [(ngModel)]="nom" />
+        </label>
+        <label>Email :
+          <input [(ngModel)]="email" />
+        </label>
+        <div class="modal-buttons">
+          <button (click)="closeDialog()">Enregistrer</button>
+          <button (click)="closeDialog()">Annuler</button>
+        </div>
+      </div>
     </div>
-  </main>
-  
+
+  </div>
+</main>

@@ -99,13 +99,12 @@ public class Event {
         this.participants = participants;
     }
 
-    public void addParticipant(Adherent adherent) {
-        if (participants == null) {
-            participants = new ArrayList<>();
-        }
+  public void addParticipant(Adherent adherent) {
+    if (!participants.contains(adherent)) {
         participants.add(adherent);
-        if (!adherent.getEvenements().contains(this)) {
-            adherent.getEvenements().add(this);
-        }
     }
+}
+
+
+
 }
