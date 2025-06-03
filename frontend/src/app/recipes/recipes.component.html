@@ -1,33 +1,57 @@
-<div class="flex justify-center">
-  <div class="max-w-7xl w-full p-6">
+<div class="recipes-container">
+  <!-- Barre de recherche avec suggestions -->
+  <div class="search-container">
+    <div class="search-bar">
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm"
+        (input)="onSearch($event)"
+        (focus)="onFocusSearch()"
+        (blur)="onBlurSearch()"
+        placeholder="Rechercher une recette..." 
+        class="search-input">
+    </div>
 
-      <!-- Barre de recherche -->
-      <div class="mb-6">
-        <input type="text" placeholder="Recherche..." class="w-full border p-2 rounded">
-      </div>
-  
-      
-      <!-- Section recettes -->
-      <div class="flex flex-wrap justify-center gap-6 mb-10">
-        <a
-          *ngFor="let recette of recettes"
-          [routerLink]="['/recette', recette.idRec]"
-          class="recipe-card"
-        >
-          <img
-            [src]="'http://localhost:8080/images/' + recette.photo"
-            alt="{{ recette.nom }}"
-          />
-          <h3 class="text-lg font-bold mb-1">{{ recette?.nom }}</h3>
-          <p class="text-sm text-gray-600">
-            Par : {{ recette?.auteur?.prenom }} {{ recette?.auteur?.nom }}
-          </p>
-        </a>
-      </div>
-
-
-    
-  
+    <!-- Suggestions dropdown -->
+    <div class="suggestions-dropdown" *ngIf="showSuggestions && filteredRecettes.length > 0">
+      <a *ngFor="let recette of filteredRecettes" 
+         [routerLink]="['/recette', recette.idRec]"
+         class="suggestion-item"
+         (click)="selectSuggestion(recette)">
+        <div class="suggestion-content">
+          <img [src]="'http://localhost:8080/images/' + recette.photo" 
+               [alt]="recette.nom" 
+               class="suggestion-image">
+          <div class="suggestion-info">
+            <span class="suggestion-title">{{ recette.nom }}</span>
+            <span class="suggestion-author">par {{ recette.auteur.prenom }} {{ recette.auteur.nom }}</span>
+          </div>
+        </div>
+      </a>
     </div>
   </div>
+  
+  <!-- Liste des recettes filtrées -->
+  <div class="recipes-grid">
+    <a *ngFor="let recette of filteredRecettes"
+       [routerLink]="['/recette', recette.idRec]"
+       class="recipe-card">
+      <div class="recipe-info">
+        <h3 class="recipe-title">{{ recette?.nom }}</h3>
+        <p class="recipe-author">
+          Par : {{ recette?.auteur?.prenom }} {{ recette?.auteur?.nom }}
+        </p>
+        <div class="recipe-categories">
+          <span *ngFor="let cat of recette.categories" class="category-tag">
+            {{ cat }}
+          </span>
+        </div>
+      </div>
+      <div class="recipe-image">
+        <img [src]="'http://localhost:8080/images/' + recette.photo"
+             [alt]="recette.nom">
+      </div>
+    </a>
+  </div>
+</div>
   

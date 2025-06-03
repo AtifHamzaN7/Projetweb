@@ -20,12 +20,14 @@ public class Message {
     @ManyToOne
     @JsonIgnore
     @JoinColumn(name = "auteur_id", nullable = false)
+    @JsonIgnore
     private Adherent auteur;
 
     @ManyToOne
     @JsonIgnore
     @JsonBackReference
     @JoinColumn(name = "discussion_id", nullable = false)
+    @JsonIgnore
     private Discussion discussion;
 
     public Message() {

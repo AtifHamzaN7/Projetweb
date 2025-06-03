@@ -1,6 +1,7 @@
 package n7.facade;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Comment {
@@ -13,10 +14,12 @@ public class Comment {
 
     @ManyToOne
     @JoinColumn(name = "auteur_id", nullable = false)
+    @JsonIgnore
     private Adherent auteur;
 
     @ManyToOne
     @JoinColumn(name = "recette_id", nullable = false)
+    @JsonIgnore
     private Recette recette;
 
     public Comment() {

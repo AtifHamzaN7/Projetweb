@@ -1,10 +1,17 @@
 package n7.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -25,11 +32,13 @@ public class Facade {
     IngredientRepository ingredientRepository;
 
     @Autowired
+    CommentRepository commentRepository;
+
+    @Autowired
     DiscussionRepository discussionRepository;
 
     @Autowired
     MessageRepository messageRepository;
-
 
     // Inscription d'un adhérent
     @PostMapping("/adherents/inscription")
@@ -216,56 +225,99 @@ public void participer(@PathVariable int eventId, @RequestParam int adherentId) 
     event.addParticipant(adherent);     
     eventRepository.save(event);        
 }
-    @GetMapping("/adherents/{idAdh}/participations")
-public List<Event> getParticipations(@PathVariable("idAdh") int idAdh) {
-    return eventRepository.findByParticipantId(idAdh);
+    // Ajouter un commentaire à une recette
+    @PostMapping("/recettes/{idRec}/commentaires/ajout")
+    public void ajouterCommentaire(
+            @PathVariable("idRec") int idRec,
+            @RequestParam("auteurId") int auteurId,
+            @RequestParam("content") String content) {
+        Recette recette = recetteRepository.findById(idRec).orElse(null);
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (recette == null || auteur == null) {
+            throw new IllegalArgumentException("Recette ou auteur introuvable !");
+        }
+
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setAuteur(auteur);
+        comment.setRecette(recette);
+        commentRepository.save(comment);
+    }
+
+    // Récupérer les commentaires d'une recette
+    @GetMapping("/recettes/{idRec}/commentaires")
+    public List<Comment> getCommentairesByRecette(@PathVariable("idRec") int idRec) {
+        return commentRepository.findByRecette_IdRec(idRec);
+    }
+
+    // Ajouter une discussion
+    @PostMapping("/discussions/ajout")
+    public void ajouterDiscussion(
+        @RequestParam("titre") String titre,
+        @RequestParam("question") String question,
+        @RequestParam("auteurId") int auteurId
+    ) {
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (auteur == null) {
+            throw new IllegalArgumentException("Auteur introuvable !");
+        }
+        Discussion discussion = new Discussion();
+        discussion.setTitre(titre);
+        discussion.setQuestion(question);
+        discussion.setAuteur(auteur);
+        discussionRepository.save(discussion);
+    }
+
+    // Récupérer toutes les discussions
+    @GetMapping("/discussions")
+    public List<Discussion> listeDiscussions() {
+        return discussionRepository.findAll();
+    }
+
+    // Récupérer une discussion par son ID
+    @GetMapping("/discussions/{idDisc}")
+    public Discussion getDiscussionById(@PathVariable("idDisc") int idDisc) {
+        return discussionRepository.findById(idDisc).orElse(null);
+    }
+
+    // Ajouter un message à une discussion
+    @PostMapping("/discussions/{idDisc}/messages/ajout")
+    public void ajouterMessage(
+        @PathVariable("idDisc") int idDisc,
+        @RequestParam("auteurId") int auteurId,
+        @RequestParam("content") String content
+    ) {
+        Discussion discussion = discussionRepository.findById(idDisc).orElse(null);
+        Adherent auteur = adherentRepository.findById(auteurId).orElse(null);
+        if (discussion == null || auteur == null) {
+            throw new IllegalArgumentException("Discussion ou auteur introuvable !");
+        }
+        Message message = new Message();
+        message.setContent(content);
+        message.setAuteur(auteur);
+        message.setDiscussion(discussion);
+        messageRepository.save(message);
+    }
+
+    // Récupérer les messages d'une discussion
+    @GetMapping("/discussions/{idDisc}/messages")
+    public List<Message> getMessagesByDiscussion(@PathVariable("idDisc") int idDisc) {
+        Discussion discussion = discussionRepository.findById(idDisc).orElse(null);
+        if (discussion == null) {
+            throw new IllegalArgumentException("Discussion introuvable !");
+        }
+        return discussion.getMessages();
+    }
+    
+   @GetMapping("/images/{filename}")
+public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
+    Resource image = new ClassPathResource("static/" + filename);
+    if (!image.exists()) {
+        return ResponseEntity.notFound().build();
+    }
+    String contentType = filename.endsWith(".png") ? MediaType.IMAGE_PNG_VALUE : MediaType.IMAGE_JPEG_VALUE;
+    return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .body(image);
 }
-
-@PostMapping("/discussions/ajout")
-public void ajouterDiscussion(
-    @RequestParam String titre,
-    @RequestParam String question,
-    @RequestParam int auteurId) {
-
-    Adherent auteur = adherentRepository.findById(auteurId).orElseThrow();
-    Discussion discussion = new Discussion();
-    discussion.setTitre(titre);
-    discussion.setQuestion(question);
-    discussion.setAuteur(auteur);
-    discussionRepository.save(discussion);
-}
-
-
-@GetMapping("/discussions")
-public List<Discussion> listerDiscussions() {
-    return discussionRepository.findAll();
-}
-
-@GetMapping("/discussions/{id}/messages")
-public List<Message> listerMessages(@PathVariable int id) {
-    Discussion d = discussionRepository.findById(id).orElseThrow();
-    return d.getMessages();
-}
-
-@PostMapping("/messages/ajout")
-public void ajouterMessage(
-    @RequestParam String content,
-    @RequestParam int discussionId,
-    @RequestParam int auteurId) {
-
-    Adherent auteur = adherentRepository.findById(auteurId).orElseThrow();
-    Discussion discussion = discussionRepository.findById(discussionId).orElseThrow();
-
-    Message message = new Message();
-    message.setAuteur(auteur);
-    message.setDiscussion(discussion);
-    message.setContent(content);
-    messageRepository.save(message);
-}
-@GetMapping("/adherents/{idAdh}/messages")
-public List<Message> getMessagesByAdherent(@PathVariable int idAdh) {
-    Adherent adherent = adherentRepository.findById(idAdh).orElseThrow();
-    return adherent.getMessages();
-}
-
 }

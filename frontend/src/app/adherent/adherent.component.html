@@ -9,6 +9,18 @@
       <p><strong>Email :</strong> {{ email }}</p>
       <button class="logout-button" (click)="logout()">Déconnexion</button>
      
+    <div class="adherent-page">
+  
+      <!-- Profil à gauche -->
+      <aside class="profile-info">
+        <h2>Mon profil</h2>
+        <p><strong>Nom :</strong> {{ nom }}</p>
+        <p><strong>Prénom :</strong> {{ prenom }}</p>
+        <p><strong>Email :</strong> {{ email }}</p>
+        <button class="edit-button" (click)="openDialog()">Modifier</button>
+        <button class="logout-button" (click)="logout()">Déconnexion</button>
+        <button class="add-recette-button" (click)="goToAddRecipe()">Ajouter Recette</button>
+        <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
 
     </aside>
 
@@ -22,6 +34,21 @@
           <p>{{ recette.nom }}</p>
         </div>
       </div>
+  
+      <!-- Centre : Mes recettes + commentaires -->
+      <main class="recettes-section">
+        <h2>Mes Recettes</h2>
+        
+        <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
+          <a class="recette-card" *ngFor="let recette of recettesAdherent" 
+            [routerLink]="['/recette', recette.idRec]">
+            <div class="recette-content">
+              <h3>{{recette.nom}}</h3>
+              <img *ngIf="recette.photo" [src]="recette.photo" [alt]="recette.nom">
+              <!-- Add any other recipe information you want to display -->
+            </div>
+          </a>
+        </div>
 
       <ng-template #aucuneRecette>
         <p>Aucune recette trouvée pour cet adhérent.</p>
