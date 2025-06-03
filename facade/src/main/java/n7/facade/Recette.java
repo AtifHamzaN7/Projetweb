@@ -32,7 +32,6 @@ public class Recette {
     private String photo;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "auteur_id", nullable = false)
     private Adherent auteur;
 
