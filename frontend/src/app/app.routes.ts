@@ -10,11 +10,15 @@ import { EventDetailComponent } from './event-detail/event-detail.component';
 import { ConnComponent } from './conn/conn.component';
 import { ForumComponent } from './forum/forum/forum.component';
 import { AuthComponent } from './auth/auth.component';  
+import { AProposComponent } from './a-propos/a-propos.component';
+import { ContactComponent } from './contact/contact.component';
 
 
 
 export const routes: Routes = [
   { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'about', component: AProposComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'home', component: HomeComponent },
   { path: 'auth', loadComponent: () => import('./auth/auth.component').then(m => m.AuthComponent) },
   { path: 'conn', loadComponent: () => import('./conn/conn.component').then(m => m.ConnComponent) },
