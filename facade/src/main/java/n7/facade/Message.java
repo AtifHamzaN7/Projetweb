@@ -1,6 +1,12 @@
 package n7.facade;
 
 import jakarta.persistence.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
+
+
 
 @Entity
 public class Message {
@@ -12,10 +18,13 @@ public class Message {
     private String content;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "auteur_id", nullable = false)
     private Adherent auteur;
 
     @ManyToOne
+    @JsonIgnore
+    @JsonBackReference
     @JoinColumn(name = "discussion_id", nullable = false)
     private Discussion discussion;
 

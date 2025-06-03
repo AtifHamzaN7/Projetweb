@@ -45,12 +45,15 @@ public class Adherent {
     private List<Event> evenements = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "auteur", fetch = FetchType.LAZY)
+     @JsonIgnore
     private List<Discussion> discussions = new ArrayList<>();
 
     @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+     @JsonIgnore
     private List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Message> messages = new ArrayList<>();
 
 

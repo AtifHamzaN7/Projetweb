@@ -3,6 +3,8 @@ package n7.facade;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 public class Recette {
@@ -30,6 +32,7 @@ public class Recette {
     private String photo;
 
     @ManyToOne
+    @JsonIgnore
     @JoinColumn(name = "auteur_id", nullable = false)
     private Adherent auteur;
 
