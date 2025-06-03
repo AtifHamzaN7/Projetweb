@@ -18,7 +18,6 @@ public class Message {
     private String content;
 
     @ManyToOne
-    @JsonIgnore
     @JoinColumn(name = "auteur_id", nullable = false)
     @JsonIgnore
     private Adherent auteur;
@@ -27,7 +26,6 @@ public class Message {
     @JsonIgnore
     @JsonBackReference
     @JoinColumn(name = "discussion_id", nullable = false)
-    @JsonIgnore
     private Discussion discussion;
 
     public Message() {

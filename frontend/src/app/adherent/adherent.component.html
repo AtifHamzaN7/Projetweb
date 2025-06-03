@@ -7,65 +7,44 @@
       <p><strong>Nom :</strong> {{ nom }}</p>
       <p><strong>Prénom :</strong> {{ prenom }}</p>
       <p><strong>Email :</strong> {{ email }}</p>
+      <button class="edit-button" (click)="openDialog()">Modifier</button>
       <button class="logout-button" (click)="logout()">Déconnexion</button>
-     
-    <div class="adherent-page">
-  
-      <!-- Profil à gauche -->
-      <aside class="profile-info">
-        <h2>Mon profil</h2>
-        <p><strong>Nom :</strong> {{ nom }}</p>
-        <p><strong>Prénom :</strong> {{ prenom }}</p>
-        <p><strong>Email :</strong> {{ email }}</p>
-        <button class="edit-button" (click)="openDialog()">Modifier</button>
-        <button class="logout-button" (click)="logout()">Déconnexion</button>
-        <button class="add-recette-button" (click)="goToAddRecipe()">Ajouter Recette</button>
-        <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
-
+    
     </aside>
 
-    <!-- Centre : Mes recettes + commentaires -->
-    <main class="recettes-section">
+    <!-- Centre : Mes recettes + boutons -->
+    <section class="recettes-section">
       <h2>Mes Recettes</h2>
 
       <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
-        <div class="recette-card" *ngFor="let recette of recettesAdherent">
-          <img [src]="'assets/img/' + recette.photo" [alt]="recette.nom" />
-          <p>{{ recette.nom }}</p>
-        </div>
+        <a class="recette-card" *ngFor="let recette of recettesAdherent" [routerLink]="['/recette', recette.idRec]">
+          <div class="recette-content">
+            <h3>{{ recette.nom }}</h3>
+            <img *ngIf="recette.photo" [src]="recette.photo" [alt]="recette.nom" />
+            <!-- Autres infos recette ici si besoin -->
+          </div>
+        </a>
       </div>
-  
-      <!-- Centre : Mes recettes + commentaires -->
-      <main class="recettes-section">
-        <h2>Mes Recettes</h2>
-        
-        <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
-          <a class="recette-card" *ngFor="let recette of recettesAdherent" 
-            [routerLink]="['/recette', recette.idRec]">
-            <div class="recette-content">
-              <h3>{{recette.nom}}</h3>
-              <img *ngIf="recette.photo" [src]="recette.photo" [alt]="recette.nom">
-              <!-- Add any other recipe information you want to display -->
-            </div>
-          </a>
-        </div>
 
       <ng-template #aucuneRecette>
         <p>Aucune recette trouvée pour cet adhérent.</p>
       </ng-template>
- <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
-      <button class="edit-button" routerLink="/evenements/ajouter">Créer un événement</button>
-      <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
-      <button class="edit-button" routerLink="/forum">Accéder au forum</button>
-      <button class="edit-button" routerLink="/mes-messages">Mes commentaires forum</button>
-     
-    </main>
+
+      <!-- Boutons d'actions supplémentaires -->
+      <div class="boutons-actions">
+        <button class="add-recipe-button" (click)="goToAddRecipe()">Ajouter Recette</button>
+        <button class="edit-button" routerLink="/evenements/ajouter">Créer un événement</button>
+        <button class="edit-button" routerLink="/evenements">Participer à un événement</button>
+        <button class="edit-button" routerLink="/forum">Accéder au forum</button>
+        <button class="edit-button" routerLink="/mes-messages">Mes commentaires forum</button>
+      </div>
+    </section>
 
     <!-- Calendrier à droite -->
     <aside class="calendar-box">
       <h2>Mon calendrier d'événements</h2>
 
-      <!-- 🎯 Événements organisés -->
+      <!-- Événements organisés -->
       <section *ngIf="evenementsOrganises.length > 0">
         <h3 class="section-title organisateur">🎯 Événements organisés</h3>
         <ul>
@@ -75,7 +54,7 @@
         </ul>
       </section>
 
-      <!-- 👥 Événements participés -->
+      <!-- Événements participés -->
       <section *ngIf="evenementsParticipes.length > 0">
         <h3 class="section-title participant">👥 Événements participés</h3>
         <ul>
