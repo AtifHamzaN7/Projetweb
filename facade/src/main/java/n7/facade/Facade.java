@@ -1,9 +1,17 @@
 package n7.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Date;
 import java.util.List;
 
@@ -305,5 +313,15 @@ public void participer(@PathVariable int eventId, @RequestParam int adherentId) 
         return discussion.getMessages();
     }
     
-    
+   @GetMapping("/images/{filename}")
+public ResponseEntity<Resource> getImage(@PathVariable String filename) throws IOException {
+    Resource image = new ClassPathResource("static/" + filename);
+    if (!image.exists()) {
+        return ResponseEntity.notFound().build();
+    }
+    String contentType = filename.endsWith(".png") ? MediaType.IMAGE_PNG_VALUE : MediaType.IMAGE_JPEG_VALUE;
+    return ResponseEntity.ok()
+            .contentType(MediaType.parseMediaType(contentType))
+            .body(image);
+}
 }
