@@ -11,4 +11,4 @@ public class SoustractionIA {
         return a - b - c;
     }
 }
-//trigger ci 
+//trigger ci for testing
