@@ -1,0 +1,307 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------------< [0;36mn7:facade[0;1m >------------------------------[m
+[[1;34mINFO[m] [1mBuilding facade 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ war ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:resources[m [1m(default-resources)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/main/resources to target/classes
+[[1;34mINFO[m] Copying 3 resources from src/main/resources to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.13.0:compile[m [1m(default-compile)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Recompiling the module because of [1mchanged source code[m.
+[[1;34mINFO[m] Compiling 21 source files with javac [debug parameters release 17] to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:testResources[m [1m(default-testResources)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/test/resources to target/test-classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.13.0:testCompile[m [1m(default-testCompile)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Recompiling the module because of [1mchanged dependency[m.
+[[1;34mINFO[m] Compiling 3 source files with javac [debug parameters release 17] to target/test-classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-surefire-plugin:3.5.3:test[m [1m(default-test)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[[1;34mINFO[m] 
+[[1;34mINFO[m] -------------------------------------------------------
+[[1;34mINFO[m]  T E S T S
+[[1;34mINFO[m] -------------------------------------------------------
+[[1;34mINFO[m] Running com.projet_gamification.gamification.[1mAiPocControllerWebMvcTest[m
+00:03:26.164 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.projet_gamification.gamification.AiPocControllerWebMvcTest]: AiPocControllerWebMvcTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+[[1;31mERROR[m] [1;31mTests [0;1mrun: [0;1m1[m, Failures: 0, [1;31mErrors: [0;1;31m1[m, Skipped: 0, Time elapsed: 0.581 s[1;31m <<< FAILURE![m -- in com.projet_gamification.gamification.[1mAiPocControllerWebMvcTest[m
+[[1;31mERROR[m] com.projet_gamification.gamification.AiPocControllerWebMvcTest -- Time elapsed: 0.581 s <<< ERROR!
+java.lang.IllegalStateException: Unable to find a @SpringBootConfiguration by searching packages upwards from the test. You can use @ContextConfiguration, @SpringBootTest(classes=...) or other Spring Test supported mechanisms to explicitly declare the configuration classes to load. Classes annotated with @TestConfiguration are not considered.
+	at org.springframework.util.Assert.state(Assert.java:79)
+	at org.springframework.boot.test.context.SpringBootTestContextBootstrapper.findConfigurationClass(SpringBootTestContextBootstrapper.java:246)
+	at org.springframework.boot.test.context.SpringBootTestContextBootstrapper.getOrFindConfigurationClasses(SpringBootTestContextBootstrapper.java:233)
+	at org.springframework.boot.test.context.SpringBootTestContextBootstrapper.processMergedContextConfiguration(SpringBootTestContextBootstrapper.java:150)
+	at org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTestContextBootstrapper.processMergedContextConfiguration(WebMvcTestContextBootstrapper.java:36)
+	at org.springframework.test.context.support.AbstractTestContextBootstrapper.buildMergedContextConfiguration(AbstractTestContextBootstrapper.java:351)
+	at org.springframework.test.context.support.AbstractTestContextBootstrapper.buildDefaultMergedContextConfiguration(AbstractTestContextBootstrapper.java:267)
+	at org.springframework.test.context.support.AbstractTestContextBootstrapper.buildMergedContextConfiguration(AbstractTestContextBootstrapper.java:215)
+	at org.springframework.test.context.support.AbstractTestContextBootstrapper.buildTestContext(AbstractTestContextBootstrapper.java:108)
+	at org.springframework.boot.test.context.SpringBootTestContextBootstrapper.buildTestContext(SpringBootTestContextBootstrapper.java:111)
+	at org.springframework.test.context.TestContextManager.<init>(TestContextManager.java:142)
+	at org.springframework.test.context.TestContextManager.<init>(TestContextManager.java:126)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.getTestContextManager(SpringExtension.java:362)
+	at org.springframework.test.context.junit.jupiter.SpringExtension.beforeAll(SpringExtension.java:128)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+[[1;34mINFO[m] Running n7.facade.[1mFacadeApplicationTests[m
+00:03:26.482 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [n7.facade.FacadeApplicationTests]: FacadeApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+00:03:26.564 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration n7.facade.FacadeApplication for test class n7.facade.FacadeApplicationTests
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-03-04T00:03:27.483+01:00  INFO 186442 --- [           main] n7.facade.FacadeApplicationTests         : Starting FacadeApplicationTests using Java 17.0.18 with PID 186442 (started by oussamaetta in /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade)
+2026-03-04T00:03:27.488+01:00  INFO 186442 --- [           main] n7.facade.FacadeApplicationTests         : No active profile set, falling back to 1 default profile: "default"
+2026-03-04T00:03:28.448+01:00  INFO 186442 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-04T00:03:28.553+01:00  INFO 186442 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 88 ms. Found 7 JPA repository interfaces.
+2026-03-04T00:03:29.223+01:00  INFO 186442 --- [           main] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-03-04T00:03:29.291+01:00  INFO 186442 --- [           main] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-03-04T00:03:29.342+01:00  INFO 186442 --- [           main] o.h.c.internal.RegionFactoryInitiator    : HHH000026: Second-level cache disabled
+2026-03-04T00:03:29.734+01:00  INFO 186442 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-04T00:03:29.787+01:00  INFO 186442 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-04T00:03:30.111+01:00  INFO 186442 --- [           main] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Driver does not support get/set network timeout for connections. (feature not supported)
+2026-03-04T00:03:30.112+01:00  INFO 186442 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection org.hsqldb.jdbc.JDBCConnection@68e47e7
+2026-03-04T00:03:30.114+01:00  INFO 186442 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-04T00:03:30.159+01:00  WARN 186442 --- [           main] org.hibernate.orm.deprecation            : HHH90000025: HSQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-03-04T00:03:30.192+01:00  INFO 186442 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 2.7.3
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-04T00:03:31.662+01:00  INFO 186442 --- [           main] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+Hibernate: 
+    create table adherent (
+        id_adh integer generated by default as identity (start with 1),
+        email varchar(255),
+        nom varchar(255),
+        password varchar(255),
+        prenom varchar(255),
+        primary key (id_adh)
+    )
+Hibernate: 
+    create table adherent_my_ingredients (
+        adherent_id integer not null,
+        ingredient_id integer not null
+    )
+Hibernate: 
+    create table adherent_shopping_list (
+        adherent_id integer not null,
+        ingredient_id integer not null
+    )
+Hibernate: 
+    create table comment (
+        id_com integer generated by default as identity (start with 1),
+        content varchar(255),
+        auteur_id integer not null,
+        recette_id integer not null,
+        primary key (id_com)
+    )
+Hibernate: 
+    create table discussion (
+        id_disc integer generated by default as identity (start with 1),
+        question varchar(255),
+        titre varchar(255),
+        auteur_id integer not null,
+        primary key (id_disc)
+    )
+Hibernate: 
+    create table event (
+        id integer generated by default as identity (start with 1),
+        date timestamp(6),
+        description varchar(255),
+        lieu varchar(255),
+        titre varchar(255),
+        auteur_id integer not null,
+        primary key (id)
+    )
+Hibernate: 
+    create table event_participants (
+        event_id integer not null,
+        adherent_id integer not null
+    )
+Hibernate: 
+    create table ingredient (
+        id_ing integer generated by default as identity (start with 1),
+        calories integer not null,
+        nom varchar(255),
+        quantite varchar(255),
+        primary key (id_ing)
+    )
+Hibernate: 
+    create table message (
+        id_msg integer generated by default as identity (start with 1),
+        content varchar(255),
+        auteur_id integer not null,
+        discussion_id integer not null,
+        primary key (id_msg)
+    )
+Hibernate: 
+    create table recette (
+        id_rec integer generated by default as identity (start with 1),
+        nom varchar(255),
+        photo varchar(255),
+        auteur_id integer not null,
+        primary key (id_rec)
+    )
+Hibernate: 
+    create table recette_categories (
+        recette_id_rec integer not null,
+        categories varchar(255)
+    )
+Hibernate: 
+    create table recette_etapes (
+        recette_id_rec integer not null,
+        etapes varchar(255)
+    )
+Hibernate: 
+    create table recette_ingredients (
+        recette_id integer not null,
+        ingredient_id integer not null
+    )
+Hibernate: 
+    alter table adherent_my_ingredients 
+       add constraint FKo4g5l5sa4i0m5l9k8tbn459ti 
+       foreign key (ingredient_id) 
+       references ingredient
+Hibernate: 
+    alter table adherent_my_ingredients 
+       add constraint FKspl0624yektdll6e5b7ece7fm 
+       foreign key (adherent_id) 
+       references adherent
+Hibernate: 
+    alter table adherent_shopping_list 
+       add constraint FK71hxj2jou5b9kkf7tow26uqye 
+       foreign key (ingredient_id) 
+       references ingredient
+Hibernate: 
+    alter table adherent_shopping_list 
+       add constraint FKrh39pw3kvgjbqi7bl7c7h6d0s 
+       foreign key (adherent_id) 
+       references adherent
+Hibernate: 
+    alter table comment 
+       add constraint FK95ohk1jcu4hdprq2ylk3wvek0 
+       foreign key (auteur_id) 
+       references adherent
+Hibernate: 
+    alter table comment 
+       add constraint FKqd34j4uy105mc49dllp9q9pri 
+       foreign key (recette_id) 
+       references recette
+Hibernate: 
+    alter table discussion 
+       add constraint FKqe1h9ds9ep26glgv679ca3nt1 
+       foreign key (auteur_id) 
+       references adherent
+Hibernate: 
+    alter table event 
+       add constraint FK6hrjv8j9865q3a61xsqais4fw 
+       foreign key (auteur_id) 
+       references adherent
+Hibernate: 
+    alter table event_participants 
+       add constraint FKpyorefbcs2xksthci6ll8t6o5 
+       foreign key (adherent_id) 
+       references adherent
+Hibernate: 
+    alter table event_participants 
+       add constraint FK5232w1ta0icpkemgsxyw8a976 
+       foreign key (event_id) 
+       references event
+Hibernate: 
+    alter table message 
+       add constraint FKgxee5skgbyiubghdm7kl0uwcx 
+       foreign key (auteur_id) 
+       references adherent
+Hibernate: 
+    alter table message 
+       add constraint FK3nr1t44itdoagqs1w2bo21ho7 
+       foreign key (discussion_id) 
+       references discussion
+Hibernate: 
+    alter table recette 
+       add constraint FKk7knhixq3ytr6d6qlhx0xu91j 
+       foreign key (auteur_id) 
+       references adherent
+Hibernate: 
+    alter table recette_categories 
+       add constraint FKr1u637vqprjempxfg0wdggesl 
+       foreign key (recette_id_rec) 
+       references recette
+Hibernate: 
+    alter table recette_etapes 
+       add constraint FK60lhnjbk43l4ci1901ps7de36 
+       foreign key (recette_id_rec) 
+       references recette
+Hibernate: 
+    alter table recette_ingredients 
+       add constraint FK7gixbmj2cueo0dp3ereafntbi 
+       foreign key (ingredient_id) 
+       references ingredient
+Hibernate: 
+    alter table recette_ingredients 
+       add constraint FKgfbe0srm3jsa2ydgxiwrmq5wg 
+       foreign key (recette_id) 
+       references recette
+2026-03-04T00:03:31.816+01:00  INFO 186442 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-04T00:03:32.338+01:00  INFO 186442 --- [           main] o.s.d.j.r.query.QueryEnhancerFactory     : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-04T00:03:33.244+01:00  WARN 186442 --- [           main] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-03-04T00:03:33.847+01:00  INFO 186442 --- [           main] n7.facade.FacadeApplicationTests         : Started FacadeApplicationTests in 6.915 seconds (process running for 9.135)
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m1[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 8.004 s -- in n7.facade.[1mFacadeApplicationTests[m
+[[1;34mINFO[m] Running n7.facade.[1mAiPocControllerWebMvcTest[m
+2026-03-04T00:03:34.494+01:00  INFO 186442 --- [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [n7.facade.AiPocControllerWebMvcTest]: AiPocControllerWebMvcTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-03-04T00:03:34.514+01:00  INFO 186442 --- [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration n7.facade.FacadeApplication for test class n7.facade.AiPocControllerWebMvcTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v3.4.5)
+
+2026-03-04T00:03:34.564+01:00  INFO 186442 --- [           main] n7.facade.AiPocControllerWebMvcTest      : Starting AiPocControllerWebMvcTest using Java 17.0.18 with PID 186442 (started by oussamaetta in /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade)
+2026-03-04T00:03:34.565+01:00  INFO 186442 --- [           main] n7.facade.AiPocControllerWebMvcTest      : No active profile set, falling back to 1 default profile: "default"
+2026-03-04T00:03:34.949+01:00  INFO 186442 --- [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-03-04T00:03:34.950+01:00  INFO 186442 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-03-04T00:03:34.954+01:00  INFO 186442 --- [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 1 ms
+2026-03-04T00:03:34.973+01:00  INFO 186442 --- [           main] n7.facade.AiPocControllerWebMvcTest      : Started AiPocControllerWebMvcTest in 0.449 seconds (process running for 10.261)
+[[1;34mINFO[m] [1;32mTests run: [0;1;32m2[m, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.656 s -- in n7.facade.[1mAiPocControllerWebMvcTest[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] Results:
+[[1;34mINFO[m] 
+[[1;31mERROR[m] [1;31mErrors: [m
+[[1;31mERROR[m] [1;31m  AiPocControllerWebMvcTest » IllegalState Unable to find a @SpringBootConfiguration by searching packages upwards from the test. You can use @ContextConfiguration, @SpringBootTest(classes=...) or other Spring Test supported mechanisms to explicitly declare the configuration classes to load. Classes annotated with @TestConfiguration are not considered.[m
+[[1;34mINFO[m] 
+[[1;31mERROR[m] [1;31mTests run: 4, Failures: 0, Errors: 1, Skipped: 0[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  17.028 s
+[[1;34mINFO[m] Finished at: 2026-03-04T00:03:35+01:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-surefire-plugin:3.5.3:test[m [1m(default-test)[m on project [36mfacade[m: [1;31m[m
+[[1;31mERROR[m] [1;31m[m
+[[1;31mERROR[m] [1;31mSee /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/target/surefire-reports for the individual test results.[m
+[[1;31mERROR[m] [1;31mSee dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,11 @@
+{
+  "run_id": "20260303_234548",
+  "overwritten": [],
+  "created": [
+    "src/test/java/com/projet_gamification/gamification/AiPocControllerWebMvcTest.java",
+    "src/main/java/com/projet_gamification/gamification/AiPocController.java",
+    "src/test/java/n7/facade/AiPocControllerWebMvcTest.java",
+    "src/main/java/n7/facade/AiPocController.java"
+  ],
+  "mvn_exit_code": 1
+}
