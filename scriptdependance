@@ -126,7 +126,7 @@ if [[ ! -f "$ROOT_CLASS_FILE" ]]; then
   exit 2
 fi
 
-# BFS over internal dependencies (com.projet_gamification...), transitive closure.
+# BFS over internal dependencies (compiled under target/classes), transitive closure.
 declare -a queue
 queue=("$ROOT_CLASS_FILE")
 
@@ -169,3 +169,5 @@ for classFile in "${!visited[@]}"; do
     echo "$srcPath"
   fi
 done | sort -u
+
+# End of script
