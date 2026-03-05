@@ -18,7 +18,7 @@ Output:
 Notes:
   - Requires: JDK (jdeps), Maven wrapper (./mvnw)
   - Runs: mvn -DskipTests compile (incremental) + dependency:build-classpath
-  - Internal dependencies are detected via jdeps and limited to classes under com.projet_gamification.*
+  - Internal dependencies are detected via jdeps and restricted to classes that exist under target/classes/
 EOF
 }
 
@@ -42,6 +42,8 @@ else
   exit 2
 fi
 
+PROJECT_BASENAME="$(basename "$PROJECT_DIR")"
+
 cd "$PROJECT_DIR"
 
 # Ensure classes are compiled (incremental compile, safe to run each time)
@@ -59,6 +61,24 @@ CP="target/classes:$(cat "$TMP_CP_FILE")"
 # Resolve input into a .class file under target/classes
 resolve_to_class_file() {
   local in="$1"
+
+  normalize_to_project_path() {
+    local p="$1"
+
+    # If given an absolute path inside the project, make it relative.
+    if [[ "$p" == "$PROJECT_DIR/"* ]]; then
+      p="${p#"$PROJECT_DIR/"}"
+    fi
+
+    # If invoked from workspace root, callers often pass e.g. facade/src/...; strip the project folder.
+    if [[ "$p" != /* && "$p" == "$PROJECT_BASENAME/"* ]]; then
+      p="${p#"$PROJECT_BASENAME/"}"
+    fi
+
+    echo "$p"
+  }
+
+  in="$(normalize_to_project_path "$in")"
 
   if [[ "$in" == *.class ]]; then
     if [[ -f "$in" ]]; then
@@ -122,10 +142,12 @@ while ((${#queue[@]} > 0)); do
   fi
   visited["$cur"]=1
 
-  # Extract only internal classes. Using --multi-release 17 avoids multi-release jar errors.
+  # Parse all referenced classes from jdeps output. We treat a dependency as "internal"
+  # only if its compiled .class exists under target/classes/.
+  # Using --multi-release 17 avoids multi-release jar errors.
   deps="$(
     jdeps --multi-release 17 -filter:none -verbose:class --class-path "$CP" "$cur" 2>/dev/null \
-      | sed -n 's/.*-> \(com\.projet_gamification[^ ]*\).*/\1/p' \
+      | sed -n 's/.*-> \([^ ]*\).*/\1/p' \
       | sort -u
   )"
 
