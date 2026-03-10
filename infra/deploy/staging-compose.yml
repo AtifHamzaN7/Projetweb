@@ -1,0 +1,22 @@
+services:
+  app:
+    image: ${APP_IMAGE:?APP_IMAGE is required}
+    container_name: gamification-staging
+    pull_policy: always
+    ports:
+      - "${APP_PORT:-8082}:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=staging
+      - SPRING_DATASOURCE_URL=jdbc:hsqldb:file:/var/lib/hsqldb/mydb
+      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.hsqldb.jdbc.JDBCDriver
+      - SPRING_DATASOURCE_USERNAME=sa
+      - SPRING_DATASOURCE_PASSWORD=
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SERVER_PORT=8080
+      - JAVA_OPTS=-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0
+    volumes:
+      - app-db-data:/var/lib/hsqldb
+    restart: unless-stopped
+
+volumes:
+  app-db-data:
