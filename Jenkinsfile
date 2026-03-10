@@ -204,13 +204,13 @@ pipeline {
                 set -e
 
                 BASE_URL="http://${STAGING_HOST}:8082"
-                echo "Running staging smoke test on ${BASE_URL}"
+                echo "Running staging smoke test on \${BASE_URL}"
 
                 # Wait for API readiness after container restart.
                 i=0
                 STATUS=""
                 while [ "\$i" -lt 30 ]; do
-                    STATUS=\$(curl -sS -o /dev/null -w "%{http_code}" "${BASE_URL}/adherents" || true)
+                    STATUS=\$(curl -sS -o /dev/null -w "%{http_code}" "\${BASE_URL}/adherents" || true)
                     if [ "\$STATUS" = "200" ]; then
                         break
                     fi
@@ -227,7 +227,7 @@ pipeline {
                 PASSWORD="smoke123"
 
                 CREATE_CODE=\$(curl -sS -o /tmp/smoke_create.out -w "%{http_code}" \
-                    -X POST "${BASE_URL}/adherents/inscription" \
+                    -X POST "\${BASE_URL}/adherents/inscription" \
                     --data-urlencode "nom=Smoke" \
                     --data-urlencode "prenom=Test" \
                     --data-urlencode "email=\$EMAIL" \
@@ -239,7 +239,7 @@ pipeline {
                     exit 1
                 fi
 
-                LOGIN_BODY=\$(curl -sS "${BASE_URL}/adherents/connexion?email=\$EMAIL&password=\$PASSWORD")
+                LOGIN_BODY=\$(curl -sS "\${BASE_URL}/adherents/connexion?email=\$EMAIL&password=\$PASSWORD")
                 ID=\$(printf '%s' "\$LOGIN_BODY" | sed -n 's/.*"idAdh"[[:space:]]*:[[:space:]]*\\([0-9][0-9]*\\).*/\\1/p')
 
                 if [ -z "\$ID" ]; then
@@ -249,7 +249,7 @@ pipeline {
                 fi
 
                 DELETE_CODE=\$(curl -sS -o /tmp/smoke_delete.out -w "%{http_code}" \
-                    -X DELETE "${BASE_URL}/adherents/suppression/\$ID")
+                    -X DELETE "\${BASE_URL}/adherents/suppression/\$ID")
                 if [ "\$DELETE_CODE" != "200" ]; then
                     echo "Delete adherent failed (HTTP \$DELETE_CODE)"
                     cat /tmp/smoke_delete.out || true
