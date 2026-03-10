@@ -1,0 +1,9 @@
+{
+  "run_id": "20260309_143948",
+  "overwritten": [
+    "src/test/java/n7/facade/AiPocControllerWebMvcTest.java",
+    "src/main/java/n7/facade/AiPocController.java"
+  ],
+  "created": [],
+  "mvn_exit_code": 1
+}

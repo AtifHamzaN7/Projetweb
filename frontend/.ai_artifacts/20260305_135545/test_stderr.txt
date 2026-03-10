@@ -1,0 +1,36 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m24[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'statusMessage' does not exist on type 'AiPocComponent'.
+
+[7m24[0m     component.statusMessage = 'Loading...';
+[7m  [0m [91m              ~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m31[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'Date' is not assignable to type 'string'.
+
+[7m31[0m     component.timestamp = new Date('2023-10-01T12:00:00Z');
+[7m  [0m [91m    ~~~~~~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m38[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'state' does not exist on type 'AiPocComponent'.
+
+[7m38[0m     component.state = 'loading';
+[7m  [0m [91m              ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m45[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'state' does not exist on type 'AiPocComponent'.
+
+[7m45[0m     component.state = 'loaded';
+[7m  [0m [91m              ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m52[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'state' does not exist on type 'AiPocComponent'.
+
+[7m52[0m     component.state = 'error';
+[7m  [0m [91m              ~~~~~[0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.

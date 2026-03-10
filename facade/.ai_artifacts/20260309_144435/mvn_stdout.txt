@@ -1,0 +1,43 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------------< [0;36mn7:facade[0;1m >------------------------------[m
+[[1;34mINFO[m] [1mBuilding facade 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ war ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:resources[m [1m(default-resources)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/main/resources to target/classes
+[[1;34mINFO[m] Copying 3 resources from src/main/resources to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.13.0:compile[m [1m(default-compile)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Recompiling the module because of [1mchanged source code[m.
+[[1;34mINFO[m] Compiling 20 source files with javac [debug parameters release 17] to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:testResources[m [1m(default-testResources)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/test/resources to target/test-classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.13.0:testCompile[m [1m(default-testCompile)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Recompiling the module because of [1mchanged dependency[m.
+[[1;34mINFO[m] Compiling 2 source files with javac [debug parameters release 17] to target/test-classes
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] COMPILATION ERROR : 
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/test/java/n7/facade/AiPocControllerWebMvcTest.java:[36,17] method testGetAiPoc_Returns200() is already defined in class n7.facade.AiPocControllerWebMvcTest
+[[1;31mERROR[m] /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/test/java/n7/facade/AiPocControllerWebMvcTest.java:[44,17] method testGetAiPoc_BadRequest_Returns400() is already defined in class n7.facade.AiPocControllerWebMvcTest
+[[1;34mINFO[m] 2 errors 
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  2.597 s
+[[1;34mINFO[m] Finished at: 2026-03-09T14:44:38+01:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-compiler-plugin:3.13.0:testCompile[m [1m(default-testCompile)[m on project [36mfacade[m: [1;31mCompilation failure[m: Compilation failure: 
+[[1;31mERROR[m] /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/test/java/n7/facade/AiPocControllerWebMvcTest.java:[36,17] method testGetAiPoc_Returns200() is already defined in class n7.facade.AiPocControllerWebMvcTest
+[[1;31mERROR[m] /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/test/java/n7/facade/AiPocControllerWebMvcTest.java:[44,17] method testGetAiPoc_BadRequest_Returns400() is already defined in class n7.facade.AiPocControllerWebMvcTest
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

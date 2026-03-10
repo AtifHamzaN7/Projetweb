@@ -1,0 +1,173 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+usage() {
+  cat <<'EOF'
+Usage:
+  ./scriptdependance <Class>
+
+<Class> can be:
+  - Fully qualified class name (e.g. com.projet_gamification.gamification.AccessController)
+  - A path to a .java source file (e.g. src/main/java/.../AccessController.java)
+  - A path to a compiled .class file (e.g. target/classes/.../AccessController.class)
+
+Output:
+  Prints (one per line) the source paths under src/main/java/ of all INTERNAL project dependencies
+  reachable from the input class (transitive closure), excluding the input class itself.
+
+Notes:
+  - Requires: JDK (jdeps), Maven wrapper (./mvnw)
+  - Runs: mvn -DskipTests compile (incremental) + dependency:build-classpath
+  - Internal dependencies are detected via jdeps and restricted to classes that exist under target/classes/
+EOF
+}
+
+if [[ ${1:-} == "" ]] || [[ ${1:-} == "-h" ]] || [[ ${1:-} == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+CLASS_INPUT="$1"
+
+# Locate Maven project dir (prefer current dir, fallback to ./facade then ./Projet)
+PROJECT_DIR=""
+if [[ -f "pom.xml" && -x "./mvnw" ]]; then
+  PROJECT_DIR="$PWD"
+elif [[ -f "facade/pom.xml" && -x "facade/mvnw" ]]; then
+  PROJECT_DIR="$PWD/facade"
+elif [[ -f "Projet/pom.xml" && -x "Projet/mvnw" ]]; then
+  PROJECT_DIR="$PWD/Projet"
+else
+  echo "Error: could not find Maven project with mvnw (expected pom.xml + ./mvnw)." >&2
+  exit 2
+fi
+
+PROJECT_BASENAME="$(basename "$PROJECT_DIR")"
+
+cd "$PROJECT_DIR"
+
+# Ensure classes are compiled (incremental compile, safe to run each time)
+./mvnw -q -DskipTests compile
+
+# Build runtime classpath once
+TMP_CP_FILE="$(mktemp)"
+cleanup() { rm -f "$TMP_CP_FILE"; }
+trap cleanup EXIT
+
+./mvnw -q -DincludeScope=runtime dependency:build-classpath -Dmdep.outputFile="$TMP_CP_FILE" >/dev/null
+
+CP="target/classes:$(cat "$TMP_CP_FILE")"
+
+# Resolve input into a .class file under target/classes
+resolve_to_class_file() {
+  local in="$1"
+
+  normalize_to_project_path() {
+    local p="$1"
+
+    # If given an absolute path inside the project, make it relative.
+    if [[ "$p" == "$PROJECT_DIR/"* ]]; then
+      p="${p#"$PROJECT_DIR/"}"
+    fi
+
+    # If invoked from workspace root, callers often pass e.g. facade/src/...; strip the project folder.
+    if [[ "$p" != /* && "$p" == "$PROJECT_BASENAME/"* ]]; then
+      p="${p#"$PROJECT_BASENAME/"}"
+    fi
+
+    echo "$p"
+  }
+
+  in="$(normalize_to_project_path "$in")"
+
+  if [[ "$in" == *.class ]]; then
+    if [[ -f "$in" ]]; then
+      echo "$in"
+      return 0
+    fi
+    echo "Error: .class file not found: $in" >&2
+    return 2
+  fi
+
+  if [[ "$in" == *.java ]]; then
+    if [[ ! -f "$in" ]]; then
+      echo "Error: .java file not found: $in" >&2
+      return 2
+    fi
+
+    local rel="${in#./}"
+    rel="${rel#src/main/java/}"
+    if [[ "$rel" == "$in" ]]; then
+      echo "Error: .java path must be under src/main/java/: $in" >&2
+      return 2
+    fi
+
+    local fqcn
+    fqcn="${rel%.java}"
+    fqcn="${fqcn//\//.}"
+    echo "target/classes/${fqcn//./\/}.class"
+    return 0
+  fi
+
+  # Assume FQCN
+  echo "target/classes/${in//./\/}.class"
+}
+
+ROOT_CLASS_FILE="$(resolve_to_class_file "$CLASS_INPUT")"
+
+if [[ ! -f "$ROOT_CLASS_FILE" ]]; then
+  # Try compiling (maybe target/classes was missing the specific file)
+  ./mvnw -q -DskipTests compile
+fi
+
+if [[ ! -f "$ROOT_CLASS_FILE" ]]; then
+  echo "Error: could not find compiled class file: $ROOT_CLASS_FILE" >&2
+  echo "Tip: run ./mvnw -DskipTests compile and verify the class/package name." >&2
+  exit 2
+fi
+
+# BFS over internal dependencies (compiled under target/classes), transitive closure.
+declare -a queue
+queue=("$ROOT_CLASS_FILE")
+
+declare -A visited
+visited=()
+
+while ((${#queue[@]} > 0)); do
+  cur="${queue[0]}"
+  queue=("${queue[@]:1}")
+
+  if [[ -n "${visited["$cur"]+x}" ]]; then
+    continue
+  fi
+  visited["$cur"]=1
+
+  # Parse all referenced classes from jdeps output. We treat a dependency as "internal"
+  # only if its compiled .class exists under target/classes/.
+  # Using --multi-release 17 avoids multi-release jar errors.
+  deps="$(
+    jdeps --multi-release 17 -filter:none -verbose:class --class-path "$CP" "$cur" 2>/dev/null \
+      | sed -n 's/.*-> \([^ ]*\).*/\1/p' \
+      | sort -u
+  )"
+
+  while IFS= read -r cls; do
+    [[ -z "$cls" ]] && continue
+    clsFile="target/classes/${cls//./\/}.class"
+    if [[ -f "$clsFile" ]]; then
+      queue+=("$clsFile")
+    fi
+  done <<< "$deps"
+done
+
+# Output dependency source paths (exclude root)
+for classFile in "${!visited[@]}"; do
+  [[ "$classFile" == "$ROOT_CLASS_FILE" ]] && continue
+  relPath="${classFile#target/classes/}"
+  srcPath="src/main/java/${relPath%.class}.java"
+  if [[ -f "$srcPath" ]]; then
+    echo "$srcPath"
+  fi
+done | sort -u
+
+# End of script
