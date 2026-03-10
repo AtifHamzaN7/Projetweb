@@ -73,11 +73,13 @@ pipeline {
                 dir("${PROJECT_DIR}") {
                     sh 'chmod +x mvnw'
                     sh './mvnw -B -ntp clean package -DskipTests'
+                    // Fix permissions on build artifacts so Jenkins can clean up workspace
+                    sh 'chmod -R 755 target/ || true'
                 }
             }
             post {
                 always {
-                    archiveArtifacts allowEmptyArchive: true, artifacts: "${PROJECT_DIR}/target/*.{jar,war}", fingerprint: true
+                    archiveArtifacts allowEmptyArchive: true, artifacts: "${PROJECT_DIR}/target/*.jar,${PROJECT_DIR}/target/*.war", fingerprint: true
                 }
             }
         }
@@ -171,7 +173,6 @@ pipeline {
             script {
                 node {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
-                    sh "chown -R 1000:1000 ${WORKSPACE} || true"
                     deleteDir()
                 }
             }
