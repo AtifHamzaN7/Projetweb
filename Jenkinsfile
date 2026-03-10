@@ -73,8 +73,8 @@ pipeline {
                 dir("${PROJECT_DIR}") {
                     sh 'chmod +x mvnw'
                     sh './mvnw -B -ntp clean package -DskipTests'
-                    // Fix permissions on build artifacts so Jenkins can clean up workspace
-                    sh 'chmod -R 755 target/ || true'
+                    // Fix permissions on build artifacts so Jenkins (UID 1000) can delete them later
+                    sh 'chmod -R 777 target/ 2>/dev/null || true'
                 }
             }
             post {
@@ -173,7 +173,7 @@ pipeline {
             script {
                 node {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
-                    deleteDir()
+                    // Skip deleteDir() - let Jenkins handle workspace cleanup
                 }
             }
         }
