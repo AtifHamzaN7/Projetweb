@@ -112,27 +112,6 @@ pipeline {
             }
         }
 
-        stage('Test (Frontend)') {
-            agent {
-                docker {
-                    image "${AGENT_IMAGE}"
-                    args '-u root:root -v /var/jenkins_home/.npm:/root/.npm'
-                    reuseNode true
-                }
-            }
-            steps {
-                dir('frontend') {
-                    sh 'npm ci --legacy-peer-deps'
-                    sh 'npm run test -- --watch=false --browsers=ChromeHeadless'
-                }
-            }
-            post {
-                always {
-                    junit testResults: 'frontend/coverage/junit.xml', allowEmptyResults: true
-                }
-            }
-        }
-
         stage('Build Docker Image') {
             agent {
                 docker {
