@@ -98,15 +98,13 @@ pipeline {
             }
             steps {
                 withCredentials([
-                    string(credentialsId: 'llm-api-key', variable: 'LLM_API_KEY'),
-                    string(credentialsId: 'openrouter-model', variable: 'OPENROUTER_MODEL')
+                    string(credentialsId: 'llm-api-key', variable: 'LLM_API_KEY')
                 ]) {
                     sh '''
                       set -eu
                   (set -o pipefail) 2>/dev/null && set -o pipefail || true
                       node --version
                       LLM_API_KEY="$LLM_API_KEY" \
-                      OPENROUTER_MODEL="$OPENROUTER_MODEL" \
                       AI_TEST_REPAIR_ENABLED="1" \
                       AI_TEST_REPAIR_MAX_ITERS="2" \
                       node script-test.mjs
