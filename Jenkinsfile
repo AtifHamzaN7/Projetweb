@@ -73,7 +73,8 @@ pipeline {
             }
             steps {
                 sh '''
-                  set -euo pipefail
+                  set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                   git fetch --all --tags --prune || true
                   git fetch --unshallow || true
                 '''
@@ -101,7 +102,8 @@ pipeline {
                     string(credentialsId: 'openrouter-model', variable: 'OPENROUTER_MODEL')
                 ]) {
                     sh '''
-                      set -euo pipefail
+                      set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                       node --version
                       LLM_API_KEY="$LLM_API_KEY" \
                       OPENROUTER_MODEL="$OPENROUTER_MODEL" \
@@ -125,7 +127,8 @@ pipeline {
                 script {
                     env.IMPACTED_TEST_FILTER = sh(
                         script: '''
-                          set -euo pipefail
+                          set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                           if [ -f "ai-test-filter.txt" ]; then
                             tr -d '\n' < ai-test-filter.txt | xargs
                           fi
@@ -135,7 +138,8 @@ pipeline {
                 }
 
                 sh '''
-                  set -euo pipefail
+                  set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                   if [ -n "${IMPACTED_TEST_FILTER}" ]; then
                     echo "Impacted test filter: ${IMPACTED_TEST_FILTER}"
                     if [ -f "ai-impacted-tests.txt" ]; then
@@ -223,7 +227,8 @@ pipeline {
             agent any
             steps {
                 sh '''
-                  set -euo pipefail
+                  set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
 
                   CSV="facade/target/site/jacoco/jacoco.csv"
                   IMPACTED_CLASSES="ai-impacted-classes.txt"
@@ -312,7 +317,8 @@ pipeline {
             agent any
             steps {
                 sh '''
-                  set -euo pipefail
+                  set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                   THRESHOLD="${COVERAGE_THRESHOLD}"
                   COV="${JACOCO_COVERAGE}"
 
@@ -339,7 +345,8 @@ pipeline {
             agent any
             steps {
                 sh '''
-                  set -euo pipefail
+                  set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
 
                   git config user.name "github-actions[bot]"
                   git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -520,7 +527,8 @@ pipeline {
                 if (env.CHANGE_ID?.trim()) {
                     withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
                         sh '''
-                          set -euo pipefail
+                          set -eu
+                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
                           if ! command -v gh >/dev/null 2>&1; then
                             echo "gh CLI not found. Skipping PR failure comment."
                             exit 0
