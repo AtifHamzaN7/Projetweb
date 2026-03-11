@@ -155,8 +155,8 @@ pipeline {
                 sh '''
                   set -eu
                   (set -o pipefail) 2>/dev/null && set -o pipefail || true
-                  if [ -n "${IMPACTED_TEST_FILTER}" ]; then
-                    echo "Impacted test filter: ${IMPACTED_TEST_FILTER}"
+                  if [ -n "${IMPACTED_TEST_FILTER:-}" ]; then
+                    echo "Impacted test filter: ${IMPACTED_TEST_FILTER:-}"
                     if [ -f "ai-impacted-tests.txt" ]; then
                       echo "Impacted test files:"
                       sed 's/^/- /' ai-impacted-tests.txt || true
