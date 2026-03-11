@@ -1,9 +1,9 @@
 FROM maven:3.9.6-eclipse-temurin-17
 USER root
 
-# Install docker CLI so this image can both run Maven and control Docker
+# Install docker CLI + Node.js so this image can run Maven, Docker and AI test generation scripts
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends docker.io \
+    && apt-get install -y --no-install-recommends docker.io nodejs npm \
     && rm -rf /var/lib/apt/lists/*
 
 # Ensure docker group has GID 101 (matches host) so --group-add 101 works

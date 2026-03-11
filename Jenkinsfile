@@ -102,8 +102,16 @@ pipeline {
                 ]) {
                     sh '''
                       set -eu
-                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                      (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                      if ! command -v node >/dev/null 2>&1; then
+                        echo "Node.js is missing in ${AGENT_IMAGE}. Installing Node.js..."
+                        export DEBIAN_FRONTEND=noninteractive
+                        apt-get update
+                        apt-get install -y --no-install-recommends nodejs npm
+                      fi
+                      git config --global --add safe.directory "${WORKSPACE}" || true
                       node --version
+                      npm --version
                       LLM_API_KEY="$LLM_API_KEY" \
                       AI_TEST_REPAIR_ENABLED="1" \
                       AI_TEST_REPAIR_MAX_ITERS="2" \
