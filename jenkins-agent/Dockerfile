@@ -1,9 +1,9 @@
 FROM maven:3.9.6-eclipse-temurin-17
 USER root
 
-# Install docker CLI + Node.js 20 so this image can run Maven, Docker and AI test generation scripts
+# Install docker CLI + Node.js 20 + Python so this image can run Maven, Docker, AI scripts, and deployment analyzer
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl gnupg docker.io \
+    && apt-get install -y --no-install-recommends ca-certificates curl gnupg docker.io python3 \
     && install -d -m 0755 /etc/apt/keyrings \
     && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
     && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list \

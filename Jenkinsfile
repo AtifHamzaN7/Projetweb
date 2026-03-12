@@ -5,12 +5,14 @@ pipeline {
         PROJECT_DIR = 'facade'
         TEST_DIR = 'facade/src/test/java'
         IMAGE_NAME = 'projetweb-backend'
+        EVIDENCE_DIR = 'evidence'
         COVERAGE_THRESHOLD = '50.00'
 
         DOCKERHUB_CREDS = credentials('dockerhub-credentials')
         AGENT_IMAGE = "${DOCKERHUB_CREDS_USR}/project-jenkins-agent:latest"
         REGISTRY_IMAGE = "${DOCKERHUB_CREDS_USR}/${IMAGE_NAME}"
         STAGING_HOST = '34.155.133.83'
+        STAGING_SERVICE_NAME = 'app'
 
         IMPACTED_TEST_FILTER = ''
         JACOCO_COVERAGE = ''
@@ -476,55 +478,136 @@ pipeline {
         stage('Post-Deploy Smoke Test') {
             agent any
             steps {
-                sh '''
-                  set -e
+                script {
+                    catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                        sh '''
+                          set -eu
+                          mkdir -p "${EVIDENCE_DIR}"
+                          SMOKE_FILE="${EVIDENCE_DIR}/smoke_test.txt"
+                          HEALTH_FILE="${EVIDENCE_DIR}/health.txt"
+                          : > "$SMOKE_FILE"
 
-                  BASE_URL="http://${STAGING_HOST}:8082"
-                  echo "Running staging smoke test on ${BASE_URL}"
+                          log() {
+                            printf '[%s] %s\n' "$(date -u +%FT%TZ)" "$*" | tee -a "$SMOKE_FILE"
+                          }
 
-                  i=0
-                  STATUS=""
-                  while [ "$i" -lt 30 ]; do
-                    STATUS=$(curl -sS -o /dev/null -w "%{http_code}" "${BASE_URL}/adherents" || true)
-                    if [ "$STATUS" = "200" ]; then
-                      break
-                    fi
-                    i=$((i + 1))
-                    sleep 5
-                  done
+                          BASE_URL="http://${STAGING_HOST}:8082"
+                          log "Running staging smoke test on ${BASE_URL}"
 
-                  if [ "$STATUS" != "200" ]; then
-                    echo "Staging API is not ready after deploy (last status: $STATUS)"
-                    exit 1
-                  fi
+                          FAIL=0
+                          i=0
+                          STATUS=""
+                          while [ "$i" -lt 30 ]; do
+                            STATUS=$(curl -sS -o /tmp/smoke_probe.out -w "%{http_code}" "${BASE_URL}/adherents" || true)
+                            log "Probe /adherents HTTP ${STATUS}"
+                            if [ "$STATUS" = "200" ]; then
+                              break
+                            fi
+                            i=$((i + 1))
+                            sleep 5
+                          done
 
-                  EMAIL="staging.smoke.${BUILD_NUMBER}.$(date +%s)@example.com"
-                  PASSWORD="smoke123"
+                          if [ "$STATUS" != "200" ]; then
+                            log "Staging API is not ready after deploy (last status: $STATUS)"
+                            FAIL=1
+                          fi
 
-                  CREATE_CODE=$(curl -sS -o /tmp/smoke_create.out -w "%{http_code}" -X POST "${BASE_URL}/adherents/inscription" --data-urlencode "nom=Smoke" --data-urlencode "prenom=Test" --data-urlencode "email=$EMAIL" --data-urlencode "password=$PASSWORD")
-                  if [ "$CREATE_CODE" != "200" ]; then
-                    echo "Create adherent failed (HTTP $CREATE_CODE)"
-                    cat /tmp/smoke_create.out || true
-                    exit 1
-                  fi
+                          if [ "$FAIL" -eq 0 ]; then
+                            EMAIL="staging.smoke.${BUILD_NUMBER}.$(date +%s)@example.com"
+                            PASSWORD="smoke123"
 
-                  LOGIN_BODY=$(curl -sS "${BASE_URL}/adherents/connexion?email=$EMAIL&password=$PASSWORD")
-                  ID=$(printf '%s' "$LOGIN_BODY" | grep -oE '"idAdh"[[:space:]]*:[[:space:]]*[0-9]+' | grep -oE '[0-9]+' | head -n 1)
-                  if [ -z "$ID" ]; then
-                    echo "Login did not return idAdh"
-                    echo "Response: $LOGIN_BODY"
-                    exit 1
-                  fi
+                            CREATE_CODE=$(curl -sS -o /tmp/smoke_create.out -w "%{http_code}" -X POST "${BASE_URL}/adherents/inscription" --data-urlencode "nom=Smoke" --data-urlencode "prenom=Test" --data-urlencode "email=$EMAIL" --data-urlencode "password=$PASSWORD")
+                            log "POST /adherents/inscription HTTP ${CREATE_CODE}"
+                            if [ "$CREATE_CODE" != "200" ]; then
+                              log "Create adherent failed (HTTP ${CREATE_CODE})"
+                              head -c 300 /tmp/smoke_create.out | tr '\n' ' ' | sed 's/^/[body] /' | tee -a "$SMOKE_FILE" >/dev/null || true
+                              FAIL=1
+                            fi
 
-                  DELETE_CODE=$(curl -sS -o /tmp/smoke_delete.out -w "%{http_code}" -X DELETE "${BASE_URL}/adherents/suppression/$ID")
-                  if [ "$DELETE_CODE" != "200" ]; then
-                    echo "Delete adherent failed (HTTP $DELETE_CODE)"
-                    cat /tmp/smoke_delete.out || true
-                    exit 1
-                  fi
+                            LOGIN_BODY=$(curl -sS "${BASE_URL}/adherents/connexion?email=$EMAIL&password=$PASSWORD" || true)
+                            ID=$(printf '%s' "$LOGIN_BODY" | grep -oE '"idAdh"[[:space:]]*:[[:space:]]*[0-9]+' | grep -oE '[0-9]+' | head -n 1 || true)
+                            if [ -z "$ID" ]; then
+                              log "Login did not return idAdh"
+                              printf '[%s] [body] %s\n' "$(date -u +%FT%TZ)" "$(printf '%s' "$LOGIN_BODY" | tr '\n' ' ' | head -c 300)" | tee -a "$SMOKE_FILE" >/dev/null
+                              FAIL=1
+                            else
+                              DELETE_CODE=$(curl -sS -o /tmp/smoke_delete.out -w "%{http_code}" -X DELETE "${BASE_URL}/adherents/suppression/$ID")
+                              log "DELETE /adherents/suppression/${ID} HTTP ${DELETE_CODE}"
+                              if [ "$DELETE_CODE" != "200" ]; then
+                                log "Delete adherent failed (HTTP ${DELETE_CODE})"
+                                head -c 300 /tmp/smoke_delete.out | tr '\n' ' ' | sed 's/^/[body] /' | tee -a "$SMOKE_FILE" >/dev/null || true
+                                FAIL=1
+                              fi
+                            fi
+                          fi
 
-                  echo "Staging smoke test passed"
-                '''
+                          HEALTH_CODE=$(curl -sS -o /tmp/health_body.out -w "%{http_code}" "${BASE_URL}/actuator/health" || true)
+                          {
+                            printf '[%s] GET /actuator/health HTTP %s\n' "$(date -u +%FT%TZ)" "${HEALTH_CODE}"
+                            printf '[%s] body ' "$(date -u +%FT%TZ)"
+                            head -c 300 /tmp/health_body.out | tr '\n' ' ' || true
+                            printf '\n'
+                          } > "$HEALTH_FILE"
+
+                          if [ "$FAIL" -eq 0 ]; then
+                            log "Staging smoke test passed"
+                          else
+                            log "Staging smoke test failed"
+                            exit 1
+                          fi
+                        '''
+                    }
+                }
+            }
+        }
+
+        stage('Deployment Verifier & Triage (Staging)') {
+            agent any
+            steps {
+                withCredentials([sshUserPrivateKey(
+                    credentialsId: 'gcp-staging-ssh',
+                    keyFileVariable: 'SSH_KEY',
+                    usernameVariable: 'SSH_USER'
+                )]) {
+                    sh '''
+                      set +e
+                      mkdir -p "${EVIDENCE_DIR}"
+
+                      cat > "${EVIDENCE_DIR}/deploy_meta.json" <<EOF
+                      {
+                        "build_number": "${BUILD_NUMBER}",
+                        "image": "${REGISTRY_IMAGE}:${BUILD_NUMBER}",
+                        "commit_sha": "${GIT_COMMIT}",
+                        "deploy_timestamp_utc": "$(date -u +%FT%TZ)",
+                        "staging_host": "${STAGING_HOST}"
+                      }
+                      EOF
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "cd ~/deploy && docker compose -f staging-compose.yml ps" \
+                        > "${EVIDENCE_DIR}/compose_ps.txt" 2>&1 || true
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "CID=\$(docker compose -f ~/deploy/staging-compose.yml ps -q ${STAGING_SERVICE_NAME} 2>/dev/null | head -n 1); if [ -z \"\$CID\" ]; then CID=\$(docker ps --filter name=gamification-staging --format '{{.ID}}' | head -n 1); fi; if [ -n \"\$CID\" ]; then docker logs --tail 500 \"\$CID\"; else echo 'No ${STAGING_SERVICE_NAME} container found'; fi" \
+                        > "${EVIDENCE_DIR}/container_logs.txt" 2>&1 || true
+
+                      PYTHON_BIN="$(command -v python3 || command -v python || true)"
+                      if [ -n "$PYTHON_BIN" ]; then
+                        "$PYTHON_BIN" agents/agent1/analyze-deploy.py \
+                          --evidence_dir "${EVIDENCE_DIR}" \
+                          --out "${EVIDENCE_DIR}/agent_report.json" \
+                          --md_out "${EVIDENCE_DIR}/agent_report.md" \
+                          --service_name "${STAGING_SERVICE_NAME}" \
+                          --build_number "${BUILD_NUMBER}" \
+                          --image "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
+                          --staging_host "${STAGING_HOST}" || true
+                      else
+                        echo '{"error":"python interpreter not available for deployment analyzer"}' > "${EVIDENCE_DIR}/agent_report.json"
+                      fi
+
+                      exit 0
+                    '''
+                }
             }
         }
     }
@@ -536,9 +619,31 @@ pipeline {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
                 }
             }
+            archiveArtifacts(
+                allowEmptyArchive: true,
+                artifacts: "${EVIDENCE_DIR}/**"
+            )
         }
         failure {
             script {
+                sh '''
+                  set +e
+                  mkdir -p "${EVIDENCE_DIR}"
+                  if [ ! -f "${EVIDENCE_DIR}/agent_report.json" ] && [ -f "agents/agent1/analyze-deploy.py" ]; then
+                    PYTHON_BIN="$(command -v python3 || command -v python || true)"
+                    if [ -n "$PYTHON_BIN" ]; then
+                      "$PYTHON_BIN" agents/agent1/analyze-deploy.py \
+                        --evidence_dir "${EVIDENCE_DIR}" \
+                        --out "${EVIDENCE_DIR}/agent_report.json" \
+                        --md_out "${EVIDENCE_DIR}/agent_report.md" \
+                        --service_name "${STAGING_SERVICE_NAME}" \
+                        --build_number "${BUILD_NUMBER}" \
+                        --image "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
+                        --staging_host "${STAGING_HOST}" || true
+                    fi
+                  fi
+                  exit 0
+                '''
                 if (env.CHANGE_ID?.trim()) {
                     withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
                         sh '''
