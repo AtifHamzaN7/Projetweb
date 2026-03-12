@@ -52,4 +52,20 @@ class AiPocControllerTest {
         Instant parsedInstant = Instant.parse(timestamp);
         assertNotNull(parsedInstant);
     }
+
+    @Test
+    void validateAiPipeline_whenBadIsOtherBooleanValues_returnsExpected() {
+        // Test with Boolean.FALSE explicitly
+        ResponseEntity<Map<String, Object>> responseFalse = controller.validateAiPipeline(Boolean.FALSE);
+        assertEquals(200, responseFalse.getStatusCodeValue());
+        Map<String, Object> bodyFalse = responseFalse.getBody();
+        assertNotNull(bodyFalse);
+        assertEquals("ok", bodyFalse.get("status"));
+        assertNotNull(bodyFalse.get("timestamp"));
+
+        // Validate timestamp is a valid ISO-8601 string
+        String timestampFalse = (String) bodyFalse.get("timestamp");
+        Instant parsedInstantFalse = Instant.parse(timestampFalse);
+        assertNotNull(parsedInstantFalse);
+    }
 }
