@@ -580,10 +580,17 @@ pipeline {
                       mkdir -p "${EVIDENCE_DIR}"
 
                       DEPLOY_TS="$(date -u +%FT%TZ)"
+                      COMMIT_SHA="${GIT_COMMIT:-}"
+                      if [ -z "${COMMIT_SHA}" ]; then
+                        COMMIT_SHA="$(git rev-parse HEAD 2>/dev/null || true)"
+                      fi
+                      if [ -z "${COMMIT_SHA}" ]; then
+                        COMMIT_SHA="unknown"
+                      fi
                       printf '{\n  "build_number": "%s",\n  "image": "%s",\n  "commit_sha": "%s",\n  "deploy_timestamp_utc": "%s",\n  "staging_host": "%s"\n}\n' \
                         "${BUILD_NUMBER}" \
                         "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
-                        "${GIT_COMMIT}" \
+                        "${COMMIT_SHA}" \
                         "${DEPLOY_TS}" \
                         "${STAGING_HOST}" \
                         > "${EVIDENCE_DIR}/deploy_meta.json"
