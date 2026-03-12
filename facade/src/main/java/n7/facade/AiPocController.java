@@ -4,16 +4,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class AiPocController {
 
-    // workflow validation endpoint for the AI pipeline
-    @GetMapping("/ai/demo")
+    @GetMapping("/ai/demoun")
     public ResponseEntity<Map<String, Object>> validateAiPipeline(@RequestParam(required = false) Boolean bad) {
         if (Boolean.TRUE.equals(bad)) {
             Map<String, Object> errorResponse = new HashMap<>();
