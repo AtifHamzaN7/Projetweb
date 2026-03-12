@@ -588,7 +588,7 @@ pipeline {
                         > "${EVIDENCE_DIR}/compose_ps.txt" 2>&1 || true
 
                       ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
-                        "CID=\$(docker compose -f ~/deploy/staging-compose.yml ps -q ${STAGING_SERVICE_NAME} 2>/dev/null | head -n 1); if [ -z \"\$CID\" ]; then CID=\$(docker ps --filter name=gamification-staging --format '{{.ID}}' | head -n 1); fi; if [ -n \"\$CID\" ]; then docker logs --tail 500 \"\$CID\"; else echo 'No ${STAGING_SERVICE_NAME} container found'; fi" \
+                        "cd ~/deploy && docker compose -f staging-compose.yml logs --tail 500 ${STAGING_SERVICE_NAME}" \
                         > "${EVIDENCE_DIR}/container_logs.txt" 2>&1 || true
 
                       PYTHON_BIN="$(command -v python3 || command -v python || true)"
@@ -614,56 +614,58 @@ pipeline {
 
     post {
         always {
-            script {
-                node {
+            node {
+                script {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
+                    archiveArtifacts(
+                        allowEmptyArchive: true,
+                        artifacts: "${EVIDENCE_DIR}/**"
+                    )
                 }
             }
-            archiveArtifacts(
-                allowEmptyArchive: true,
-                artifacts: "${EVIDENCE_DIR}/**"
-            )
         }
         failure {
-            script {
-                sh '''
-                  set +e
-                  mkdir -p "${EVIDENCE_DIR}"
-                  if [ ! -f "${EVIDENCE_DIR}/agent_report.json" ] && [ -f "agents/agent1/analyze-deploy.py" ]; then
-                    PYTHON_BIN="$(command -v python3 || command -v python || true)"
-                    if [ -n "$PYTHON_BIN" ]; then
-                      "$PYTHON_BIN" agents/agent1/analyze-deploy.py \
-                        --evidence_dir "${EVIDENCE_DIR}" \
-                        --out "${EVIDENCE_DIR}/agent_report.json" \
-                        --md_out "${EVIDENCE_DIR}/agent_report.md" \
-                        --service_name "${STAGING_SERVICE_NAME}" \
-                        --build_number "${BUILD_NUMBER}" \
-                        --image "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
-                        --staging_host "${STAGING_HOST}" || true
+            node {
+                script {
+                    sh '''
+                      set +e
+                      mkdir -p "${EVIDENCE_DIR}"
+                      if [ ! -f "${EVIDENCE_DIR}/agent_report.json" ] && [ -f "agents/agent1/analyze-deploy.py" ]; then
+                        PYTHON_BIN="$(command -v python3 || command -v python || true)"
+                        if [ -n "$PYTHON_BIN" ]; then
+                          "$PYTHON_BIN" agents/agent1/analyze-deploy.py \
+                            --evidence_dir "${EVIDENCE_DIR}" \
+                            --out "${EVIDENCE_DIR}/agent_report.json" \
+                            --md_out "${EVIDENCE_DIR}/agent_report.md" \
+                            --service_name "${STAGING_SERVICE_NAME}" \
+                            --build_number "${BUILD_NUMBER}" \
+                            --image "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
+                            --staging_host "${STAGING_HOST}" || true
+                        fi
                     fi
-                  fi
-                  exit 0
-                '''
-                if (env.CHANGE_ID?.trim()) {
-                    withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
-                        sh '''
-                          set -eu
-                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
-                          if ! command -v gh >/dev/null 2>&1; then
-                            echo "gh CLI not found. Skipping PR failure comment."
-                            exit 0
-                          fi
+                      exit 0
+                    '''
+                    if (env.CHANGE_ID?.trim()) {
+                        withCredentials([string(credentialsId: 'github-token', variable: 'GH_TOKEN')]) {
+                            sh '''
+                              set -eu
+                      (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                              if ! command -v gh >/dev/null 2>&1; then
+                                echo "gh CLI not found. Skipping PR failure comment."
+                                exit 0
+                              fi
 
-                          COV="${JACOCO_COVERAGE:-N/A}"
-                          THRESHOLD="${COVERAGE_THRESHOLD}%"
-                          gh pr comment "${CHANGE_ID}" --body "CI blocked: insufficient JaCoCo coverage
+                              COV="${JACOCO_COVERAGE:-N/A}"
+                              THRESHOLD="${COVERAGE_THRESHOLD}%"
+                              gh pr comment "${CHANGE_ID}" --body "CI blocked: insufficient JaCoCo coverage
 
-                          Current instruction coverage: ${COV}%
-                          Required threshold: ${THRESHOLD}
+                              Current instruction coverage: ${COV}%
+                              Required threshold: ${THRESHOLD}
 
-                          Some tests may have been generated automatically and archived as build artifacts.
-                          Please improve tests and rerun CI." || true
-                        '''
+                              Some tests may have been generated automatically and archived as build artifacts.
+                              Please improve tests and rerun CI." || true
+                            '''
+                        }
                     }
                 }
             }
