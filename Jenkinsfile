@@ -579,15 +579,14 @@ pipeline {
                       set +e
                       mkdir -p "${EVIDENCE_DIR}"
 
-                      cat > "${EVIDENCE_DIR}/deploy_meta.json" <<EOF
-                      {
-                        "build_number": "${BUILD_NUMBER}",
-                        "image": "${REGISTRY_IMAGE}:${BUILD_NUMBER}",
-                        "commit_sha": "${GIT_COMMIT}",
-                        "deploy_timestamp_utc": "$(date -u +%FT%TZ)",
-                        "staging_host": "${STAGING_HOST}"
-                      }
-                      EOF
+                      DEPLOY_TS="$(date -u +%FT%TZ)"
+                      printf '{\n  "build_number": "%s",\n  "image": "%s",\n  "commit_sha": "%s",\n  "deploy_timestamp_utc": "%s",\n  "staging_host": "%s"\n}\n' \
+                        "${BUILD_NUMBER}" \
+                        "${REGISTRY_IMAGE}:${BUILD_NUMBER}" \
+                        "${GIT_COMMIT}" \
+                        "${DEPLOY_TS}" \
+                        "${STAGING_HOST}" \
+                        > "${EVIDENCE_DIR}/deploy_meta.json"
 
                       ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
                         "cd ~/deploy && docker compose -f staging-compose.yml ps" \
