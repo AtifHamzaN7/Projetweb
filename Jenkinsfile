@@ -614,7 +614,7 @@ pipeline {
 
     post {
         always {
-            node {
+            node('Jenkins') {
                 script {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
                     archiveArtifacts(
@@ -625,7 +625,7 @@ pipeline {
             }
         }
         failure {
-            node {
+            node('Jenkins') {
                 script {
                     sh '''
                       set +e
