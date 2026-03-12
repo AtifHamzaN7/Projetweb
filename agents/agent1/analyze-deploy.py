@@ -229,7 +229,15 @@ def parse_smoke(smoke_text: Optional[str]) -> Dict[str, object]:
         return {"status": "unknown", "http_statuses_observed": [], "notes": "smoke_test.txt missing"}
 
     lower = smoke_text.lower()
-    statuses = sorted(set(re.findall(r"\b([1-5][0-9]{2})\b", smoke_text)))
+    statuses = sorted(
+        set(
+            re.findall(
+                r"(?:http|status|code|->)\s*[:=]?\s*([1-5][0-9]{2})\b",
+                lower,
+                flags=re.IGNORECASE,
+            )
+        )
+    )
 
     fail_markers = [
         "smoke test failed",
