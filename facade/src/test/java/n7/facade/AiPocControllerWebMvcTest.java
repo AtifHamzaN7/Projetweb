@@ -18,7 +18,7 @@ public class AiPocControllerWebMvcTest {
 
     @Test
     public void testGetAiPoc_Success_Returns200() throws Exception {
-        mockMvc.perform(get("/ai/thesecond")
+        mockMvc.perform(get("/ai/demo")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("ok"))
@@ -27,7 +27,7 @@ public class AiPocControllerWebMvcTest {
 
     @Test
     public void testGetAiPoc_BadRequest_Returns400() throws Exception {
-        mockMvc.perform(get("/ai/thesecond?bad=true")
+        mockMvc.perform(get("/ai/demo?bad=true")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("bad request"));

@@ -12,8 +12,8 @@ import java.util.Map;
 @RestController
 public class AiPocController {
 
-    // workflow validation endpoint for the second AI pipeline
-    @GetMapping("/ai/thesecond")
+    // workflow validation endpoint for the AI pipeline
+    @GetMapping("/ai/demo")
     public ResponseEntity<Map<String, Object>> validateAiPipeline(@RequestParam(required = false) Boolean bad) {
         if (Boolean.TRUE.equals(bad)) {
             Map<String, Object> errorResponse = new HashMap<>();
