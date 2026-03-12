@@ -344,6 +344,10 @@ def match_causes(
     health_signal: Dict[str, str],
 ) -> List[CauseMatch]:
     matches: List[CauseMatch] = []
+    benign_timeout_re = re.compile(
+        r"(does not support get/set network timeout|feature not supported)",
+        flags=re.IGNORECASE,
+    )
 
     for entry in PATTERN_LIBRARY:
         cause_label = entry["cause"]
@@ -351,6 +355,8 @@ def match_causes(
         evidence_lines = []
         for src, line in source_lines:
             if any(p.search(line) for p in patterns):
+                if cause_label == "Service dependency timeout" and benign_timeout_re.search(line):
+                    continue
                 evidence_lines.append(f"[{src}] {safe_line(line)}")
                 if len(evidence_lines) >= 2:
                     break
@@ -566,6 +572,10 @@ def build_limits(
         limits.append("Missing required evidence: container_logs.txt")
     if health_text is None:
         limits.append("Missing optional evidence: health.json or health.txt")
+    else:
+        lower = health_text.lower()
+        if "http 404" in lower or '"status":404' in lower or '"status": 404' in lower:
+            limits.append("Health endpoint returned 404; health path may be unavailable in staging.")
     return limits
 
 
