@@ -562,7 +562,13 @@ pipeline {
         }
 
         stage('Deployment Verifier & Triage (Staging)') {
-            agent any
+            agent {
+                docker {
+                    image "${AGENT_IMAGE}"
+                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home/.m2:/root/.m2'
+                    reuseNode true
+                }
+            }
             steps {
                 withCredentials([sshUserPrivateKey(
                     credentialsId: 'gcp-staging-ssh',
@@ -614,7 +620,7 @@ pipeline {
 
     post {
         always {
-            node('Jenkins') {
+            node('') {
                 script {
                     sh 'docker images | grep ${IMAGE_NAME} || true'
                     archiveArtifacts(
@@ -625,7 +631,7 @@ pipeline {
             }
         }
         failure {
-            node('Jenkins') {
+            node('') {
                 script {
                     sh '''
                       set +e
