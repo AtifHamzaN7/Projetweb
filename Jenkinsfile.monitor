@@ -74,6 +74,7 @@ pipeline {
             }
             steps {
                 withCredentials([
+                    string(credentialsId: 'llm-api-key', variable: 'LLM_API_KEY'),
                     sshUserPrivateKey(
                         credentialsId: 'gcp-staging-ssh',
                         keyFileVariable: 'SSH_KEY',
