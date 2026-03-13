@@ -1,0 +1,12 @@
+{
+  "run_id": "20260305_140419",
+  "overwritten": [],
+  "created": [
+    "src/app/ai-poc/ai-poc.component.spec.ts",
+    "src/app/ai-poc/ai-poc.component.css",
+    "src/app/ai-poc/ai-poc.component.html",
+    "src/app/ai-poc/ai-poc.component.ts",
+    "src/app/app-routing.module.ts"
+  ],
+  "test_exit_code": 1
+}

@@ -16,12 +16,12 @@
     <section class="recettes-section">
       <h2>Mes Recettes</h2>
 
+      <!-- Replace this section -->
       <div class="recette-card-list" *ngIf="recettesAdherent.length > 0; else aucuneRecette">
         <a class="recette-card" *ngFor="let recette of recettesAdherent" [routerLink]="['/recette', recette.idRec]">
           <div class="recette-content">
             <h3>{{ recette.nom }}</h3>
-            <img *ngIf="recette.photo" [src]="recette.photo" [alt]="recette.nom" />
-            <!-- Autres infos recette ici si besoin -->
+            <img *ngIf="recette.photo" [src]="getImageUrl(recette.photo)" [alt]="recette.nom">
           </div>
         </a>
       </div>

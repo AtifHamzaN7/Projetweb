@@ -1,0 +1,78 @@
+
+> frontend@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+[32m04 03 2026 15:07:03.595:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9876/
+[32m04 03 2026 15:07:03.600:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m04 03 2026 15:07:03.612:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m04 03 2026 15:07:04.433:INFO [Chrome Headless 145.0.0.0 (Linux x86_64)]: [39mConnected on socket kX5EBoZ3038l0RX5AAAB with id 46536014
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 0 of 28[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KWARN: [36m'Aucun adhérent connecté trouvé.'[39m
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 0 of 28[32m SUCCESS[39m (0 secs / 0 secs)
+WARN: 'Aucun adhérent connecté trouvé.'
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 1 of 28[32m SUCCESS[39m (0 secs / 0.136 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 2 of 28[32m SUCCESS[39m (0 secs / 0.171 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 3 of 28[32m SUCCESS[39m (0 secs / 0.177 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should display loading state initially FAILED[39m
+	Error: Unexpected "AiPocComponent" found in the "declarations" array of the "TestBed.configureTestingModule" call, "AiPocComponent" is marked as standalone and can't be declared in any NgModule - did you intend to import it instead (by adding it to the "imports" array)?
+	    at forEach (node_modules/@angular/core/fesm2022/testing.mjs:769:23)
+	    at Array.forEach (<anonymous>)
+	    at assertNoStandaloneComponents (node_modules/@angular/core/fesm2022/testing.mjs:765:11)
+	    at TestBedCompiler.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:844:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1976:23)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1791:37)
+	    at UserContext.<anonymous> (src/app/ai-poc/ai-poc.component.spec.ts:10:19)
+	    at Generator.next (<anonymous>)
+	    at asyncGeneratorStep (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:3:1)
+	    at _next (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:17:1)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 4 of 28[31m (1 FAILED)[39m (0 secs / 0.179 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should display loaded state after data is fetched FAILED[39m
+	Error: Unexpected "AiPocComponent" found in the "declarations" array of the "TestBed.configureTestingModule" call, "AiPocComponent" is marked as standalone and can't be declared in any NgModule - did you intend to import it instead (by adding it to the "imports" array)?
+	    at forEach (node_modules/@angular/core/fesm2022/testing.mjs:769:23)
+	    at Array.forEach (<anonymous>)
+	    at assertNoStandaloneComponents (node_modules/@angular/core/fesm2022/testing.mjs:765:11)
+	    at TestBedCompiler.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:844:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1976:23)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1791:37)
+	    at UserContext.<anonymous> (src/app/ai-poc/ai-poc.component.spec.ts:10:19)
+	    at Generator.next (<anonymous>)
+	    at asyncGeneratorStep (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:3:1)
+	    at _next (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:17:1)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 5 of 28[31m (2 FAILED)[39m (0 secs / 0.18 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should create FAILED[39m
+	Error: Unexpected "AiPocComponent" found in the "declarations" array of the "TestBed.configureTestingModule" call, "AiPocComponent" is marked as standalone and can't be declared in any NgModule - did you intend to import it instead (by adding it to the "imports" array)?
+	    at forEach (node_modules/@angular/core/fesm2022/testing.mjs:769:23)
+	    at Array.forEach (<anonymous>)
+	    at assertNoStandaloneComponents (node_modules/@angular/core/fesm2022/testing.mjs:765:11)
+	    at TestBedCompiler.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:844:13)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1976:23)
+	    at TestBedImpl.configureTestingModule (node_modules/@angular/core/fesm2022/testing.mjs:1791:37)
+	    at UserContext.<anonymous> (src/app/ai-poc/ai-poc.component.spec.ts:10:19)
+	    at Generator.next (<anonymous>)
+	    at asyncGeneratorStep (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:3:1)
+	    at _next (node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js:17:1)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 6 of 28[31m (3 FAILED)[39m (0 secs / 0.18 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 7 of 28[31m (3 FAILED)[39m (0 secs / 0.192 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 8 of 28[31m (3 FAILED)[39m (0 secs / 0.197 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 9 of 28[31m (3 FAILED)[39m (0 secs / 0.203 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 10 of 28[31m (3 FAILED)[39m (0 secs / 0.216 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 11 of 28[31m (3 FAILED)[39m (0 secs / 0.229 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 12 of 28[31m (3 FAILED)[39m (0 secs / 0.243 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 13 of 28[31m (3 FAILED)[39m (0 secs / 0.253 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 14 of 28[31m (3 FAILED)[39m (0 secs / 0.257 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 15 of 28[31m (3 FAILED)[39m (0 secs / 0.269 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 16 of 28[31m (3 FAILED)[39m (0 secs / 0.279 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 17 of 28[31m (3 FAILED)[39m (0 secs / 0.281 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 18 of 28[31m (3 FAILED)[39m (0 secs / 0.282 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 19 of 28[31m (3 FAILED)[39m (0 secs / 0.293 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 20 of 28[31m (3 FAILED)[39m (0 secs / 0.317 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 21 of 28[31m (3 FAILED)[39m (0 secs / 0.336 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 22 of 28[31m (3 FAILED)[39m (0 secs / 0.341 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 23 of 28[31m (3 FAILED)[39m (0 secs / 0.344 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 24 of 28[31m (3 FAILED)[39m (0 secs / 0.347 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 25 of 28[31m (3 FAILED)[39m (0 secs / 0.349 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 26 of 28[31m (3 FAILED)[39m (0 secs / 0.352 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 27 of 28[31m (3 FAILED)[39m (0 secs / 0.361 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 28 of 28[31m (3 FAILED)[39m (0 secs / 0.364 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 28 of 28[31m (3 FAILED)[39m (0.417 secs / 0.364 secs)
+[31mTOTAL: 3 FAILED, 25 SUCCESS[39m

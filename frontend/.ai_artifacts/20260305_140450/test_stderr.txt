@@ -1,0 +1,714 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[36m./src/app/ai-poc/ai-poc.component.spec.ts[31m[0m - [0m[91mError: [31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):
+SyntaxError: /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec.ts: Unterminated string constant. (3:0)
+
+[0m [90m 1 |[31m [32m"use strict"[31m[33m;[31m
+ [90m 2 |[31m [33mHere[31m[33m;[31m
+[31m[1m>[22m[1m[31m[90m 3 |[31m [32m's the corrected test file for the AI-POC component: `` `typescript[31m
+ [90m   |[31m [31m[1m^[22m[1m[31m
+ [90m 4 |[31m [36mimport[31m { [33mComponentFixture[31m[33m,[31m [33mTestBed[31m } [36mfrom[31m [32m'@angular/core/testing'[31m[33m;[31m
+ [90m 5 |[31m [36mimport[31m { [33mAiPocComponent[31m } [36mfrom[31m [32m'./ai-poc.component'[31m[33m;[31m
+ [90m 6 |[31m [36mimport[31m { [33mFormsModule[31m } [36mfrom[31m [32m'@angular/forms'[31m[33m;[31m[0m
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m1[0m Here's the corrected test file for the AI-POC component:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Here'.
+
+[7m1[0m Here's the corrected test file for the AI-POC component:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m5[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+  Type 'String' has no call signatures.
+
+[7m1[0m Here's the corrected test file for the AI-POC component:
+[7m [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m57[0m - [91merror[0m[90m TS1002: [0mUnterminated string literal.
+
+[7m1[0m Here's the corrected test file for the AI-POC component:
+[7m [0m [91m                                                        [0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m1[0m - [91merror[0m[90m TS1435: [0mUnknown keyword or identifier. Did you mean 'this'?
+
+[7m95[0m This updated test file:
+[7m  [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'This'.
+
+[7m95[0m This updated test file:
+[7m  [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m6[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m95[0m This updated test file:
+[7m  [0m [91m     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'updated'.
+
+[7m95[0m This updated test file:
+[7m  [0m [91m     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m14[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m95[0m This updated test file:
+[7m  [0m [91m             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m95[0m:[93m14[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m95[0m This updated test file:
+[7m  [0m [91m             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Imports'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m           ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'all'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m           ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m16[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m               ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m16[0m - [91merror[0m[90m TS2304: [0mCannot find name 'necessary'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m               ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m26[0m - [91merror[0m[90m TS1435: [0mUnknown keyword or identifier. Did you mean 'module'?
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m                         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'modules'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m                         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m34[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m34[0m - [91merror[0m[90m TS2304: [0mCannot find name 'and'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m97[0m:[93m38[0m - [91merror[0m[90m TS2304: [0mCannot find name 'dependencies'.
+
+[7m97[0m 1. Imports all necessary modules and dependencies
+[7m  [0m [91m                                     ~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Sets'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m9[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m        ~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'up'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m        ~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m           ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'proper'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m           ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m19[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                  ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m19[0m - [91merror[0m[90m TS2304: [0mCannot find name 'testing'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                  ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m27[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                          ~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m27[0m - [91merror[0m[90m TS2304: [0mCannot find name 'environment'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                          ~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m43[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                          ~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m43[0m - [91merror[0m[90m TS2304: [0mCannot find name 'a'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                          ~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m45[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                            ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m45[0m - [91merror[0m[90m TS2304: [0mCannot find name 'standalone'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                            ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m56[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                                       ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m98[0m:[93m56[0m - [91merror[0m[90m TS2304: [0mCannot find name 'component'.
+
+[7m98[0m 2. Sets up proper testing environment for a standalone component
+[7m  [0m [91m                                                       ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m1[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Creates'.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m           ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'spy'.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m           ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m20[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m99[0m:[93m20[0m - [91merror[0m[90m TS2304: [0mCannot find name 'AiService'.
+
+[7m99[0m 3. Creates spy for AiService
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m1[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m1[0m - [91merror[0m[90m TS2872: [0mThis kind of expression is always truthy.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m   ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Includes'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m   ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m13[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m            ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'all'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m            ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m17[0m - [91merror[0m[90m TS1435: [0mUnknown keyword or identifier. Did you mean 'require'?
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m17[0m - [91merror[0m[90m TS2304: [0mCannot find name 'required'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m26[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Angular'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m34[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                                 ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m34[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Material'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                                 ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m100[0m:[93m43[0m - [91merror[0m[90m TS2304: [0mCannot find name 'modules'.
+
+[7m100[0m 4. Includes all required Angular Material modules
+[7m   [0m [91m                                          ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m   ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Tests'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m   ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m10[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m10[0m - [91merror[0m[90m TS2304: [0mCannot find name 'loading'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m         ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m18[0m - [91merror[0m[90m TS2304: [0mCannot find name 'states'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                 ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m18[0m - [91merror[0m[90m TS2695: [0mLeft side of comma operator is unused and has no side effects.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                 ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'user'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m31[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                              ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m31[0m - [91merror[0m[90m TS2304: [0mCannot find name 'input'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                              ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m37[0m - [91merror[0m[90m TS2304: [0mCannot find name 'handling'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                    ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m37[0m - [91merror[0m[90m TS2695: [0mLeft side of comma operator is unused and has no side effects.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                    ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m47[0m - [91merror[0m[90m TS2304: [0mCannot find name 'and'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m51[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                                  ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m51[0m - [91merror[0m[90m TS2304: [0mCannot find name 'service'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                                  ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m101[0m:[93m59[0m - [91merror[0m[90m TS2304: [0mCannot find name 'interactions'.
+
+[7m101[0m 5. Tests loading states, user input handling, and service interactions
+[7m   [0m [91m                                                          ~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Follows'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m           ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Angular'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m           ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m20[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m20[0m - [91merror[0m[90m TS2304: [0mCannot find name 'testing'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m28[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                           ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m28[0m - [91merror[0m[90m TS2304: [0mCannot find name 'best'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                           ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m33[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m33[0m - [91merror[0m[90m TS2304: [0mCannot find name 'practices'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m43[0m - [91merror[0m[90m TS1101: [0m'with' statements are not allowed in strict mode.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                          ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m48[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                               ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m59[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                          ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m65[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m65[0m - [91merror[0m[90m TS2304: [0mCannot find name 'and'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m69[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                    ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m69[0m - [91merror[0m[90m TS2304: [0mCannot find name 'individual'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                    ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m80[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                               ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m80[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                               ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m102[0m:[93m85[0m - [91merror[0m[90m TS2304: [0mCannot find name 'cases'.
+
+[7m102[0m 6. Follows Angular testing best practices with beforeEach setup and individual test cases
+[7m   [0m [91m                                                                                    ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m1[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'The'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m5[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m    ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m5[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m    ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m10[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m10[0m - [91merror[0m[90m TS2304: [0mCannot find name 'file'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m15[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m15[0m - [91merror[0m[90m TS2304: [0mCannot find name 'now'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m19[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                  ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m19[0m - [91merror[0m[90m TS2304: [0mCannot find name 'properly'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                  ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m28[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                           ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m28[0m - [91merror[0m[90m TS2304: [0mCannot find name 'tests'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                           ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m34[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m34[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m38[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                     ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m38[0m - [91merror[0m[90m TS2304: [0mCannot find name 'component'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                     ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m90[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                         ~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m90[0m - [91merror[0m[90m TS2304: [0mCannot find name 's'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                         ~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m92[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                           ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m92[0m - [91merror[0m[90m TS2304: [0mCannot find name 'testing'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                           ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m100[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                                   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m100[0m - [91merror[0m[90m TS2304: [0mCannot find name 'best'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                                   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m105[0m - [91merror[0m[90m TS2304: [0mCannot find name 'practices'.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                                        ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m104[0m:[93m115[0m - [91merror[0m[90m TS1003: [0mIdentifier expected.
+
+[7m104[0m The test file now properly tests the component's functionality while maintaining Angular's testing best practices.
+[7m   [0m [91m                                                                                                                  [0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.

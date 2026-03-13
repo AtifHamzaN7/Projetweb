@@ -1,0 +1,42 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[36m./src/app/ai-poc/ai-poc.component.spec.ts[31m[0m - [0m[91mError: [31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):
+SyntaxError: /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec.ts: Unterminated string constant. (3:0)
+
+[0m [90m 1 |[31m [32m"use strict"[31m[33m;[31m
+ [90m 2 |[31m [33mHere[31m[33m;[31m
+[31m[1m>[22m[1m[31m[90m 3 |[31m [32m's the corrected `ai-poc.component.spec.ts` file: `` `typescript[31m
+ [90m   |[31m [31m[1m^[22m[1m[31m
+ [90m 4 |[31m [36mimport[31m { [33mComponentFixture[31m[33m,[31m [33mTestBed[31m } [36mfrom[31m [32m'@angular/core/testing'[31m[33m;[31m
+ [90m 5 |[31m [36mimport[31m { [33mAiPocComponent[31m } [36mfrom[31m [32m'./ai-poc.component'[31m[33m;[31m
+ [90m 6 |[31m [36mimport[31m { [33mHttpClientTestingModule[31m } [36mfrom[31m [32m'@angular/common/http/testing'[31m[33m;[31m[0m
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m1[0m Here's the corrected `ai-poc.component.spec.ts` file:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Here'.
+
+[7m1[0m Here's the corrected `ai-poc.component.spec.ts` file:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m5[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+  Type 'String' has no call signatures.
+
+[7m1[0m Here's the corrected `ai-poc.component.spec.ts` file:
+[7m [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m54[0m - [91merror[0m[90m TS1002: [0mUnterminated string literal.
+
+[7m1[0m Here's the corrected `ai-poc.component.spec.ts` file:
+[7m [0m [91m                                                     [0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.

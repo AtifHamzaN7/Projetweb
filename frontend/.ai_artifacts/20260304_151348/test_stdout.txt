@@ -1,0 +1,84 @@
+
+> frontend@0.0.0 test
+> ng test --watch=false --browsers=ChromeHeadless
+
+[32m04 03 2026 15:13:55.656:INFO [karma-server]: [39mKarma v6.4.4 server started at http://localhost:9876/
+[32m04 03 2026 15:13:55.659:INFO [launcher]: [39mLaunching browsers ChromeHeadless with concurrency unlimited
+[32m04 03 2026 15:13:55.663:INFO [launcher]: [39mStarting browser ChromeHeadless
+[32m04 03 2026 15:13:56.395:INFO [Chrome Headless 145.0.0.0 (Linux x86_64)]: [39mConnected on socket YiDVJt-pL4KZzVA3AAAB with id 550941
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 0 of 28[32m SUCCESS[39m (0 secs / 0 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 1 of 28[32m SUCCESS[39m (0 secs / 0.113 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 2 of 28[32m SUCCESS[39m (0 secs / 0.163 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 3 of 28[32m SUCCESS[39m (0 secs / 0.166 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 4 of 28[32m SUCCESS[39m (0 secs / 0.17 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 5 of 28[32m SUCCESS[39m (0 secs / 0.201 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 6 of 28[32m SUCCESS[39m (0 secs / 0.227 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 7 of 28[32m SUCCESS[39m (0 secs / 0.256 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 8 of 28[32m SUCCESS[39m (0 secs / 0.26 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 9 of 28[32m SUCCESS[39m (0 secs / 0.275 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 10 of 28[32m SUCCESS[39m (0 secs / 0.279 secs)
+[1A[2KWARN: [36m'Aucun adhérent connecté trouvé.'[39m
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 10 of 28[32m SUCCESS[39m (0 secs / 0.279 secs)
+WARN: 'Aucun adhérent connecté trouvé.'
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 11 of 28[32m SUCCESS[39m (0 secs / 0.302 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 12 of 28[32m SUCCESS[39m (0 secs / 0.304 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 13 of 28[32m SUCCESS[39m (0 secs / 0.316 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 14 of 28[32m SUCCESS[39m (0 secs / 0.326 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 15 of 28[32m SUCCESS[39m (0 secs / 0.338 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 16 of 28[32m SUCCESS[39m (0 secs / 0.342 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 17 of 28[32m SUCCESS[39m (0 secs / 0.355 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 18 of 28[32m SUCCESS[39m (0 secs / 0.364 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should create FAILED[39m
+	Error: NG0303: Can't bind to 'ngIf' since it isn't a known property of 'div' (used in the 'AiPocComponent' component template).
+	If the 'ngIf' is an Angular control flow directive, please make sure that either the 'NgIf' directive or the 'CommonModule' is included in the '@Component.imports' of this component.
+	error properties: Object({ code: 303 })
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11227:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11223:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12494:13)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:26071:9)
+	    at templateFn (ng:///AiPocComponent.js:51:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12340:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:14025:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:14245:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:14205:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:14193:5)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 19 of 28[31m (1 FAILED)[39m (0 secs / 0.374 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should display loading state initially FAILED[39m
+	Error: NG0303: Can't bind to 'ngIf' since it isn't a known property of 'div' (used in the 'AiPocComponent' component template).
+	If the 'ngIf' is an Angular control flow directive, please make sure that either the 'NgIf' directive or the 'CommonModule' is included in the '@Component.imports' of this component.
+	error properties: Object({ code: 303 })
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11227:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11223:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12494:13)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:26071:9)
+	    at templateFn (ng:///AiPocComponent.js:51:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12340:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:14025:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:14245:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:14205:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:14193:5)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 20 of 28[31m (2 FAILED)[39m (0 secs / 0.377 secs)
+[1A[2K[31mChrome Headless 145.0.0.0 (Linux x86_64) AiPocComponent should display loaded state after data is fetched FAILED[39m
+	Error: NG0303: Can't bind to 'ngIf' since it isn't a known property of 'div' (used in the 'AiPocComponent' component template).
+	If the 'ngIf' is an Angular control flow directive, please make sure that either the 'NgIf' directive or the 'CommonModule' is included in the '@Component.imports' of this component.
+	error properties: Object({ code: 303 })
+	    at reportUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11227:15)
+	    at handleUnknownPropertyError (node_modules/@angular/core/fesm2022/core.mjs:11223:5)
+	    at elementPropertyInternal (node_modules/@angular/core/fesm2022/core.mjs:12494:13)
+	    at ɵɵproperty (node_modules/@angular/core/fesm2022/core.mjs:26071:9)
+	    at templateFn (ng:///AiPocComponent.js:51:9)
+	    at executeTemplate (node_modules/@angular/core/fesm2022/core.mjs:12340:9)
+	    at refreshView (node_modules/@angular/core/fesm2022/core.mjs:14025:13)
+	    at detectChangesInView (node_modules/@angular/core/fesm2022/core.mjs:14245:9)
+	    at detectChangesInViewIfAttached (node_modules/@angular/core/fesm2022/core.mjs:14205:5)
+	    at detectChangesInComponent (node_modules/@angular/core/fesm2022/core.mjs:14193:5)
+Chrome Headless 145.0.0.0 (Linux x86_64): Executed 21 of 28[31m (3 FAILED)[39m (0 secs / 0.379 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 22 of 28[31m (3 FAILED)[39m (0 secs / 0.389 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 23 of 28[31m (3 FAILED)[39m (0 secs / 0.392 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 24 of 28[31m (3 FAILED)[39m (0 secs / 0.394 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 25 of 28[31m (3 FAILED)[39m (0 secs / 0.4 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 26 of 28[31m (3 FAILED)[39m (0 secs / 0.407 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 27 of 28[31m (3 FAILED)[39m (0 secs / 0.416 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 28 of 28[31m (3 FAILED)[39m (0 secs / 0.433 secs)
+[1A[2KChrome Headless 145.0.0.0 (Linux x86_64): Executed 28 of 28[31m (3 FAILED)[39m (0.501 secs / 0.433 secs)
+[31mTOTAL: 3 FAILED, 25 SUCCESS[39m

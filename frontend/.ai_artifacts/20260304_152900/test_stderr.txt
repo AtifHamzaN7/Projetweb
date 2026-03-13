@@ -1,0 +1,47 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[36m./src/app/ai-poc/ai-poc.component.spec.ts[31m[0m - [0m[91mError: [31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):
+SyntaxError: /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec.ts: Identifier 'AiPocComponent' has already been declared. (27:13)
+
+[0m [90m 25 |[31m })[33m;[31m
+ [90m 26 |[31m [90m// Ensure fetchData method is defined in the component[31m
+[31m[1m>[22m[1m[31m[90m 27 |[31m [36mexport[31m [36mclass[31m [33mAiPocComponent[31m {
+ [90m    |[31m              [31m[1m^[22m[1m[31m
+ [90m 28 |[31m     constructor() { }
+ [90m 29 |[31m     fetchData() {
+ [90m 30 |[31m         [90m// Implementation of fetchData[31m[0m
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m2[0m:[93m10[0m - [91merror[0m[90m TS2395: [0mIndividual declarations in merged declaration 'AiPocComponent' must be all exported or all local.
+
+[7m2[0m import { AiPocComponent } from './ai-poc.component';
+[7m [0m [91m         ~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m2[0m:[93m10[0m - [91merror[0m[90m TS2440: [0mImport declaration conflicts with local declaration of 'AiPocComponent'.
+
+[7m2[0m import { AiPocComponent } from './ai-poc.component';
+[7m [0m [91m         ~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m16[0m:[93m5[0m - [91merror[0m[90m TS2322: [0mType 'import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/node_modules/@angular/core/testing/index").ComponentFixture<import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec").AiPocComponent>' is not assignable to type 'import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/node_modules/@angular/core/testing/index").ComponentFixture<import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component").AiPocComponent>'.
+  Property 'ngOnInit' is missing in type 'import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec").AiPocComponent' but required in type 'import("/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component").AiPocComponent'.
+
+[7m16[0m     fixture = TestBed.createComponent(AiPocComponent);
+[7m  [0m [91m    ~~~~~~~[0m
+
+  [96msrc/app/ai-poc/ai-poc.component.ts[0m:[93m12[0m:[93m3[0m
+    [7m12[0m   ngOnInit(): void {
+    [7m  [0m [96m  ~~~~~~~~[0m
+    'ngOnInit' is declared here.
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m33[0m:[93m14[0m - [91merror[0m[90m TS2395: [0mIndividual declarations in merged declaration 'AiPocComponent' must be all exported or all local.
+
+[7m33[0m export class AiPocComponent {
+[7m  [0m [91m             ~~~~~~~~~~~~~~[0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.

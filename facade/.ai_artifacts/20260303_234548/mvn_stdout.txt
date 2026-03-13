@@ -1,0 +1,39 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------------< [0;36mn7:facade[0;1m >------------------------------[m
+[[1;34mINFO[m] [1mBuilding facade 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ war ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:resources[m [1m(default-resources)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/main/resources to target/classes
+[[1;34mINFO[m] Copying 3 resources from src/main/resources to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.13.0:compile[m [1m(default-compile)[m @ [36mfacade[0;1m ---[m
+[[1;34mINFO[m] Recompiling the module because of [1mchanged source code[m.
+[[1;34mINFO[m] Compiling 21 source files with javac [debug parameters release 17] to target/classes
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] COMPILATION ERROR : 
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;31mERROR[m] /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/main/java/n7/facade/AiPocController.java:[20,52] incompatible types: inference variable T has incompatible bounds
+    equality constraints: java.util.Map<java.lang.String,java.lang.Object>
+    lower bounds: java.util.Map<java.lang.String,java.lang.String>
+[[1;34mINFO[m] 1 error
+[[1;34mINFO[m] -------------------------------------------------------------
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] [1;31mBUILD FAILURE[m
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;34mINFO[m] Total time:  3.914 s
+[[1;34mINFO[m] Finished at: 2026-03-03T23:45:54+01:00
+[[1;34mINFO[m] [1m------------------------------------------------------------------------[m
+[[1;31mERROR[m] Failed to execute goal [32morg.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile[m [1m(default-compile)[m on project [36mfacade[m: [1;31mCompilation failure[m
+[[1;31mERROR[m] [1;31m/home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/facade/src/main/java/n7/facade/AiPocController.java:[20,52] incompatible types: inference variable T has incompatible bounds[m
+[[1;31mERROR[m] [1;31m    equality constraints: java.util.Map<java.lang.String,java.lang.Object>[m
+[[1;31mERROR[m] [1;31m    lower bounds: java.util.Map<java.lang.String,java.lang.String>[m
+[[1;31mERROR[m] [1;31m[m
+[[1;31mERROR[m] -> [1m[Help 1][m
+[[1;31mERROR[m] 
+[[1;31mERROR[m] To see the full stack trace of the errors, re-run Maven with the [1m-e[m switch.
+[[1;31mERROR[m] Re-run Maven using the [1m-X[m switch to enable full debug logging.
+[[1;31mERROR[m] 
+[[1;31mERROR[m] For more information about the errors and possible solutions, please read the following articles:
+[[1;31mERROR[m] [1m[Help 1][m http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException

@@ -1,0 +1,24 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m28[0m:[93m22[0m - [91merror[0m[90m TS2339: [0mProperty 'isLoading' does not exist on type 'AiPocComponent'.
+
+[7m28[0m     expect(component.isLoading).toBeTrue();
+[7m  [0m [91m                     ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m33[0m:[93m15[0m - [91merror[0m[90m TS2339: [0mProperty 'fetchData' does not exist on type 'AiPocComponent'.
+
+[7m33[0m     component.fetchData();
+[7m  [0m [91m              ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m35[0m:[93m22[0m - [91merror[0m[90m TS2339: [0mProperty 'isLoading' does not exist on type 'AiPocComponent'.
+
+[7m35[0m     expect(component.isLoading).toBeFalse();
+[7m  [0m [91m                     ~~~~~~~~~[0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.

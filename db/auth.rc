@@ -1,4 +1,3 @@
-urlid Hagi
-url jdbc:hsqldb:hsql://localhost/xdb
+url jdbc:hsqldb:hsql://localhost:9005/xdb
 username sa
 password

@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideRouter } from '@angular/router';
 
 import { AjoutDiscussionComponent } from './ajout-discussion.component';
@@ -10,8 +11,8 @@ describe('AjoutDiscussionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AjoutDiscussionComponent, HttpClientTestingModule],
-      providers: [provideRouter([])]
+      providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
+      imports: [AjoutDiscussionComponent]
     })
     .compileComponents();
 

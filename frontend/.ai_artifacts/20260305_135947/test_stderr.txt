@@ -1,0 +1,636 @@
+- Generating browser application bundles (phase: setup)...
+[32m✔[39m Browser application bundle generation complete.
+[1m[31m
+[0m[36m./src/app/ai-poc/ai-poc.component.spec.ts[31m[0m - [0m[91mError: [31m[0mModule build failed (from ./node_modules/@angular-devkit/build-angular/src/tools/babel/webpack-loader.js):
+SyntaxError: /home/oussamaetta/Desktop/N7/Projects-S8/Projetweb/frontend/src/app/ai-poc/ai-poc.component.spec.ts: Unterminated string constant. (3:0)
+
+[0m [90m 1 |[31m [32m"use strict"[31m[33m;[31m
+ [90m 2 |[31m [33mHere[31m[33m;[31m
+[31m[1m>[22m[1m[31m[90m 3 |[31m [32m's the updated test file for the AiPocComponent using standalone component configuration: `` `typescript[31m
+ [90m   |[31m [31m[1m^[22m[1m[31m
+ [90m 4 |[31m [36mimport[31m { [33mComponentFixture[31m[33m,[31m [33mTestBed[31m } [36mfrom[31m [32m'@angular/core/testing'[31m[33m;[31m
+ [90m 5 |[31m [36mimport[31m { [33mAiPocComponent[31m } [36mfrom[31m [32m'./ai-poc.component'[31m[33m;[31m
+ [90m 6 |[31m [36mimport[31m { [33mHttpClientTestingModule[31m } [36mfrom[31m [32m'@angular/common/http/testing'[31m[33m;[31m[0m
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m1[0m Here's the updated test file for the AiPocComponent using standalone component configuration:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Here'.
+
+[7m1[0m Here's the updated test file for the AiPocComponent using standalone component configuration:
+[7m [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m5[0m - [91merror[0m[90m TS2349: [0mThis expression is not callable.
+  Type 'String' has no call signatures.
+
+[7m1[0m Here's the updated test file for the AiPocComponent using standalone component configuration:
+[7m [0m [91m    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m1[0m:[93m94[0m - [91merror[0m[90m TS1002: [0mUnterminated string literal.
+
+[7m1[0m Here's the updated test file for the AiPocComponent using standalone component configuration:
+[7m [0m [91m                                                                                             [0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m1[0m - [91merror[0m[90m TS1435: [0mUnknown keyword or identifier. Did you mean 'this'?
+
+[7m70[0m This updated test file:
+[7m  [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'This'.
+
+[7m70[0m This updated test file:
+[7m  [0m [91m~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m6[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m70[0m This updated test file:
+[7m  [0m [91m     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m6[0m - [91merror[0m[90m TS2304: [0mCannot find name 'updated'.
+
+[7m70[0m This updated test file:
+[7m  [0m [91m     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m14[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m70[0m This updated test file:
+[7m  [0m [91m             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m70[0m:[93m14[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m70[0m This updated test file:
+[7m  [0m [91m             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Uses'.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m   ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m9[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m        ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m9[0m - [91merror[0m[90m TS2304: [0mCannot find name 'standalone'.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m        ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m20[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m20[0m - [91merror[0m[90m TS2304: [0mCannot find name 'component'.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m                   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m71[0m:[93m30[0m - [91merror[0m[90m TS2304: [0mCannot find name 'configuration'.
+
+[7m71[0m 1. Uses standalone component configuration
+[7m  [0m [91m                             ~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Imports'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m           ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'necessary'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m           ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m22[0m - [91merror[0m[90m TS1435: [0mUnknown keyword or identifier. Did you mean 'module'?
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'modules'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                     ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m30[0m - [91merror[0m[90m TS2304: [0mCannot find name 'directly'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                             ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m42[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                                         ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m46[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                                             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m46[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                                             ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m72[0m:[93m51[0m - [91merror[0m[90m TS2304: [0mCannot find name 'configuration'.
+
+[7m72[0m 2. Imports necessary modules directly in the test configuration
+[7m  [0m [91m                                                  ~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m   ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Tests'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m   ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m10[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m         ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m10[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m         ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m14[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m             ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m14[0m - [91merror[0m[90m TS2304: [0mCannot find name 'actual'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m             ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m21[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                    ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'properties'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                    ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m32[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                               ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m32[0m - [91merror[0m[90m TS2304: [0mCannot find name 'that'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                               ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m37[0m - [91merror[0m[90m TS2304: [0mCannot find name 'exist'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                    ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m46[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                             ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m50[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                 ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m50[0m - [91merror[0m[90m TS2304: [0mCannot find name 'component'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                 ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m61[0m - [91merror[0m[90m TS2304: [0mCannot find name 'loading'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                            ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m70[0m - [91merror[0m[90m TS2304: [0mCannot find name 'error'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                                     ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m77[0m - [91merror[0m[90m TS2304: [0mCannot find name 'message'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                                            ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m73[0m:[93m86[0m - [91merror[0m[90m TS2304: [0mCannot find name 'lastUpdated'.
+
+[7m73[0m 3. Tests the actual properties that exist in the component (loading, error, message, lastUpdated)
+[7m  [0m [91m                                                                                     ~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Removes'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m   ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m12[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m           ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m12[0m - [91merror[0m[90m TS2304: [0mCannot find name 'tests'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m           ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m22[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                     ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m22[0m - [91merror[0m[90m TS2304: [0mCannot find name 'non'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                     ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m26[0m - [91merror[0m[90m TS2304: [0mCannot find name 'existent'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                         ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m35[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                                  ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m35[0m - [91merror[0m[90m TS2304: [0mCannot find name 'properties'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                                  ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m47[0m - [91merror[0m[90m TS2304: [0mCannot find name 'statusMessage'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                                              ~~~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m74[0m:[93m62[0m - [91merror[0m[90m TS2304: [0mCannot find name 'state'.
+
+[7m74[0m 4. Removes tests for non-existent properties (statusMessage, state)
+[7m  [0m [91m                                                             ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m1[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m   ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Includes'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m   ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m13[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m            ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m13[0m - [91merror[0m[90m TS2304: [0mCannot find name 'proper'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m            ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m34[0m - [91merror[0m[90m TS1005: [0m'=' expected.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m34[0m - [91merror[0m[90m TS2304: [0mCannot find name 'for'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                 ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m38[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                     ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m38[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                     ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m42[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                         ~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m42[0m - [91merror[0m[90m TS2304: [0mCannot find name 'lastUpdated'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                         ~~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m75[0m:[93m54[0m - [91merror[0m[90m TS2304: [0mCannot find name 'property'.
+
+[7m75[0m 5. Includes proper type checking for the lastUpdated property
+[7m  [0m [91m                                                     ~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m4[0m - [91merror[0m[90m TS1005: [0m';' expected.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m4[0m - [91merror[0m[90m TS2304: [0mCannot find name 'Maintains'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m   ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m14[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m             ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m14[0m - [91merror[0m[90m TS2304: [0mCannot find name 'proper'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m             ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m21[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                    ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m21[0m - [91merror[0m[90m TS2304: [0mCannot find name 'testing'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                    ~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m29[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                            ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m29[0m - [91merror[0m[90m TS2304: [0mCannot find name 'practices'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                            ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m39[0m - [91merror[0m[90m TS1101: [0m'with' statements are not allowed in strict mode.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                      ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m44[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                           ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m55[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                      ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m61[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                            ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m61[0m - [91merror[0m[90m TS2304: [0mCannot find name 'and'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                            ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m65[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                                ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m65[0m - [91merror[0m[90m TS2304: [0mCannot find name 'individual'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                                ~~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m76[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                                           ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m76[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                                           ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m76[0m:[93m81[0m - [91merror[0m[90m TS2304: [0mCannot find name 'cases'.
+
+[7m76[0m 6. Maintains proper testing practices with beforeEach setup and individual test cases
+[7m  [0m [91m                                                                                ~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m1[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m1[0m - [91merror[0m[90m TS2304: [0mCannot find name 'The'.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m5[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m    ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m5[0m - [91merror[0m[90m TS2593: [0mCannot find name 'test'. Do you need to install type definitions for a test runner? Try `npm i --save-dev @types/jest` or `npm i --save-dev @types/mocha` and then add 'jest' or 'mocha' to the types field in your tsconfig.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m    ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m10[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m10[0m - [91merror[0m[90m TS2304: [0mCannot find name 'file'.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m15[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m15[0m - [91merror[0m[90m TS2304: [0mCannot find name 'now'.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m19[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                  ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m19[0m - [91merror[0m[90m TS2304: [0mCannot find name 'aligns'.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                  ~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m26[0m - [91merror[0m[90m TS1101: [0m'with' statements are not allowed in strict mode.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                         ~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m31[0m - [91merror[0m[90m TS1005: [0m'(' expected.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m31[0m - [91merror[0m[90m TS2304: [0mCannot find name 'the'.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                              ~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m35[0m - [91merror[0m[90m TS1005: [0m')' expected.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                                  ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m35[0m - [91merror[0m[90m TS1434: [0mUnexpected keyword or identifier.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                                  ~~~~~~~~~[0m
+
+
+[0m[91mError: [31m[0m[96msrc/app/ai-poc/ai-poc.component.spec.ts[0m:[93m78[0m:[93m147[0m - [91merror[0m[90m TS1002: [0mUnterminated string literal.
+
+[7m78[0m The test file now aligns with the component's actual implementation and should resolve the TypeScript errors while maintaining good test coverage.
+[7m  [0m [91m                                                                                                                                                  [0m
+
+
+[39m[22m
+[32m✔[39m Browser application bundle generation complete.
+[32m✔[39m Browser application bundle generation complete.
