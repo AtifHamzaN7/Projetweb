@@ -13,6 +13,9 @@ pipeline {
         REGISTRY_IMAGE = "${DOCKERHUB_CREDS_USR}/${IMAGE_NAME}"
         STAGING_HOST = '34.155.133.83'
         STAGING_SERVICE_NAME = 'app'
+        STAGING_MONITOR_HEALTH_PATH = '/ai/thesecond'
+        MONITOR_LOG_WINDOW_MINUTES = '5'
+        MONITOR_HEALTH_TIMEOUT_MS = '2000'
 
         IMPACTED_TEST_FILTER = ''
         JACOCO_COVERAGE = ''
@@ -635,6 +638,108 @@ pipeline {
                           --staging_host "${STAGING_HOST}" || true
                       else
                         echo '{"error":"python interpreter not available for deployment analyzer"}' > "${EVIDENCE_DIR}/agent_report.json"
+                      fi
+
+                      exit 0
+                    '''
+                }
+            }
+        }
+
+        stage('Monitoring Summarizer (Staging)') {
+            agent {
+                docker {
+                    image "${AGENT_IMAGE}"
+                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home/.m2:/root/.m2'
+                    reuseNode true
+                }
+            }
+            steps {
+                withCredentials([
+                    sshUserPrivateKey(
+                        credentialsId: 'gcp-staging-ssh',
+                        keyFileVariable: 'SSH_KEY',
+                        usernameVariable: 'SSH_USER'
+                    )
+                ]) {
+                    sh '''
+                      set +e
+                      mkdir -p "${EVIDENCE_DIR}"
+
+                      STATE_KEY="$(printf '%s-%s' "${JOB_NAME:-staging-monitor}" "${STAGING_SERVICE_NAME}" | tr -c 'A-Za-z0-9_.-' '_')"
+                      PERSISTED_STATE_DIR="/tmp/projetweb-monitor-state"
+                      PERSISTED_STATE_FILE="${PERSISTED_STATE_DIR}/${STATE_KEY}.json"
+                      WORK_STATE_FILE="${EVIDENCE_DIR}/monitor_state.json"
+                      PREVIOUS_STATE_FILE="${EVIDENCE_DIR}/monitor_state_previous.json"
+                      mkdir -p "${PERSISTED_STATE_DIR}"
+
+                      if [ -f "${PERSISTED_STATE_FILE}" ]; then
+                        cp "${PERSISTED_STATE_FILE}" "${WORK_STATE_FILE}"
+                        cp "${PERSISTED_STATE_FILE}" "${PREVIOUS_STATE_FILE}"
+                      else
+                        rm -f "${WORK_STATE_FILE}" "${PREVIOUS_STATE_FILE}" || true
+                      fi
+
+                      MONITOR_TS="$(date -u +%FT%TZ)"
+                      cat > "${EVIDENCE_DIR}/monitor_meta.json" <<EOF
+                      {
+                        "service": "${STAGING_SERVICE_NAME}",
+                        "staging_host": "${STAGING_HOST}",
+                        "timestamp_utc": "${MONITOR_TS}",
+                        "window_minutes": ${MONITOR_LOG_WINDOW_MINUTES},
+                        "health_timeout_ms": ${MONITOR_HEALTH_TIMEOUT_MS},
+                        "health_path": "${STAGING_MONITOR_HEALTH_PATH}"
+                      }
+                      EOF
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "cd ~/deploy && docker compose -f staging-compose.yml ps" \
+                        > "${EVIDENCE_DIR}/monitor_compose_ps.txt" 2>&1 || true
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "cd ~/deploy && IDS=\$(docker compose -f staging-compose.yml ps -q ${STAGING_SERVICE_NAME} 2>/dev/null); if [ -n \"\$IDS\" ]; then docker inspect \$IDS; else printf '[]\\n'; fi" \
+                        > "${EVIDENCE_DIR}/monitor_container_inspect.json" 2>&1 || true
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "cd ~/deploy && docker compose -f staging-compose.yml logs --since ${MONITOR_LOG_WINDOW_MINUTES}m ${STAGING_SERVICE_NAME}" \
+                        > "${EVIDENCE_DIR}/monitor_container_logs.txt" 2>&1 || true
+
+                      ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
+                        "cd ~/deploy && IDS=\$(docker compose -f staging-compose.yml ps -q ${STAGING_SERVICE_NAME} 2>/dev/null); if [ -n \"\$IDS\" ]; then docker stats --no-stream --format '{{json .}}' \$IDS; fi" \
+                        > "${EVIDENCE_DIR}/monitor_resource_stats.txt" 2>&1 || true
+
+                      BASE_URL="http://${STAGING_HOST}:8082"
+                      CURL_MAX_TIME="$(( (${MONITOR_HEALTH_TIMEOUT_MS} + 999) / 1000 ))"
+                      CURL_RESULT="$(curl -sS -o /tmp/monitor_health_body.out -w "%{http_code} %{time_total}" --max-time "${CURL_MAX_TIME}" "${BASE_URL}${STAGING_MONITOR_HEALTH_PATH}" || true)"
+                      HEALTH_STATUS="$(printf '%s' "${CURL_RESULT}" | awk '{print $1}')"
+                      HEALTH_TIME="$(printf '%s' "${CURL_RESULT}" | awk '{print $2}')"
+                      if [ -z "${HEALTH_STATUS}" ]; then HEALTH_STATUS="000"; fi
+                      if [ -z "${HEALTH_TIME}" ]; then HEALTH_TIME="0"; fi
+                      HEALTH_LATENCY_MS="$(awk -v t="${HEALTH_TIME}" 'BEGIN { printf "%d", t * 1000 }')"
+                      {
+                        printf '[%s] GET %s HTTP %s latency_ms=%s\n' "$(date -u +%FT%TZ)" "${STAGING_MONITOR_HEALTH_PATH}" "${HEALTH_STATUS}" "${HEALTH_LATENCY_MS}"
+                        printf '[%s] body ' "$(date -u +%FT%TZ)"
+                        head -c 400 /tmp/monitor_health_body.out | tr '\n' ' ' || true
+                        printf '\n'
+                      } > "${EVIDENCE_DIR}/monitor_health.txt"
+
+                      PYTHON_BIN="$(command -v python3 || command -v python || true)"
+                      if [ -n "$PYTHON_BIN" ] && [ -f "agents/agent2/analyze-monitor.py" ]; then
+                        "$PYTHON_BIN" agents/agent2/analyze-monitor.py \
+                          --evidence_dir "${EVIDENCE_DIR}" \
+                          --out "${EVIDENCE_DIR}/monitor_report.json" \
+                          --md_out "${EVIDENCE_DIR}/monitor_report.md" \
+                          --state "${WORK_STATE_FILE}" \
+                          --service_name "${STAGING_SERVICE_NAME}" \
+                          --staging_host "${STAGING_HOST}" \
+                          --window_minutes "${MONITOR_LOG_WINDOW_MINUTES}" \
+                          --health_timeout_ms "${MONITOR_HEALTH_TIMEOUT_MS}" || true
+                      else
+                        echo '{"error":"python interpreter or monitoring analyzer not available"}' > "${EVIDENCE_DIR}/monitor_report.json"
+                      fi
+
+                      if [ -f "${WORK_STATE_FILE}" ]; then
+                        cp "${WORK_STATE_FILE}" "${PERSISTED_STATE_FILE}"
                       fi
 
                       exit 0
