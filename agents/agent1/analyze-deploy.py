@@ -621,7 +621,8 @@ def apply_llm_decision(
     smoke_signal: Dict[str, object],
     container_signal: Dict[str, str],
     health_signal: Dict[str, str],
-) -> Dict[str, object]:
+) -> Tuple[Dict[str, object], bool]:
+    changed = False
     llm_state = str(llm.get("verdict_state", "")).strip().lower()
     llm_confidence = llm.get("confidence")
     summary = str(llm.get("summary", "")).strip()
@@ -637,19 +638,24 @@ def apply_llm_decision(
         # Guardrails: the LLM can refine the decision, but cannot overrule hard-fail evidence.
         if hard_failed and llm_state == "healthy":
             llm_state = "failed"
+        changed = changed or report["verdict"].get("state") != llm_state
         report["verdict"]["state"] = llm_state
 
     if isinstance(llm_confidence, (int, float)):
         bounded_conf = max(0.05, min(0.99, float(llm_confidence)))
-        report["verdict"]["confidence"] = round(bounded_conf, 2)
+        bounded_conf = round(bounded_conf, 2)
+        changed = changed or report["verdict"].get("confidence") != bounded_conf
+        report["verdict"]["confidence"] = bounded_conf
 
     if summary:
+        changed = changed or report["verdict"].get("summary") != safe_line(summary)
         report["verdict"]["summary"] = safe_line(summary)
 
     if isinstance(needs_human, bool):
+        changed = changed or report.get("needs_human") != needs_human
         report["needs_human"] = needs_human
 
-    return report
+    return report, changed
 
 
 def openrouter_enrich_report(
@@ -665,12 +671,21 @@ def openrouter_enrich_report(
     health_signal: Dict[str, str],
     timeout_sec: int = 20,
 ) -> Dict[str, object]:
+    llm_meta = report.setdefault("llm", {})
+    llm_meta["mode"] = mode
+    llm_meta["model"] = None
+    llm_meta["attempted"] = False
+    llm_meta["used"] = False
+    llm_meta["decision_changed"] = False
+    llm_meta["error"] = None
+
     if mode == "off":
         return report
 
     api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
     base_url = os.environ.get("OPENROUTER_BASE_URL", "").strip()
     if not api_key or not base_url:
+        llm_meta["error"] = "missing_openrouter_config"
         return report
 
     llm_input = {
@@ -705,8 +720,9 @@ def openrouter_enrich_report(
         "Do not contradict clear hard facts such as failed smoke tests, exited/restarting containers, or health DOWN."
     )
 
+    chosen_model = model or DEFAULT_OPENROUTER_MODEL
     payload = {
-        "model": model or DEFAULT_OPENROUTER_MODEL,
+        "model": chosen_model,
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
@@ -726,19 +742,26 @@ def openrouter_enrich_report(
         method="POST",
     )
 
+    llm_meta["attempted"] = True
+    llm_meta["model"] = chosen_model
+
     try:
         with urlrequest.urlopen(req, timeout=timeout_sec) as resp:
             body = resp.read().decode("utf-8", errors="replace")
-    except Exception:
+    except Exception as exc:
+        llm_meta["error"] = safe_line(str(exc))
         return report
 
     try:
         parsed = json.loads(body)
         content = parsed["choices"][0]["message"]["content"]
         llm = json.loads(content)
-    except Exception:
+    except Exception as exc:
+        llm_meta["error"] = safe_line(f"invalid_llm_response: {exc}")
         return report
-    report = apply_llm_decision(report, llm, smoke_signal, container_signal, health_signal)
+    llm_meta["used"] = True
+    report, decision_changed = apply_llm_decision(report, llm, smoke_signal, container_signal, health_signal)
+    llm_meta["decision_changed"] = decision_changed
 
     extra_causes = llm.get("extra_causes", [])
     if isinstance(extra_causes, list):
@@ -753,8 +776,9 @@ def openrouter_enrich_report(
                         "cause": safe_line(c),
                         "likelihood": round(float(cause.get("likelihood", 0.5)), 2),
                         "evidence": [safe_line(str(x)) for x in e[:2]],
-                    }
+                        }
                 )
+                llm_meta["decision_changed"] = True
 
     extra_actions = llm.get("extra_actions", [])
     if isinstance(extra_actions, list):
@@ -768,6 +792,7 @@ def openrouter_enrich_report(
                 report["recommended_actions"].append(
                     {"action": safe_line(act), "reason": safe_line(rea), "priority": prio}
                 )
+                llm_meta["decision_changed"] = True
 
     needs_human = llm.get("needs_human")
     if isinstance(needs_human, bool):
@@ -785,6 +810,7 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
     causes = report["top_causes"]
     actions = report["recommended_actions"]
     limits = report["limits"]
+    llm = report.get("llm", {})
 
     lines = [
         "# Deployment Verifier Report",
@@ -819,6 +845,20 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
             lines.append(f"- {l}")
     else:
         lines.append("- No major evidence limitations detected")
+
+    lines.extend(
+        [
+            "",
+            "## LLM",
+            f"- Mode: {llm.get('mode', 'unknown')}",
+            f"- Attempted: {llm.get('attempted', False)}",
+            f"- Used: {llm.get('used', False)}",
+            f"- Decision changed: {llm.get('decision_changed', False)}",
+            f"- Model: {llm.get('model') or 'n/a'}",
+        ]
+    )
+    if llm.get("error"):
+        lines.append(f"- Error: {llm['error']}")
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -895,6 +935,14 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
         "recommended_actions": merge_actions(causes, verdict_state),
         "needs_human": verdict_state != "healthy" or confidence < 0.75,
         "limits": limits,
+        "llm": {
+            "mode": args.llm_mode,
+            "attempted": False,
+            "used": False,
+            "decision_changed": False,
+            "model": None,
+            "error": None,
+        },
     }
 
     load_dotenv(Path(".env"))
