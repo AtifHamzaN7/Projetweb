@@ -615,6 +615,43 @@ def extract_relevant_lines(text: Optional[str], max_lines: int = 20) -> List[str
     return out
 
 
+def apply_llm_decision(
+    report: Dict[str, object],
+    llm: Dict[str, object],
+    smoke_signal: Dict[str, object],
+    container_signal: Dict[str, str],
+    health_signal: Dict[str, str],
+) -> Dict[str, object]:
+    llm_state = str(llm.get("verdict_state", "")).strip().lower()
+    llm_confidence = llm.get("confidence")
+    summary = str(llm.get("summary", "")).strip()
+    needs_human = llm.get("needs_human")
+
+    hard_failed = (
+        smoke_signal["status"] == "fail"
+        or container_signal["status"] in {"restarting", "exited"}
+        or health_signal["status"] == "down"
+    )
+
+    if llm_state in {"healthy", "degraded", "failed"}:
+        # Guardrails: the LLM can refine the decision, but cannot overrule hard-fail evidence.
+        if hard_failed and llm_state == "healthy":
+            llm_state = "failed"
+        report["verdict"]["state"] = llm_state
+
+    if isinstance(llm_confidence, (int, float)):
+        bounded_conf = max(0.05, min(0.99, float(llm_confidence)))
+        report["verdict"]["confidence"] = round(bounded_conf, 2)
+
+    if summary:
+        report["verdict"]["summary"] = safe_line(summary)
+
+    if isinstance(needs_human, bool):
+        report["needs_human"] = needs_human
+
+    return report
+
+
 def openrouter_enrich_report(
     report: Dict[str, object],
     smoke_text: Optional[str],
@@ -623,6 +660,9 @@ def openrouter_enrich_report(
     health_text: Optional[str],
     mode: str,
     model: str,
+    smoke_signal: Dict[str, object],
+    container_signal: Dict[str, str],
+    health_signal: Dict[str, str],
     timeout_sec: int = 20,
 ) -> Dict[str, object]:
     if mode == "off":
@@ -650,7 +690,9 @@ def openrouter_enrich_report(
     system_prompt = (
         "You are a CI/CD deployment triage assistant. "
         "Use only provided evidence. "
-        "Return STRICT JSON with keys: summary, extra_causes, extra_actions, needs_human. "
+        "Return STRICT JSON with keys: verdict_state, confidence, summary, extra_causes, extra_actions, needs_human. "
+        "verdict_state must be one of healthy, degraded, failed. "
+        "confidence must be a float between 0 and 1. "
         "extra_causes is a list of objects {cause, likelihood, evidence}. "
         "extra_actions is a list of objects {action, reason, priority}. "
         "Do not output markdown."
@@ -658,8 +700,9 @@ def openrouter_enrich_report(
     user_prompt = (
         "Current rule-based report follows.\n"
         f"{json.dumps(llm_input, ensure_ascii=True)}\n"
-        "Refine summary and add up to 2 additional causes/actions only if evidence supports them. "
-        "Do not contradict clear rule-based facts."
+        "Decide the final deployment state from the evidence and refine the summary. "
+        "Add up to 2 additional causes/actions only if evidence supports them. "
+        "Do not contradict clear hard facts such as failed smoke tests, exited/restarting containers, or health DOWN."
     )
 
     payload = {
@@ -695,10 +738,7 @@ def openrouter_enrich_report(
         llm = json.loads(content)
     except Exception:
         return report
-
-    summary = str(llm.get("summary", "")).strip()
-    if summary:
-        report["verdict"]["summary"] = safe_line(summary)
+    report = apply_llm_decision(report, llm, smoke_signal, container_signal, health_signal)
 
     extra_causes = llm.get("extra_causes", [])
     if isinstance(extra_causes, list):
@@ -866,6 +906,9 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
         health_text=health_text,
         mode=args.llm_mode,
         model=args.llm_model,
+        smoke_signal=smoke_signal,
+        container_signal=container_signal,
+        health_signal=health_signal,
     )
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
