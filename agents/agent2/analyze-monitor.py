@@ -1,15 +1,20 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from urllib import error as urlerror
+from urllib import request as urlrequest
 
 
 MAX_EVIDENCE_LINE_LEN = 240
 MAX_TOP_SIGNATURES = 3
+DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o-mini"
 
 
 @dataclass(frozen=True)
@@ -192,6 +197,93 @@ def parse_meta(meta_text: Optional[str]) -> Dict[str, object]:
     if isinstance(parsed, dict):
         return parsed
     return {}
+
+
+def extract_relevant_lines(text: Optional[str], max_lines: int = 20) -> List[str]:
+    if text is None:
+        return []
+    out: List[str] = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        if re.search(
+            r"(error|exception|fail|timeout|refused|restarting|exited|http\s+[45]\d\d|oom|unauthorized|forbidden)",
+            s,
+            flags=re.IGNORECASE,
+        ):
+            out.append(safe_line(s))
+        if len(out) >= max_lines:
+            break
+    return out
+
+
+def extract_head_lines(text: Optional[str], max_lines: int = 8) -> List[str]:
+    if text is None:
+        return []
+    out: List[str] = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        out.append(safe_line(s))
+        if len(out) >= max_lines:
+            break
+    return out
+
+
+def merge_unique_strings(existing: List[str], extras: object, limit: int = 5) -> List[str]:
+    out = [safe_line(str(x)) for x in existing if str(x).strip()]
+    seen = set(out)
+    if isinstance(extras, list):
+        for item in extras:
+            text = safe_line(str(item))
+            if text and text not in seen:
+                out.append(text)
+                seen.add(text)
+            if len(out) >= limit:
+                break
+    return out[:limit]
+
+
+def merge_follow_up_checks(existing: List[Dict[str, str]], extras: object, limit: int = 5) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    seen = set()
+
+    for item in existing:
+        if not isinstance(item, dict):
+            continue
+        key = (item.get("check", ""), item.get("expected_signal", ""))
+        if key not in seen:
+            out.append(item)
+            seen.add(key)
+
+    if isinstance(extras, list):
+        for item in extras:
+            if not isinstance(item, dict):
+                continue
+            check = safe_line(str(item.get("check", "")).strip())
+            expected_signal = safe_line(str(item.get("expected_signal", "")).strip())
+            urgency = str(item.get("urgency", "soon")).strip().lower()
+            if urgency not in {"now", "soon", "later"}:
+                urgency = "soon"
+            if not check or not expected_signal:
+                continue
+            key = (check, expected_signal)
+            if key in seen:
+                continue
+            out.append(
+                {
+                    "check": check,
+                    "expected_signal": expected_signal,
+                    "urgency": urgency,
+                }
+            )
+            seen.add(key)
+            if len(out) >= limit:
+                break
+
+    return out[:limit]
 
 
 def parse_health(health_text: Optional[str]) -> Dict[str, object]:
@@ -700,6 +792,192 @@ def build_limits(
     return limits
 
 
+def apply_llm_decision(
+    report: Dict[str, object],
+    llm: Dict[str, object],
+    health_signal: Dict[str, object],
+    containers: List[Dict[str, object]],
+) -> Tuple[Dict[str, object], bool]:
+    changed = False
+    llm_state = str(llm.get("status_state", "")).strip().lower()
+    llm_confidence = llm.get("confidence")
+    summary = str(llm.get("one_line_summary", "")).strip()
+
+    hard_failed = (
+        (parse_int(health_signal.get("http_status")) or 0) >= 500
+        or any(str(container.get("state")) in {"restarting", "exited"} for container in containers)
+    )
+
+    if llm_state in {"healthy", "degraded", "failed"}:
+        if hard_failed and llm_state == "healthy":
+            llm_state = "failed"
+        changed = changed or report["status"].get("state") != llm_state
+        report["status"]["state"] = llm_state
+
+    if isinstance(llm_confidence, (int, float)):
+        bounded_conf = round(max(0.05, min(0.99, float(llm_confidence))), 2)
+        changed = changed or report["status"].get("confidence") != bounded_conf
+        report["status"]["confidence"] = bounded_conf
+
+    if summary:
+        summary = safe_line(summary)
+        changed = changed or report["status"].get("one_line_summary") != summary
+        report["status"]["one_line_summary"] = summary
+
+    return report, changed
+
+
+def openrouter_enrich_report(
+    report: Dict[str, object],
+    health_text: Optional[str],
+    compose_text: Optional[str],
+    inspect_text: Optional[str],
+    logs_text: Optional[str],
+    stats_text: Optional[str],
+    previous_state: Dict[str, object],
+    mode: str,
+    model: str,
+    health_signal: Dict[str, object],
+    containers: List[Dict[str, object]],
+    timeout_sec: int = 20,
+) -> Dict[str, object]:
+    llm_meta = report.setdefault("llm", {})
+    llm_meta["mode"] = mode
+    llm_meta["model"] = None
+    llm_meta["attempted"] = False
+    llm_meta["used"] = False
+    llm_meta["decision_changed"] = False
+    llm_meta["error"] = None
+
+    if mode == "off":
+        return report
+
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip() or os.environ.get("LLM_API_KEY", "").strip()
+    if not api_key:
+        llm_meta["error"] = "missing_openrouter_config"
+        return report
+
+    llm_input = {
+        "context": report.get("context", {}),
+        "status": report.get("status", {}),
+        "signals": report.get("signals", {}),
+        "changes_since_last": report.get("changes_since_last", {}),
+        "alerts": report.get("alerts", []),
+        "limits": report.get("limits", []),
+        "previous_state": previous_state,
+        "evidence_excerpt": {
+            "health": extract_relevant_lines(health_text),
+            "compose": extract_relevant_lines(compose_text),
+            "inspect": extract_relevant_lines(inspect_text),
+            "logs": extract_relevant_lines(logs_text, max_lines=30),
+            "stats": extract_relevant_lines(stats_text),
+        },
+        "raw_excerpt": {
+            "health_head": extract_head_lines(health_text, max_lines=8),
+            "compose_head": extract_head_lines(compose_text, max_lines=8),
+            "inspect_head": extract_head_lines(inspect_text, max_lines=8),
+            "logs_head": extract_head_lines(logs_text, max_lines=12),
+            "stats_head": extract_head_lines(stats_text, max_lines=8),
+        },
+    }
+
+    system_prompt = (
+        "You are a staging runtime monitoring assistant. "
+        "Use only provided evidence. "
+        "Do not invent causes, incidents, or metrics. "
+        "Return strict JSON with keys: "
+        "status_state, confidence, one_line_summary, operator_summary, rationale, risk_notes, follow_up_checks. "
+        "status_state must be one of healthy, degraded, failed. "
+        "rationale and risk_notes must be arrays of strings. "
+        "follow_up_checks must be a list of objects {check, expected_signal, urgency}. "
+        "If evidence is weak, say so explicitly in rationale or risk_notes."
+    )
+
+    user_prompt = (
+        "Review this staging monitoring report and refine it conservatively.\n"
+        "Keep the response concise, evidence-based, and machine-readable only.\n\n"
+        f"{json.dumps(llm_input, ensure_ascii=True)}\n"
+    )
+
+    chosen_model = model or DEFAULT_OPENROUTER_MODEL
+    req_body = {
+        "model": chosen_model,
+        "temperature": 0.1,
+        "response_format": {"type": "json_object"},
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+    }
+
+    request_obj = urlrequest.Request(
+        f"{DEFAULT_OPENROUTER_BASE_URL}/chat/completions",
+        data=json.dumps(req_body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://openai.com/",
+            "X-Title": "Projetweb Monitoring Summarizer",
+        },
+        method="POST",
+    )
+
+    llm_meta["attempted"] = True
+    llm_meta["model"] = chosen_model
+
+    try:
+        with urlrequest.urlopen(request_obj, timeout=timeout_sec) as response:
+            payload = json.loads(response.read().decode("utf-8", errors="replace"))
+            content = payload["choices"][0]["message"]["content"]
+            llm = json.loads(content)
+    except (urlerror.URLError, TimeoutError, KeyError, IndexError, json.JSONDecodeError) as exc:
+        llm_meta["error"] = safe_line(str(exc))
+        return report
+    except Exception as exc:
+        llm_meta["error"] = safe_line(f"invalid_llm_response: {exc}")
+        return report
+
+    llm_meta["used"] = True
+    report, decision_changed = apply_llm_decision(report, llm, health_signal, containers)
+    llm_meta["decision_changed"] = decision_changed
+
+    llm_insights = report.setdefault(
+        "llm_insights",
+        {
+            "operator_summary": "",
+            "rationale": [],
+            "risk_notes": [],
+            "follow_up_checks": [],
+        },
+    )
+
+    operator_summary = str(llm.get("operator_summary", "")).strip()
+    if operator_summary:
+        llm_insights["operator_summary"] = safe_line(operator_summary)
+        llm_meta["decision_changed"] = True
+
+    llm_insights["rationale"] = merge_unique_strings(
+        list(llm_insights.get("rationale", [])),
+        llm.get("rationale", []),
+        limit=5,
+    )
+    llm_insights["risk_notes"] = merge_unique_strings(
+        list(llm_insights.get("risk_notes", [])),
+        llm.get("risk_notes", []),
+        limit=5,
+    )
+    llm_insights["follow_up_checks"] = merge_follow_up_checks(
+        list(llm_insights.get("follow_up_checks", [])),
+        llm.get("follow_up_checks", []),
+        limit=5,
+    )
+
+    llm_insights["rationale"] = llm_insights["rationale"][:5]
+    llm_insights["risk_notes"] = llm_insights["risk_notes"][:5]
+    llm_insights["follow_up_checks"] = llm_insights["follow_up_checks"][:5]
+    return report
+
+
 def write_markdown(report: Dict[str, object], path: Path) -> None:
     context = report["context"]
     status = report["status"]
@@ -707,6 +985,8 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
     changes = report["changes_since_last"]
     alerts = report["alerts"]
     limits = report["limits"]
+    llm = report.get("llm", {})
+    llm_insights = report.get("llm_insights", {})
 
     lines = [
         "# Monitoring Summarizer Report",
@@ -751,12 +1031,49 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
     else:
         lines.append("- No alerts generated")
 
+    if llm_insights.get("operator_summary"):
+        lines.extend(["", "## LLM Operator Summary", f"- {llm_insights['operator_summary']}"])
+
+    rationale = list(llm_insights.get("rationale", []))
+    if rationale:
+        lines.extend(["", "## LLM Rationale"])
+        for item in rationale:
+            lines.append(f"- {item}")
+
+    follow_up_checks = list(llm_insights.get("follow_up_checks", []))
+    if follow_up_checks:
+        lines.extend(["", "## LLM Follow-Up Checks"])
+        for item in follow_up_checks:
+            lines.append(
+                f"- [{item.get('urgency', 'soon')}] {item.get('check', '')} -> {item.get('expected_signal', '')}"
+            )
+
+    risk_notes = list(llm_insights.get("risk_notes", []))
+    if risk_notes:
+        lines.extend(["", "## LLM Risk Notes"])
+        for item in risk_notes:
+            lines.append(f"- {item}")
+
     lines.extend(["", "## Limits"])
     if limits:
         for limit in limits:
             lines.append(f"- {limit}")
     else:
         lines.append("- No major evidence limitations detected")
+
+    lines.extend(
+        [
+            "",
+            "## LLM",
+            f"- Mode: {llm.get('mode', 'unknown')}",
+            f"- Attempted: {llm.get('attempted', False)}",
+            f"- Used: {llm.get('used', False)}",
+            f"- Decision changed: {llm.get('decision_changed', False)}",
+            f"- Model: {llm.get('model') or 'n/a'}",
+        ]
+    )
+    if llm.get("error"):
+        lines.append(f"- Error: {llm['error']}")
 
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
@@ -844,7 +1161,35 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
         "changes_since_last": changes,
         "alerts": alerts,
         "limits": limits,
+        "llm": {
+            "mode": args.llm_mode,
+            "attempted": False,
+            "used": False,
+            "decision_changed": False,
+            "model": None,
+            "error": None,
+        },
+        "llm_insights": {
+            "operator_summary": "",
+            "rationale": [],
+            "risk_notes": [],
+            "follow_up_checks": [],
+        },
     }
+
+    report = openrouter_enrich_report(
+        report=report,
+        health_text=health_text,
+        compose_text=compose_text,
+        inspect_text=inspect_text,
+        logs_text=logs_text,
+        stats_text=stats_text,
+        previous_state=previous_state,
+        mode=args.llm_mode,
+        model=args.llm_model,
+        health_signal=health_signal,
+        containers=containers,
+    )
 
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
@@ -868,6 +1213,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--staging_host", help="Staging host override")
     parser.add_argument("--window_minutes", default=5, type=int, help="Log lookback window in minutes")
     parser.add_argument("--health_timeout_ms", default=2000, type=int, help="Health probe timeout in milliseconds")
+    parser.add_argument(
+        "--llm_mode",
+        choices=["auto", "off"],
+        default="auto",
+        help="Use OpenRouter LLM enrichment when config is available (default: auto)",
+    )
+    parser.add_argument(
+        "--llm_model",
+        default=DEFAULT_OPENROUTER_MODEL,
+        help="OpenRouter model id (default: openai/gpt-4o-mini)",
+    )
     return parser
 
 
@@ -916,6 +1272,20 @@ def main() -> int:
                 }
             ],
             "limits": ["Monitoring analyzer encountered an internal error during execution."],
+            "llm": {
+                "mode": args.llm_mode,
+                "attempted": False,
+                "used": False,
+                "decision_changed": False,
+                "model": None,
+                "error": None,
+            },
+            "llm_insights": {
+                "operator_summary": "",
+                "rationale": [],
+                "risk_notes": [],
+                "follow_up_checks": [],
+            },
         }
 
         out_path = Path(args.out)
