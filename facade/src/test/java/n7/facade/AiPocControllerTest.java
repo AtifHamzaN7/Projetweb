@@ -68,4 +68,5 @@ class AiPocControllerTest {
         Instant parsedInstant = Instant.parse(timestamp);
         assertNotNull(parsedInstant);
     }
+
 }
