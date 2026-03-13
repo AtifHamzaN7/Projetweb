@@ -616,6 +616,72 @@ def extract_relevant_lines(text: Optional[str], max_lines: int = 20) -> List[str
     return out
 
 
+def extract_head_lines(text: Optional[str], max_lines: int = 8) -> List[str]:
+    if text is None:
+        return []
+    out = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        out.append(safe_line(s))
+        if len(out) >= max_lines:
+            break
+    return out
+
+
+def merge_unique_strings(existing: List[str], extras: object, limit: int = 5) -> List[str]:
+    out = [safe_line(str(x)) for x in existing if str(x).strip()]
+    seen = set(out)
+    if isinstance(extras, list):
+        for item in extras:
+            text = safe_line(str(item))
+            if text and text not in seen:
+                out.append(text)
+                seen.add(text)
+            if len(out) >= limit:
+                break
+    return out[:limit]
+
+
+def merge_follow_up_checks(existing: List[Dict[str, str]], extras: object, limit: int = 5) -> List[Dict[str, str]]:
+    out = []
+    seen = set()
+    for item in existing:
+        if not isinstance(item, dict):
+            continue
+        key = (item.get("check", ""), item.get("expected_signal", ""))
+        if key not in seen:
+            out.append(item)
+            seen.add(key)
+
+    if isinstance(extras, list):
+        for item in extras:
+            if not isinstance(item, dict):
+                continue
+            check = safe_line(str(item.get("check", "")).strip())
+            expected_signal = safe_line(str(item.get("expected_signal", "")).strip())
+            urgency = str(item.get("urgency", "soon")).strip().lower()
+            if urgency not in {"now", "soon", "later"}:
+                urgency = "soon"
+            if not check or not expected_signal:
+                continue
+            key = (check, expected_signal)
+            if key in seen:
+                continue
+            out.append(
+                {
+                    "check": check,
+                    "expected_signal": expected_signal,
+                    "urgency": urgency,
+                }
+            )
+            seen.add(key)
+            if len(out) >= limit:
+                break
+    return out[:limit]
+
+
 def apply_llm_decision(
     report: Dict[str, object],
     llm: Dict[str, object],
@@ -690,6 +756,7 @@ def openrouter_enrich_report(
         return report
 
     llm_input = {
+        "context": report.get("context", {}),
         "verdict": report.get("verdict", {}),
         "signals": report.get("signals", {}),
         "top_causes": report.get("top_causes", []),
@@ -701,16 +768,27 @@ def openrouter_enrich_report(
             "logs": extract_relevant_lines(logs_text, max_lines=30),
             "health": extract_relevant_lines(health_text),
         },
+        "raw_excerpt": {
+            "smoke_head": extract_head_lines(smoke_text, max_lines=8),
+            "compose_head": extract_head_lines(compose_text, max_lines=8),
+            "logs_head": extract_head_lines(logs_text, max_lines=12),
+            "health_head": extract_head_lines(health_text, max_lines=6),
+        },
     }
 
     system_prompt = (
         "You are a CI/CD deployment triage assistant. "
         "Use only provided evidence. "
-        "Return STRICT JSON with keys: verdict_state, confidence, summary, extra_causes, extra_actions, needs_human. "
+        "Return STRICT JSON with keys: verdict_state, confidence, summary, extra_causes, extra_actions, "
+        "needs_human, operator_summary, rationale, follow_up_checks, risk_notes. "
         "verdict_state must be one of healthy, degraded, failed. "
         "confidence must be a float between 0 and 1. "
         "extra_causes is a list of objects {cause, likelihood, evidence}. "
         "extra_actions is a list of objects {action, reason, priority}. "
+        "rationale is a list of short evidence-backed bullets. "
+        "follow_up_checks is a list of objects {check, expected_signal, urgency}. "
+        "risk_notes is a list of short statements about residual uncertainty or operational risk. "
+        "operator_summary is a concise paragraph for an on-call engineer. "
         "Do not output markdown."
     )
     user_prompt = (
@@ -718,6 +796,8 @@ def openrouter_enrich_report(
         f"{json.dumps(llm_input, ensure_ascii=True)}\n"
         "Decide the final deployment state from the evidence and refine the summary. "
         "Add up to 2 additional causes/actions only if evidence supports them. "
+        "Also provide concise operator-facing rationale, 2-5 concrete follow-up validation checks, and residual risk notes. "
+        "Prioritize specific operational guidance over generic advice. "
         "Do not contradict clear hard facts such as failed smoke tests, exited/restarting containers, or health DOWN."
     )
 
@@ -799,9 +879,43 @@ def openrouter_enrich_report(
     if isinstance(needs_human, bool):
         report["needs_human"] = report["needs_human"] or needs_human
 
+    llm_insights = report.setdefault(
+        "llm_insights",
+        {
+            "operator_summary": "",
+            "rationale": [],
+            "follow_up_checks": [],
+            "risk_notes": [],
+        },
+    )
+
+    operator_summary = str(llm.get("operator_summary", "")).strip()
+    if operator_summary:
+        llm_insights["operator_summary"] = safe_line(operator_summary)
+        llm_meta["decision_changed"] = True
+
+    llm_insights["rationale"] = merge_unique_strings(
+        list(llm_insights.get("rationale", [])),
+        llm.get("rationale", []),
+        limit=5,
+    )
+    llm_insights["risk_notes"] = merge_unique_strings(
+        list(llm_insights.get("risk_notes", [])),
+        llm.get("risk_notes", []),
+        limit=5,
+    )
+    llm_insights["follow_up_checks"] = merge_follow_up_checks(
+        list(llm_insights.get("follow_up_checks", [])),
+        llm.get("follow_up_checks", []),
+        limit=5,
+    )
+
     # Keep report concise/deterministic.
     report["top_causes"] = report["top_causes"][:3]
     report["recommended_actions"] = report["recommended_actions"][:6]
+    llm_insights["rationale"] = llm_insights["rationale"][:5]
+    llm_insights["risk_notes"] = llm_insights["risk_notes"][:5]
+    llm_insights["follow_up_checks"] = llm_insights["follow_up_checks"][:5]
     return report
 
 
@@ -812,6 +926,7 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
     actions = report["recommended_actions"]
     limits = report["limits"]
     llm = report.get("llm", {})
+    llm_insights = report.get("llm_insights", {})
 
     lines = [
         "# Deployment Verifier Report",
@@ -846,6 +961,30 @@ def write_markdown(report: Dict[str, object], path: Path) -> None:
             lines.append(f"- {l}")
     else:
         lines.append("- No major evidence limitations detected")
+
+    if llm_insights.get("operator_summary"):
+        lines.extend(["", "## LLM Operator Summary", f"- {llm_insights['operator_summary']}"])
+
+    rationale = list(llm_insights.get("rationale", []))
+    if rationale:
+        lines.extend(["", "## LLM Rationale"])
+        for item in rationale:
+            lines.append(f"- {item}")
+
+    follow_up_checks = list(llm_insights.get("follow_up_checks", []))
+    if follow_up_checks:
+        lines.extend(["", "## LLM Follow-Up Checks"])
+        for item in follow_up_checks:
+            if isinstance(item, dict):
+                lines.append(
+                    f"- [{item.get('urgency', 'soon')}] {item.get('check', '')} -> {item.get('expected_signal', '')}"
+                )
+
+    risk_notes = list(llm_insights.get("risk_notes", []))
+    if risk_notes:
+        lines.extend(["", "## LLM Risk Notes"])
+        for item in risk_notes:
+            lines.append(f"- {item}")
 
     lines.extend(
         [
@@ -943,6 +1082,12 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
             "decision_changed": False,
             "model": None,
             "error": None,
+        },
+        "llm_insights": {
+            "operator_summary": "",
+            "rationale": [],
+            "follow_up_checks": [],
+            "risk_notes": [],
         },
     }
 
