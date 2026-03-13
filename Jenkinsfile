@@ -77,6 +77,7 @@ pipeline {
                 sh '''
                   set -eu
                   (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                  git config --global --add safe.directory "${WORKSPACE}" || true
                   git fetch --all --tags --prune || true
                   git fetch --unshallow || true
                 '''
@@ -145,9 +146,9 @@ pipeline {
                     env.IMPACTED_TEST_FILTER = sh(
                         script: '''
                           set -eu
-                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                          (set -o pipefail) 2>/dev/null && set -o pipefail || true
                           if [ -f "ai-test-filter.txt" ]; then
-                            tr -d '\n' < ai-test-filter.txt | xargs
+                            tr -d '\r\n' < ai-test-filter.txt
                           fi
                         ''',
                         returnStdout: true
@@ -361,25 +362,37 @@ pipeline {
             }
             agent any
             steps {
-                sh '''
-                  set -eu
-                  (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'github-pat',
+                        usernameVariable: 'GIT_USERNAME',
+                        passwordVariable: 'GIT_PASSWORD'
+                    )
+                ]) {
+                    sh '''
+                      set -eu
+                      (set -o pipefail) 2>/dev/null && set -o pipefail || true
 
-                  git config user.name "github-actions[bot]"
-                  git config user.email "github-actions[bot]@users.noreply.github.com"
+                      git config --global --add safe.directory "${WORKSPACE}" || true
+                      git config user.name "github-actions[bot]"
+                      git config user.email "github-actions[bot]@users.noreply.github.com"
 
-                  BRANCH="${BRANCH_NAME}"
-                  git checkout "$BRANCH"
-                  git add facade/src/test/java || true
+                      BRANCH="${BRANCH_NAME}"
+                      REMOTE_URL="https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/AtifHamzaN7/Projetweb.git"
 
-                  if git diff --cached --quiet; then
-                    echo "No generated tests to commit."
-                    exit 0
-                  fi
+                      git remote set-url origin "$REMOTE_URL"
+                      git checkout "$BRANCH"
+                      git add facade/src/test/java || true
 
-                  git commit -m "test(ai): add generated tests [skip ci]"
-                  git push origin "HEAD:$BRANCH"
-                '''
+                      if git diff --cached --quiet; then
+                        echo "No generated tests to commit."
+                        exit 0
+                      fi
+
+                      git commit -m "test(ai): add generated tests [skip ci]"
+                      git push origin "HEAD:$BRANCH"
+                    '''
+                }
             }
         }
 
