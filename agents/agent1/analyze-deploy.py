@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 import argparse
 import json
+import os
 import re
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
+from urllib import error as urlerror
+from urllib import request as urlrequest
 
 
 MAX_EVIDENCE_LINE_LEN = 240
+DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o-mini"
 
 
 @dataclass
@@ -213,6 +217,23 @@ def read_file_if_exists(path: Path) -> Optional[str]:
         return path.read_text(encoding="utf-8", errors="replace")
     except OSError:
         return None
+
+
+def load_dotenv(path: Path) -> None:
+    if not path.exists() or not path.is_file():
+        return
+    try:
+        for raw in path.read_text(encoding="utf-8", errors="replace").splitlines():
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip("'").strip('"')
+            if key and key not in os.environ:
+                os.environ[key] = value
+    except OSError:
+        return
 
 
 def pick_first_existing(base: Path, names: List[str]) -> Tuple[Optional[Path], Optional[str]]:
@@ -579,6 +600,145 @@ def build_limits(
     return limits
 
 
+def extract_relevant_lines(text: Optional[str], max_lines: int = 20) -> List[str]:
+    if text is None:
+        return []
+    out = []
+    for line in text.splitlines():
+        s = line.strip()
+        if not s:
+            continue
+        if re.search(r"(error|exception|fail|timeout|refused|restarting|exited|http\s+[45]\d\d)", s, flags=re.IGNORECASE):
+            out.append(safe_line(s))
+        if len(out) >= max_lines:
+            break
+    return out
+
+
+def openrouter_enrich_report(
+    report: Dict[str, object],
+    smoke_text: Optional[str],
+    compose_text: Optional[str],
+    logs_text: Optional[str],
+    health_text: Optional[str],
+    mode: str,
+    model: str,
+    timeout_sec: int = 20,
+) -> Dict[str, object]:
+    if mode == "off":
+        return report
+
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    base_url = os.environ.get("OPENROUTER_BASE_URL", "").strip()
+    if not api_key or not base_url:
+        return report
+
+    llm_input = {
+        "verdict": report.get("verdict", {}),
+        "signals": report.get("signals", {}),
+        "top_causes": report.get("top_causes", []),
+        "recommended_actions": report.get("recommended_actions", []),
+        "limits": report.get("limits", []),
+        "evidence_excerpt": {
+            "smoke": extract_relevant_lines(smoke_text),
+            "compose": extract_relevant_lines(compose_text),
+            "logs": extract_relevant_lines(logs_text, max_lines=30),
+            "health": extract_relevant_lines(health_text),
+        },
+    }
+
+    system_prompt = (
+        "You are a CI/CD deployment triage assistant. "
+        "Use only provided evidence. "
+        "Return STRICT JSON with keys: summary, extra_causes, extra_actions, needs_human. "
+        "extra_causes is a list of objects {cause, likelihood, evidence}. "
+        "extra_actions is a list of objects {action, reason, priority}. "
+        "Do not output markdown."
+    )
+    user_prompt = (
+        "Current rule-based report follows.\n"
+        f"{json.dumps(llm_input, ensure_ascii=True)}\n"
+        "Refine summary and add up to 2 additional causes/actions only if evidence supports them. "
+        "Do not contradict clear rule-based facts."
+    )
+
+    payload = {
+        "model": model or DEFAULT_OPENROUTER_MODEL,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "temperature": 0.1,
+        "response_format": {"type": "json_object"},
+    }
+
+    url = base_url.rstrip("/") + "/chat/completions"
+    req = urlrequest.Request(
+        url,
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+
+    try:
+        with urlrequest.urlopen(req, timeout=timeout_sec) as resp:
+            body = resp.read().decode("utf-8", errors="replace")
+    except Exception:
+        return report
+
+    try:
+        parsed = json.loads(body)
+        content = parsed["choices"][0]["message"]["content"]
+        llm = json.loads(content)
+    except Exception:
+        return report
+
+    summary = str(llm.get("summary", "")).strip()
+    if summary:
+        report["verdict"]["summary"] = safe_line(summary)
+
+    extra_causes = llm.get("extra_causes", [])
+    if isinstance(extra_causes, list):
+        for cause in extra_causes[:2]:
+            if not isinstance(cause, dict):
+                continue
+            c = str(cause.get("cause", "")).strip()
+            e = cause.get("evidence", [])
+            if c and isinstance(e, list) and e:
+                report["top_causes"].append(
+                    {
+                        "cause": safe_line(c),
+                        "likelihood": round(float(cause.get("likelihood", 0.5)), 2),
+                        "evidence": [safe_line(str(x)) for x in e[:2]],
+                    }
+                )
+
+    extra_actions = llm.get("extra_actions", [])
+    if isinstance(extra_actions, list):
+        for action in extra_actions[:2]:
+            if not isinstance(action, dict):
+                continue
+            act = str(action.get("action", "")).strip()
+            rea = str(action.get("reason", "")).strip()
+            prio = str(action.get("priority", "P1")).strip().upper()
+            if act and rea and prio in {"P0", "P1", "P2"}:
+                report["recommended_actions"].append(
+                    {"action": safe_line(act), "reason": safe_line(rea), "priority": prio}
+                )
+
+    needs_human = llm.get("needs_human")
+    if isinstance(needs_human, bool):
+        report["needs_human"] = report["needs_human"] or needs_human
+
+    # Keep report concise/deterministic.
+    report["top_causes"] = report["top_causes"][:3]
+    report["recommended_actions"] = report["recommended_actions"][:6]
+    return report
+
+
 def write_markdown(report: Dict[str, object], path: Path) -> None:
     verdict = report["verdict"]
     signals = report["signals"]
@@ -697,6 +857,17 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
         "limits": limits,
     }
 
+    load_dotenv(Path(".env"))
+    report = openrouter_enrich_report(
+        report=report,
+        smoke_text=smoke_text,
+        compose_text=compose_text,
+        logs_text=logs_text,
+        health_text=health_text,
+        mode=args.llm_mode,
+        model=args.llm_model,
+    )
+
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
 
@@ -715,6 +886,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--build_number", help="Build number override")
     parser.add_argument("--image", help="Image tag override")
     parser.add_argument("--staging_host", help="Staging host override")
+    parser.add_argument(
+        "--llm_mode",
+        choices=["auto", "off"],
+        default="auto",
+        help="Use OpenRouter LLM enrichment when config is available (default: auto)",
+    )
+    parser.add_argument(
+        "--llm_model",
+        default=os.environ.get("OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL),
+        help="OpenRouter model id (default from OPENROUTER_MODEL or openai/gpt-4o-mini)",
+    )
     return parser
 
 
