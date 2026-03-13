@@ -127,6 +127,7 @@ pipeline {
                       LLM_API_KEY="$LLM_API_KEY" \
                       AI_TEST_REPAIR_ENABLED="1" \
                       AI_TEST_REPAIR_MAX_ITERS="2" \
+                      AI_TEST_REPAIR_STRICT="0" \
                       node script-test.mjs
                     '''
                 }

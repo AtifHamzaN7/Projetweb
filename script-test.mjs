@@ -66,6 +66,7 @@ const MAX_REPAIR_ITERS = Math.max(
   0,
   Number.parseInt(process.env.AI_TEST_REPAIR_MAX_ITERS || "2", 10) || 0
 );
+const REPAIR_STRICT = (process.env.AI_TEST_REPAIR_STRICT || "0") === "1";
 
 /** Execute shell and return stdout string */
 function sh(cmd, opts = {}) {
@@ -1321,8 +1322,13 @@ async function main() {
     }
 
     if (lastFailures.length > 0) {
-      console.log("[AI-REPAIR] Still failing after max iterations. Failing the CI step.");
-      process.exit(1);
+      if (REPAIR_STRICT) {
+        console.log("[AI-REPAIR] Still failing after max iterations. Failing the CI step.");
+        process.exit(1);
+      }
+      console.log(
+        "[AI-REPAIR] Still failing after max iterations. Continuing so downstream Maven verification can decide the build outcome."
+      );
     }
   }
 }
