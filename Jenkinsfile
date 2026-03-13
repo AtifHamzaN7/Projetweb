@@ -681,16 +681,14 @@ pipeline {
                       fi
 
                       MONITOR_TS="$(date -u +%FT%TZ)"
-                      cat > "${EVIDENCE_DIR}/monitor_meta.json" <<EOF
-                      {
-                        "service": "${STAGING_SERVICE_NAME}",
-                        "staging_host": "${STAGING_HOST}",
-                        "timestamp_utc": "${MONITOR_TS}",
-                        "window_minutes": ${MONITOR_LOG_WINDOW_MINUTES},
-                        "health_timeout_ms": ${MONITOR_HEALTH_TIMEOUT_MS},
-                        "health_path": "${STAGING_MONITOR_HEALTH_PATH}"
-                      }
-                      EOF
+                      printf '{\n  "service": "%s",\n  "staging_host": "%s",\n  "timestamp_utc": "%s",\n  "window_minutes": %s,\n  "health_timeout_ms": %s,\n  "health_path": "%s"\n}\n' \
+                        "${STAGING_SERVICE_NAME}" \
+                        "${STAGING_HOST}" \
+                        "${MONITOR_TS}" \
+                        "${MONITOR_LOG_WINDOW_MINUTES}" \
+                        "${MONITOR_HEALTH_TIMEOUT_MS}" \
+                        "${STAGING_MONITOR_HEALTH_PATH}" \
+                        > "${EVIDENCE_DIR}/monitor_meta.json"
 
                       ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no ${SSH_USER}@${STAGING_HOST} \
                         "cd ~/deploy && docker compose -f staging-compose.yml ps" \
