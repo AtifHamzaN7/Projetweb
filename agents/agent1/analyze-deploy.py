@@ -12,6 +12,7 @@ from urllib import request as urlrequest
 
 
 MAX_EVIDENCE_LINE_LEN = 240
+DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 DEFAULT_OPENROUTER_MODEL = "openai/gpt-4o-mini"
 
 
@@ -682,9 +683,9 @@ def openrouter_enrich_report(
     if mode == "off":
         return report
 
-    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip()
-    base_url = os.environ.get("OPENROUTER_BASE_URL", "").strip()
-    if not api_key or not base_url:
+    api_key = os.environ.get("OPENROUTER_API_KEY", "").strip() or os.environ.get("LLM_API_KEY", "").strip()
+    base_url = DEFAULT_OPENROUTER_BASE_URL
+    if not api_key:
         llm_meta["error"] = "missing_openrouter_config"
         return report
 
@@ -945,7 +946,6 @@ def run(args: argparse.Namespace) -> Dict[str, object]:
         },
     }
 
-    load_dotenv(Path(".env"))
     report = openrouter_enrich_report(
         report=report,
         smoke_text=smoke_text,
@@ -985,8 +985,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--llm_model",
-        default=os.environ.get("OPENROUTER_MODEL", DEFAULT_OPENROUTER_MODEL),
-        help="OpenRouter model id (default from OPENROUTER_MODEL or openai/gpt-4o-mini)",
+        default=DEFAULT_OPENROUTER_MODEL,
+        help="OpenRouter model id (default: openai/gpt-4o-mini)",
     )
     return parser
 
