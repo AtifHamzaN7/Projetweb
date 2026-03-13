@@ -52,4 +52,20 @@ class AiPocControllerTest {
         Instant parsedInstant = Instant.parse(timestamp);
         assertNotNull(parsedInstant);
     }
+
+    @Test
+    void validateAiPipeline_whenNoParam_returnsOkWithStatusAndTimestamp() {
+        // Call method with no param (simulate null)
+        ResponseEntity<Map<String, Object>> response = controller.validateAiPipeline(null);
+
+        assertEquals(200, response.getStatusCodeValue());
+        Map<String, Object> body = response.getBody();
+        assertNotNull(body);
+        assertEquals("ok", body.get("status"));
+        assertNotNull(body.get("timestamp"));
+
+        String timestamp = (String) body.get("timestamp");
+        Instant parsedInstant = Instant.parse(timestamp);
+        assertNotNull(parsedInstant);
+    }
 }
