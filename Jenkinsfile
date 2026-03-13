@@ -90,48 +90,48 @@ pipeline {
             }
         }
 
-        // stage('Generate Tests With AI') {
-        //     agent {
-        //         docker {
-        //             image "${AGENT_IMAGE}"
-        //             args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home/.m2:/root/.m2'
-        //             reuseNode true
-        //         }
-        //     }
-        //     steps {
-        //         withCredentials([
-        //             string(credentialsId: 'llm-api-key', variable: 'LLM_API_KEY')
-        //         ]) {
-        //             sh '''
-        //               set -eu
-        //               (set -o pipefail) 2>/dev/null && set -o pipefail || true
-        //               NODE_MAJOR=0
-        //               if command -v node >/dev/null 2>&1; then
-        //                 NODE_MAJOR="$(node -p "process.versions.node.split('.')[0]")"
-        //               fi
-        //               if [ "${NODE_MAJOR}" -lt 20 ]; then
-        //                 echo "Node.js >=20 required. Installing Node 20..."
-        //                 export DEBIAN_FRONTEND=noninteractive
-        //                 apt-get update
-        //                 apt-get install -y --no-install-recommends ca-certificates curl gnupg
-        //                 install -d -m 0755 /etc/apt/keyrings
-        //                 curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-        //                 echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
-        //                 apt-get update
-        //                 apt-get install -y --no-install-recommends nodejs
-        //               fi
-        //               git config --global --add safe.directory "${WORKSPACE}" || true
-        //               node --version
-        //               npm --version
-        //               LLM_API_KEY="$LLM_API_KEY" \
-        //               AI_TEST_REPAIR_ENABLED="1" \
-        //               AI_TEST_REPAIR_MAX_ITERS="2" \
-        //               AI_TEST_REPAIR_STRICT="0" \
-        //               node script-test.mjs
-        //             '''
-        //         }
-        //     }
-        // }
+        stage('Generate Tests With AI') {
+            agent {
+                docker {
+                    image "${AGENT_IMAGE}"
+                    args '-u root:root -v /var/run/docker.sock:/var/run/docker.sock -v /var/jenkins_home/.m2:/root/.m2'
+                    reuseNode true
+                }
+            }
+            steps {
+                withCredentials([
+                    string(credentialsId: 'llm-api-key', variable: 'LLM_API_KEY')
+                ]) {
+                    sh '''
+                      set -eu
+                      (set -o pipefail) 2>/dev/null && set -o pipefail || true
+                      NODE_MAJOR=0
+                      if command -v node >/dev/null 2>&1; then
+                        NODE_MAJOR="$(node -p "process.versions.node.split('.')[0]")"
+                      fi
+                      if [ "${NODE_MAJOR}" -lt 20 ]; then
+                        echo "Node.js >=20 required. Installing Node 20..."
+                        export DEBIAN_FRONTEND=noninteractive
+                        apt-get update
+                        apt-get install -y --no-install-recommends ca-certificates curl gnupg
+                        install -d -m 0755 /etc/apt/keyrings
+                        curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+                        echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
+                        apt-get update
+                        apt-get install -y --no-install-recommends nodejs
+                      fi
+                      git config --global --add safe.directory "${WORKSPACE}" || true
+                      node --version
+                      npm --version
+                      LLM_API_KEY="$LLM_API_KEY" \
+                      AI_TEST_REPAIR_ENABLED="1" \
+                      AI_TEST_REPAIR_MAX_ITERS="2" \
+                      AI_TEST_REPAIR_STRICT="0" \
+                      node script-test.mjs
+                    '''
+                }
+            }
+        }
 
         stage('Load Impacted Test Filter') {
             agent {
